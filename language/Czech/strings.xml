@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <string id="30100">Účet</string>
-    <string id="30101">Poskytovatelr</string>
+    <string id="30101">Poskytovatel</string>
     <string id="30102">Číslo karty/Emailová adresa</string>
     <string id="30103">Heslo</string>
 
