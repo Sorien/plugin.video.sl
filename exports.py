@@ -9,7 +9,7 @@ html_escape_table = {
     "<": "&lt;",
 }
 
-LOGOS_DIR = 'special://home/addons/plugin.video.sl/resources/logos'
+LOGOS_DIR = 'http://koperfieldcz.github.io/skylink-livetv-logos'
 
 
 def html_escape(text):
