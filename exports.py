@@ -18,7 +18,7 @@ def html_escape(text):
 
 def create_m3u(channels, path):
     with io.open(path, 'w', encoding='utf8') as file:
-        file.write(u'#EXTM3U tvg-shift=3\n')
+        file.write(u'#EXTM3U\n')
 
         for c in channels:
             file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logotvg-logo="%s/%s.png",%s\n' % (
@@ -42,7 +42,7 @@ def create_epg(channels, epg, path, addon=None):
             for c in e:
                 for p in e[str(c)]:
                     # delta = datetime.datetime.fromtimestamp(p['start']) - datetime.datetime.utcfromtimestamp(p['start'])
-                    b = datetime.datetime.fromtimestamp(p['start']) - datetime.timedelta(hours=4)
+                    b = datetime.datetime.fromtimestamp(p['start']) - datetime.timedelta(hours=1)
                     e = b + datetime.timedelta(minutes=p['duration'])
                     file.write(u'<programme channel="%s" start="%s" stop="%s">\n' % (
                     c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S')))
