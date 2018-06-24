@@ -9,11 +9,15 @@ html_escape_table = {
     "<": "&lt;",
 }
 
-LOGOS_DIR = 'special://home/addons/plugin.video.sl/resources/logos'
-
 
 def html_escape(text):
     return "".join(html_escape_table.get(c, c) for c in text)
+
+
+def logo_id(title):
+    for ch in [' ', '/', '(18+)', ':']:
+        title = title.replace(ch, '')
+    return title.replace('+', 'plus').lower()
 
 
 def create_m3u(channels, path):
@@ -21,8 +25,8 @@ def create_m3u(channels, path):
         file.write(u'#EXTM3U\n')
 
         for c in channels:
-            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logotvg-logo="%s/%s.png",%s\n' % (
-            c['stationid'], LOGOS_DIR, c['stationid'], c['title']))
+            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s.png",%s\n' % (
+                c['stationid'], logo_id(c['title']), c['title']))
             file.write(u'plugin://plugin.video.sl/?action=play&id=%s\n' % c['id'])
 
 
@@ -45,7 +49,7 @@ def create_epg(channels, epg, path, addon=None):
                     b = datetime.datetime.fromtimestamp(p['start']) - datetime.timedelta(hours=1)
                     e = b + datetime.timedelta(minutes=p['duration'])
                     file.write(u'<programme channel="%s" start="%s" stop="%s">\n' % (
-                    c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S')))
+                        c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S')))
                     if 'title' in p:
                         file.write(u'<title>%s</title>\n' % html_escape(p['title']))
                     if 'description' in p:
