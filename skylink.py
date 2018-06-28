@@ -14,17 +14,18 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko
 
 
 class SkylinkException(Exception):
-    def __init__(self, id, message=''):
+    def __init__(self, id):
         self.id = id
-        self.message = message
 
 
 class UserNotDefinedException(SkylinkException):
-    pass
+    def __init__(self):
+        self.id = 30501
 
 
 class UserInvalidException(SkylinkException):
-    pass
+    def __init__(self):
+        self.id = 30502
 
 
 class TooManyDevicesException(Exception):
@@ -76,7 +77,7 @@ class Skylink:
     def _auth(self):
 
         if (self._usermane == '') or (self._password == ''):
-            raise UserNotDefinedException(30501)
+            raise UserNotDefinedException
 
         self._session.cookies.clear()
         self._session.get(self._url + '/sso.aspx', headers={'User-Agent': UA})
@@ -133,25 +134,24 @@ class Skylink:
                     self._clear_cookies()
                     raise
 
-    def _get(self, **kwargs):
-        kwargs.setdefault('allow_redirects', True)
-        kwargs.setdefault('headers', {'User-Agent': UA, 'Referer': self._url,
+    def _get(self, params):
+        return self._request('GET', self._url + '/api.aspx', params=params, allow_redirects=True,
+                             headers={'User-Agent': UA, 'Referer': self._url,
                                       'Accept': 'application/json, text/javascript, */*; q=0.01'})
-        return self._request('GET', self._url + '/api.aspx', **kwargs)
 
-    def _post(self, data=None, json=None, **kwargs):
-        kwargs.setdefault('headers', {'User-Agent': UA, 'Referer': self._url,
+    def _post(self, params, data):
+        return self._request('POST', self._url + '/api.aspx', params=params, data=data, json=None,
+                             headers={'User-Agent': UA, 'Referer': self._url,
                                       'Accept': 'application/json, text/javascript, */*; q=0.01',
                                       'X-Requested-With': 'XMLHttpRequest'})
-        return self._request('POST', self._url + '/api.aspx', data=data, json=json, **kwargs)
 
     def channels(self):
 
         self._login()
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
-        res = self._get(params={'z': 'epg', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
-                                'a': self._q['app'][0], 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7,
-                                'd': 3})
+        res = self._get({'z': 'epg', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
+                         'a': self._q['app'][0], 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7,
+                         'd': 3})
 
         data = res.json()
         result = []
@@ -178,9 +178,9 @@ class Skylink:
         self._login()
 
         # https://livetv.skylink.sk/api.aspx?z=stream&lng=cs&_=1528789722179&u=w94e14412-8cef-b880-80ea-60a78b79490a&v=1&id=rzxqQ-kzUkG3x2PGEaxnFAAAAAE&d=3'
-        res = self._post(params={'z': 'stream', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
-                                 'v': 1, 'id': channel_id, 'd': 3},
-                         data=json.dumps({'type': 'dash', 'flags': '4096'}).encode())
+        res = self._post({'z': 'stream', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
+                          'v': 1, 'id': channel_id, 'd': 3},
+                         json.dumps({'type': 'dash', 'flags': '4096'}).encode())
 
         stream = res.json()
 
@@ -238,11 +238,9 @@ class Skylink:
             i += 1
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
-                res = self._get(params={'z': 'epg', 'lng': 'sk', self._q['lang'][0]: self._time(), 'u': self._u,
-                                        'a': self._q['app'][0], 'v': 3,
-                                        'f': self._ts(from_date), 't': self._ts(to_date),
-                                        'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024,
-                                        's': channels_str[1:]})  # 212763
+                res = self._get({'z': 'epg', 'lng': 'sk', self._q['lang'][0]: self._time(), 'u': self._u,
+                                 'a': self._q['app'][0], 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
+                                 'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024, 's': channels_str[1:]})  # 212763
                 res = res.json()[1]
                 for channel_id in res:
                     result.append({channel_id: self._epg(res[channel_id])})
