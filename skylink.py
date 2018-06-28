@@ -6,15 +6,15 @@ import time
 import requests.cookies
 
 try:
-    from urlparse import urlparse, parse_qs  # 3
+    from urlparse import urlparse, unquote, parse_qs  # 3
 except ImportError:
-    from urllib.parse import urlparse, parse_qs  # 2.7
+    from urllib.parse import urlparse, unquote, parse_qs  # 2.7
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36'
 
 
 class SkylinkException(Exception):
-    def __init__(self, id, message = ''):
+    def __init__(self, id, message=''):
         self.id = id
         self.message = message
 
@@ -27,13 +27,21 @@ class UserInvalidException(SkylinkException):
     pass
 
 
+class TooManyDevicesException(Exception):
+    def __init__(self, data):
+        self.id = data['id']
+        self.secret = data['secret']
+        self.devices = data['devices']
+
+
 class Skylink:
     _username = ''
     _password = ''
     _data_root = ''
     _cookies_path = ''
     _session = requests.Session()
-    _u, _q, _last_error = '', {}, ''
+    _session.max_redirects = 3
+    _u, _q = '', {}
     _url = ''
     _login_url = ''
 
@@ -58,7 +66,8 @@ class Skylink:
         else:
             self._session.cookies = requests.cookies.RequestsCookieJar()
 
-        return self._parse_cookies()
+        ret, self._u, self._q, _ = self._parse_cookies()
+        return ret
 
     def _clear_cookies(self):
         self._session.cookies.clear()
@@ -74,51 +83,75 @@ class Skylink:
 
         self._session.post(self._login_url, data={'Username': self._usermane, 'Password': self._password},
                            headers={'User-Agent': UA, 'Referer': self._url})
-        return self._parse_cookies()
+
+        r, self._u, self._q, error = self._parse_cookies()
+        if ('error' in error) and (error['error'] == 'toomany'):
+            raise TooManyDevicesException(error)
+
+        if self._u == '':
+            raise UserInvalidException
+
+        return r
 
     def _parse_cookies(self):
-        u, q, e = '', {}, ''
+        u, q, e = '', {}, {}
         for cookie in self._session.cookies:
             if cookie.name == 'solocoo_user':
                 q = parse_qs(cookie.value)
             if cookie.name == 'slcuser_stats':
                 u = cookie.value
             if cookie.name == 'err':
-                e = str(cookie.value)
+                e = json.loads(unquote(str(cookie.value)))
         if (u != '') and (q['type'][0] == 'user'):
-            self._u, self._q, self._last_error = u, q, ''
-            return True
+            return True, u, q, e
         else:
-            self._u, self._q, self._last_error = '', {}, e
-            return False
+            return False, '', {}, e
 
     def _login(self):
         if not self._load_cookies():
-            if self._auth():
+            try:
+                self._auth()
                 self._store_cookies()
-            else:
+            except:
                 self._clear_cookies()
-                raise UserInvalidException(30502, self._last_error)
-
-    def _api_headers_get(self):
-        return {'User-Agent': UA, 'Referer': self._url, 'Accept': 'application/json, text/javascript, */*; q=0.01'}
-
-    def _api_headers_post(self):
-        return {'User-Agent': UA, 'Referer': self._url, 'Accept': 'application/json, text/javascript, */*; q=0.01',
-                'X-Requested-With': 'XMLHttpRequest'}
+                raise
 
     def _time(self):
         return int(time.time() * 1000)
 
+    def _request(self, method, url, **kwargs):
+        try:
+            return self._session.request(method, url, **kwargs)
+        except requests.TooManyRedirects:
+            # no error but user is not valid
+            r, _, _, _ = self._parse_cookies()
+            if not r:
+                try:
+                    self._auth()
+                    self._store_cookies()
+                except:
+                    self._clear_cookies()
+                    raise
+
+    def _get(self, **kwargs):
+        kwargs.setdefault('allow_redirects', True)
+        kwargs.setdefault('headers', {'User-Agent': UA, 'Referer': self._url,
+                                      'Accept': 'application/json, text/javascript, */*; q=0.01'})
+        return self._request('GET', self._url + '/api.aspx', **kwargs)
+
+    def _post(self, data=None, json=None, **kwargs):
+        kwargs.setdefault('headers', {'User-Agent': UA, 'Referer': self._url,
+                                      'Accept': 'application/json, text/javascript, */*; q=0.01',
+                                      'X-Requested-With': 'XMLHttpRequest'})
+        return self._request('POST', self._url + '/api.aspx', data=data, json=json, **kwargs)
+
     def channels(self):
 
         self._login()
-
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
-        res = self._session.get(self._url + '/api.aspx', headers=self._api_headers_get(),
-                                params={'z': 'epg', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
-                                        'a': self._q['app'][0], 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7,
-                                        'd': 3})
+        res = self._get(params={'z': 'epg', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
+                                'a': self._q['app'][0], 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7,
+                                'd': 3})
 
         data = res.json()
         result = []
@@ -145,10 +178,9 @@ class Skylink:
         self._login()
 
         # https://livetv.skylink.sk/api.aspx?z=stream&lng=cs&_=1528789722179&u=w94e14412-8cef-b880-80ea-60a78b79490a&v=1&id=rzxqQ-kzUkG3x2PGEaxnFAAAAAE&d=3'
-        res = self._session.post(self._url + '/api.aspx', headers=self._api_headers_post(),
-                                 params={'z': 'stream', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
-                                         'v': 1, 'id': channel_id, 'd': 3},
-                                 data=json.dumps({'type': 'dash', 'flags': '4096'}).encode())
+        res = self._post(params={'z': 'stream', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
+                                 'v': 1, 'id': channel_id, 'd': 3},
+                         data=json.dumps({'type': 'dash', 'flags': '4096'}).encode())
 
         stream = res.json()
 
@@ -206,11 +238,11 @@ class Skylink:
             i += 1
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
-                res = self._session.get(self._url + '/api.aspx', headers=self._api_headers_get(),
-                                        params={'z': 'epg', 'lng': 'sk', self._q['lang'][0]: self._time(), 'u': self._u,
-                                                'a': self._q['app'][0], 'v': 3,
-                                                'f': self._ts(from_date), 't': self._ts(to_date),
-                                                'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024, 's': channels_str[1:]}) #212763
+                res = self._get(params={'z': 'epg', 'lng': 'sk', self._q['lang'][0]: self._time(), 'u': self._u,
+                                        'a': self._q['app'][0], 'v': 3,
+                                        'f': self._ts(from_date), 't': self._ts(to_date),
+                                        'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024,
+                                        's': channels_str[1:]})  # 212763
                 res = res.json()[1]
                 for channel_id in res:
                     result.append({channel_id: self._epg(res[channel_id])})
