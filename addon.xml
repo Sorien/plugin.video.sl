@@ -10,10 +10,14 @@
 <extension point="xbmc.addon.metadata">
   <reuselanguageinvoker>false</reuselanguageinvoker>
   <summary lang="en">Skylink LiveTV Addon</summary>
-  <description lang="en">Skylink LiveTV</description>
+  <description lang="en">PVR playlist ang EPG generator for Skylink LiveTV Service[CR][CR]Special thanks go to: koperfield</description>
+  <description lang="sk">PVR playlist a EPG generátor pre službu Skylink LiveTV[CR][CR]Špeciálne poďakovanie pre: koperfield</description>
+  <description lang="cz">PVR playlist ang EPG generator for Skylink LiveTV[CR][CR]Zvláštní poděkování: koperfield</description>
   <assets>
     <icon>icon.jpg</icon>
+    <screenshot>resources\screenshots\1.jpg</screenshot>
+    <screenshot>resources\screenshots\2.jpg</screenshot>
+    <screenshot>resources\screenshots\3.jpg</screenshot>
   </assets>  
-  <news>Beta</news>
 </extension>
 </addon>
