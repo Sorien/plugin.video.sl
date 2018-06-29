@@ -28,10 +28,9 @@ class UserInvalidException(SkylinkException):
         self.id = 30502
 
 
-class TooManyDevicesException(Exception):
+class TooManyDevicesException(SkylinkException):
     def __init__(self, data):
-        self.id = data['id']
-        self.secret = data['secret']
+        self.id = 30505
         self.devices = data['devices']
 
 
@@ -74,7 +73,7 @@ class Skylink:
         self._session.cookies.clear()
         self._store_cookies()
 
-    def _auth(self):
+    def _auth(self, ubp=''):
 
         if (self._usermane == '') or (self._password == ''):
             raise UserNotDefinedException
@@ -82,12 +81,16 @@ class Skylink:
         self._session.cookies.clear()
         self._session.get(self._url + '/sso.aspx', headers={'User-Agent': UA})
 
-        self._session.post(self._login_url, data={'Username': self._usermane, 'Password': self._password},
-                           headers={'User-Agent': UA, 'Referer': self._url})
+        resp = self._session.post(self._login_url, data={'Username': self._usermane, 'Password': self._password},
+                                  headers={'User-Agent': UA, 'Referer': self._url})
 
         r, self._u, self._q, error = self._parse_cookies()
         if ('error' in error) and (error['error'] == 'toomany'):
-            raise TooManyDevicesException(error)
+            if ubp != '':
+                self._session.get(resp.url + '&ubp=' + ubp, headers={'User-Agent': UA, 'Referer': resp.url})
+                _, self._u, self._q, error = self._parse_cookies()
+            else:
+                raise TooManyDevicesException(error)
 
         if self._u == '':
             raise UserInvalidException
@@ -108,14 +111,17 @@ class Skylink:
         else:
             return False, '', {}, e
 
+    def reconnect(self, ubp=''):
+        try:
+            self._auth(ubp)
+            self._store_cookies()
+        except:
+            self._clear_cookies()
+            raise
+
     def _login(self):
         if not self._load_cookies():
-            try:
-                self._auth()
-                self._store_cookies()
-            except:
-                self._clear_cookies()
-                raise
+            self.reconnect('')
 
     def _time(self):
         return int(time.time() * 1000)

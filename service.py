@@ -7,6 +7,7 @@ import logger
 import skylink
 import xbmc
 import xbmcaddon
+import xbmcgui
 
 
 class SkylinkMonitor(xbmc.Monitor):
@@ -22,10 +23,17 @@ class SkylinkMonitor(xbmc.Monitor):
         icon = 'DefaultIconError.png' if error else ''
         xbmc.executebuiltin('Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name'), text, icon))
 
+    def select_device(self, d):
+        dialog = xbmcgui.Dialog()
+        items = []
+        for device in d:
+            items.append(device['name'].replace("+", " "))
+        return dialog.select(self._addon.getLocalizedString(30403), items)
+
     def onSettingsChanged(self):
         if not self.abortRequested():
             try:
-                res = self.update()
+                res = self.update(True)
                 self.notify(self._addon.getLocalizedString(30400 + res))
             except skylink.SkylinkException as e:
                 self.notify(self._addon.getLocalizedString(e.id), True)
@@ -35,13 +43,26 @@ class SkylinkMonitor(xbmc.Monitor):
         logger.log.info('Next update %s' % dt)
         self._next_update = dt
 
-    def update(self):
+    def update(self, try_reconnect=False):
         self.shedule_next()
 
         s = skylink.Skylink(self._addon.getSetting('username'), self._addon.getSetting('password'),
                             xbmc.translatePath(self._addon.getAddonInfo('profile')).decode("utf-8"),
                             'skylink.sk' if int(self._addon.getSetting('provider')) == 0 else 'skylink.cz')
-        channels = s.channels()
+
+        try:
+            channels = s.channels()
+        except skylink.TooManyDevicesException as e:
+            if try_reconnect:
+                d = self.select_device(e.devices)
+                if d > -1:
+                    logger.log.info('reconnecting as: ' + e.devices[d]['id'])
+                    s.reconnect(e.devices[d]['id'])
+                    channels = s.channels()
+                else:
+                    raise
+            else:
+                raise
 
         logger.log.info('Updating playlist [%d channels]' % len(channels))
         try:
