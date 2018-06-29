@@ -5,19 +5,19 @@
     <string id="30102">Email / Card number</string>
     <string id="30103">Password</string>
 
-    <string id="30111">SKYLINK SK</string>
-    <string id="30112">SKYLINK CZ</string>
+    <string id="30111">Skylink SK</string>
+    <string id="30112">Skylink CZ</string>
 
     <string id="30200">Playlist</string>
     <string id="30201">M3U</string>
-    <string id="30202">Directory</string>
-    <string id="30203">File</string>
+    <string id="30202">Directory of playlist</string>
+    <string id="30203">Filename</string>
 
     <string id="30300">EPG</string>
     <string id="30301">XMLTV</string>
     <string id="30302">Enabled</string>
-    <string id="30303">Directory</string>
-    <string id="30304">File</string>
+    <string id="30303">Directory of EPG file</string>
+    <string id="30304">Filename</string>
     <string id="30305">Preload Days</string>
 
     <string id="30401">Playlist generated</string>
@@ -32,7 +32,7 @@
     <string id="30901">Dokumentary</string>
     <string id="30903">Children</string>
     <string id="30904">Series</string>
-    <string id="30905"></string>
+    <string id="30905">Competition</string>
     <string id="30906">Erotic</string>
     <string id="30907">Sport</string>
     <string id="30908">News</string>
@@ -44,7 +44,7 @@
     <string id="30916">Concert</string>
     <string id="30918">Magazín</string>
     <string id="30919">Sci-fi</string>
-    <string id="30920"></string>
+    <string id="30920">Journalism</string>
     <string id="30921">Thriller</string>
     <string id="30922">Western</string>
     <string id="30925">Horror</string>
@@ -60,5 +60,5 @@
     <string id="30940">Cooking</string>
     <string id="30941">Children to 6</string>
     <string id="30942">Children 6-14</string>
-    <string id="30944"></string>
+    <string id="30944">Martial arts</string>
 </strings>
