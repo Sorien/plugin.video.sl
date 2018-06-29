@@ -19,18 +19,37 @@ _password = xbmcplugin.getSetting(_id, 'password')
 _provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
 
 
+def select_device(devices):
+    dialog = xbmcgui.Dialog()
+    items = []
+    for device in devices:
+        items.append(device['name'].replace("+", " "))
+    return dialog.select(_addon.getLocalizedString(30403), items)
+
+
 def play(channel_id):
     logger.log.info('play: ' + channel_id)
     s = skylink.Skylink(_user_name, _password, _profile, _provider)
-    i = s.channel_info(channel_id)
-    is_helper = inputstreamhelper.Helper(i['protocol'], drm=i['drm'])
-    if is_helper.check_inputstream():
-        playitem = xbmcgui.ListItem(path=i['path'])
-        playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
-        playitem.setProperty('inputstream.adaptive.manifest_type', i['protocol'])
-        playitem.setProperty('inputstream.adaptive.license_type', i['drm'])
-        playitem.setProperty('inputstream.adaptive.license_key', i['key'])
-        xbmc.Player().play(item=i['path'], listitem=playitem)
+
+    info = {}
+    try:
+        info = s.channel_info(channel_id)
+    except skylink.TooManyDevicesException as e:
+        d = select_device(e.devices)
+        if d > -1:
+            logger.log.info('reconnecting as: ' + e.devices[d]['id'])
+            s.reconnect(e.devices[d]['id'])
+            info = s.channel_info(channel_id)
+
+    if info:
+        is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
+        if is_helper.check_inputstream():
+            playitem = xbmcgui.ListItem(path=info['path'])
+            playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+            playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
+            playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
+            playitem.setProperty('inputstream.adaptive.license_key', info['key'])
+            xbmc.Player().play(item=info['path'], listitem=playitem)
 
 
 if __name__ == '__main__':
