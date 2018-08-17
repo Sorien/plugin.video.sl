@@ -56,7 +56,7 @@ def create_epg(channels, epg, path, addon=None):
                         file.write(u'<desc>%s</desc>\n' % html_escape(p['description']))
                     if 'cover' in p:
                         file.write(u'<icon src="https://livetv.skylink.sk/%s" />\n' % html_escape(p['cover']))
-                    if (addon is not None) and ('genre' in p) and (10000 <= p['genre'][0] <= 11000):
+                    if (addon is not None) and ('genre' in p) and (len(p['genre']) != 0) and (10000 <= p['genre'][0] <= 11000):
                         file.write('<category>%s</category>\n' % addon.getLocalizedString(p['genre'][0] + 20900))
                     file.write(u'</programme>\n')
 
