@@ -1,0 +1,224 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: cz\n"
+
+msgctxt "#30100"
+msgid "Account"
+msgstr "Účet"
+
+msgctxt "#30101"
+msgid "Provider"
+msgstr "Poskytovatel"
+
+msgctxt "#30102"
+msgid "Email / Card number"
+msgstr "Číslo karty/Emailová adresa"
+
+msgctxt "#30103"
+msgid "Password"
+msgstr "Heslo"
+
+msgctxt "#30111"
+msgid "Skylink SK"
+msgstr "Skylink SK"
+
+msgctxt "#30112"
+msgid "Skylink CZ"
+msgstr "Skylink CZ"
+
+msgctxt "#30200"
+msgid "Playlist"
+msgstr "Playlist"
+
+msgctxt "#30201"
+msgid "M3U"
+msgstr "M3U"
+
+msgctxt "#30202"
+msgid "Directory of playlist"
+msgstr "Umístění playlistu"
+
+msgctxt "#30203"
+msgid "Filename"
+msgstr "Název souboru"
+
+msgctxt "#30300"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#30301"
+msgid "XMLTV"
+msgstr "XMLTV"
+
+msgctxt "#30302"
+msgid "Enabled"
+msgstr "EPG"
+
+msgctxt "#30303"
+msgid "Directory of EPG file"
+msgstr "Umístění EPG"
+
+msgctxt "#30304"
+msgid "Filename"
+msgstr "Název souboru"
+
+msgctxt "#30305"
+msgid "Preload Days"
+msgstr "Počet dní"
+
+msgctxt "#30401"
+msgid "Playlist generated"
+msgstr "Playlist byl vygenerován"
+
+msgctxt "#30402"
+msgid "Playlist and EPG generated"
+msgstr "Playlist a EPG bylo vygenerováno"
+
+msgctxt "#30501"
+msgid "User name or password is not defined"
+msgstr "Přístupové údaje nejsou nastaveny!"
+
+msgctxt "#30502"
+msgid "User name or password is not valid"
+msgstr "Přístupové údaje nejsou správné!"
+
+msgctxt "#30503"
+msgid "M3U playlist can't be created, check settings"
+msgstr "M3U playlist nemůže být vytvořen, zkontrolujte nastavení"
+
+msgctxt "#30504"
+msgid "EPG file can't be created, check settings"
+msgstr "EPG soubor nemůže být vytvořen, zkontrolujte nastavení"
+
+msgctxt "#30900"
+msgid "Music"
+msgstr "Hudba"
+
+msgctxt "#30901"
+msgid "Documentary"
+msgstr "Dokumenty"
+
+msgctxt "#30903"
+msgid "Children"
+msgstr "Děti"
+
+msgctxt "#30904"
+msgid "Series"
+msgstr "Seriál"
+
+msgctxt "#30905"
+msgid "Competition"
+msgstr "Soutěž"
+
+msgctxt "#30906"
+msgid "Erotic"
+msgstr "Erotika"
+
+msgctxt "#30907"
+msgid "Sport"
+msgstr "Sport"
+
+msgctxt "#30908"
+msgid "News"
+msgstr "Zpravodajství"
+
+msgctxt "#30909"
+msgid "Film"
+msgstr "Film"
+
+msgctxt "#30911"
+msgid "Fun"
+msgstr "Zábava"
+
+msgctxt "#30913"
+msgid "Journalism"
+msgstr "Publicistika"
+
+msgctxt "#30914"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#30915"
+msgid "Comedy"
+msgstr "Komedie"
+
+msgctxt "#30916"
+msgid "Concert"
+msgstr "Koncert"
+
+msgctxt "#30918"
+msgid ""
+msgstr "Magazín"
+
+msgctxt "#30919"
+msgid "Sci-fi"
+msgstr "Sci-fi"
+
+msgctxt "#30920"
+msgid "Soap opera"
+msgstr "Telenovela"
+
+msgctxt "#30921"
+msgid "Thriller"
+msgstr "Thriller"
+
+msgctxt "#30922"
+msgid "Western"
+msgstr "Western"
+
+msgctxt "#30925"
+msgid "Horror"
+msgstr "Horor"
+
+msgctxt "#30926"
+msgid "Adventure"
+msgstr "Dobrodružný"
+
+msgctxt "#30927"
+msgid "War"
+msgstr "Válečný"
+
+msgctxt "#30929"
+msgid "Sitcom"
+msgstr "Sitcom"
+
+msgctxt "#30932"
+msgid "Rock & Pop"
+msgstr "Rock a Pop"
+
+msgctxt "#30933"
+msgid "Religion"
+msgstr "Náboženství"
+
+msgctxt "#30934"
+msgid "Classical"
+msgstr "Klasika"
+
+msgctxt "#30936"
+msgid "Motorism"
+msgstr "Motorismus"
+
+msgctxt "#30937"
+msgid "Nature"
+msgstr "Příroda"
+
+msgctxt "#30939"
+msgid "Science"
+msgstr "Vzdělání a věda"
+
+msgctxt "#30940"
+msgid "Cooking"
+msgstr "Vaření"
+
+msgctxt "#30941"
+msgid "Children to 6"
+msgstr "Děti do 6"
+
+msgctxt "#30942"
+msgid "Children 6-14"
+msgstr "Děti 6-14"
+
+msgctxt "#30944"
+msgid "Martial arts"
+msgstr "Bojové sporty"
