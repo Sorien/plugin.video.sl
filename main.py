@@ -17,6 +17,7 @@ _profile = xbmc.translatePath(_addon.getAddonInfo('profile')).decode("utf-8")
 _user_name = xbmcplugin.getSetting(_id, 'username')
 _password = xbmcplugin.getSetting(_id, 'password')
 _provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
+_handle = int(sys.argv[1])
 
 
 def select_device(devices):
@@ -49,7 +50,7 @@ def play(channel_id):
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
-            xbmc.Player().play(item=info['path'], listitem=playitem)
+            xbmcplugin.setResolvedUrl(_handle, True, playitem)
 
 
 if __name__ == '__main__':
