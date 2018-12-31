@@ -1,7 +1,10 @@
-﻿[B]0.0.5:[/B]
-Interne upravy
+﻿[B]0.0.6:[/B]
+- Oprava zaseknuteho loadingu
+- Opravy chyb sposobenych vypadkom internetoveho pripojenia
+[B]0.0.5:[/B]
+- Interne upravy
 [B]0.0.4:[/B]
-Opravy EPG
+- Opravy EPG
 [B]0.0.3[/B]
 - úpravy v prekladoch, ďakujem @koperfieldcz
 - pridané žánre do EPG
@@ -13,4 +16,3 @@ Opravy EPG
 - plugin vytvara playlist iba pre dostupne programy
 - opravene defaultne nastavenia
 - opravene nefunkcne prihlasenie pre skylink.sk
-atd.
