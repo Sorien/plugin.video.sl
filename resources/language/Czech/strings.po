@@ -84,12 +84,20 @@ msgid "User name or password is not valid"
 msgstr "Přístupové údaje nejsou správné!"
 
 msgctxt "#30503"
-msgid "M3U playlist can't be created, check settings"
-msgstr "M3U playlist nemůže být vytvořen, zkontrolujte nastavení"
+msgid "M3U playlist can't be saved"
+msgstr "M3U playlist nemůže být vytvořen"
 
 msgctxt "#30504"
-msgid "EPG file can't be created, check settings"
-msgstr "EPG soubor nemůže být vytvořen, zkontrolujte nastavení"
+msgid "EPG file can't be saved"
+msgstr "EPG soubor nemůže být vytvořen"
+
+msgctxt "#30505"
+msgid "Too many Skylink LiveTV connections"
+msgstr "Přihlášených příliš mnoho zařízení"
+
+msgctxt "#30506"
+msgid "Internet connection error"
+msgstr "Internetové spojení není dostupné"
 
 msgctxt "#30900"
 msgid "Music"

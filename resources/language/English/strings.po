@@ -84,12 +84,20 @@ msgid "User name or password is not valid"
 msgstr "User name or password is not valid"
 
 msgctxt "#30503"
-msgid "M3U playlist can't be created, check settings"
-msgstr "M3U playlist can't be created, check settings"
+msgid "M3U playlist can't be saved"
+msgstr "M3U playlist can't be saved"
 
 msgctxt "#30504"
-msgid "EPG file can't be created, check settings"
-msgstr "EPG file can't be created, check settings"
+msgid "EPG file can't be saved"
+msgstr "EPG file can't be saved"
+
+msgctxt "#30505"
+msgid "Too many Skylink LiveTV connections"
+msgstr "Too many active devices"
+
+msgctxt "#30506"
+msgid "Internet connection error"
+msgstr "Internet connection error"
 
 msgctxt "#30900"
 msgid "Music"

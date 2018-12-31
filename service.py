@@ -1,7 +1,7 @@
 import datetime
 import os
 import time
-
+import requests
 import exports
 import logger
 import skylink
@@ -38,27 +38,25 @@ class SkylinkMonitor(xbmc.Monitor):
             except skylink.SkylinkException as e:
                 self.notify(self._addon.getLocalizedString(e.id), True)
 
-    def shedule_next(self):
-        dt = datetime.datetime.now() + datetime.timedelta(hours=12)
+    def shedule_next(self, seconds):
+        dt = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
         logger.log.info('Next update %s' % dt)
         self._next_update = dt
 
     def update(self, try_reconnect=False):
-        self.shedule_next()
-
-        s = skylink.Skylink(self._addon.getSetting('username'), self._addon.getSetting('password'),
+        sl = skylink.Skylink(self._addon.getSetting('username'), self._addon.getSetting('password'),
                             xbmc.translatePath(self._addon.getAddonInfo('profile')).decode("utf-8"),
                             'skylink.sk' if int(self._addon.getSetting('provider')) == 0 else 'skylink.cz')
 
         try:
-            channels = s.channels()
+            channels = sl.channels()
         except skylink.TooManyDevicesException as e:
             if try_reconnect:
                 d = self.select_device(e.devices)
                 if d > -1:
                     logger.log.info('reconnecting as: ' + e.devices[d]['id'])
-                    s.reconnect(e.devices[d]['id'])
-                    channels = s.channels()
+                    sl.reconnect(e.devices[d]['id'])
+                    channels = sl.channels()
                 else:
                     raise
             else:
@@ -78,7 +76,7 @@ class SkylinkMonitor(xbmc.Monitor):
             logger.log.info('Updating EPG [%d days from %s]' % (days, datetime.datetime.now()))
             path = os.path.join(self._addon.getSetting('epp_folder'), self._addon.getSetting('epg_file'))
             try:
-                exports.create_epg(channels, s.epg(channels, datetime.datetime.now(), days), path, self._addon)
+                exports.create_epg(channels, sl.epg(channels, datetime.datetime.now(), days), path, self._addon)
                 result = 2
             except IOError as e:
                 logger.log.error(str(e))
@@ -89,8 +87,13 @@ class SkylinkMonitor(xbmc.Monitor):
     def tick(self):
         if datetime.datetime.now() > self._next_update:
             try:
+                self.shedule_next(12 * 60 * 60)
                 self.update()
             except skylink.UserNotDefinedException:
+                pass
+            except requests.exceptions.ConnectionError:
+                self.shedule_next(60)
+                logger.log.info('Can''t update, no internet connection')
                 pass
             except skylink.SkylinkException as e:
                 self.notify(self._addon.getLocalizedString(e.id), True)
@@ -102,7 +105,6 @@ class SkylinkMonitor(xbmc.Monitor):
 
 if __name__ == '__main__':
     monitor = SkylinkMonitor()
-
     while not monitor.abortRequested():
         if monitor.waitForAbort(10):
             monitor.save()

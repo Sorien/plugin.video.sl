@@ -1,14 +1,12 @@
 import sys
-
 import inputstreamhelper
-
 import logger
+import requests
 import skylink
 import xbmc
 import xbmcaddon
 import xbmcgui
 import urlparse
-
 import xbmcplugin
 
 _id = int(sys.argv[1])
@@ -30,17 +28,20 @@ def select_device(devices):
 
 def play(channel_id):
     logger.log.info('play: ' + channel_id)
-    s = skylink.Skylink(_user_name, _password, _profile, _provider)
+    sl = skylink.Skylink(_user_name, _password, _profile, _provider)
 
     info = {}
     try:
-        info = s.channel_info(channel_id)
+        info = sl.channel_info(channel_id)
     except skylink.TooManyDevicesException as e:
         d = select_device(e.devices)
         if d > -1:
             logger.log.info('reconnecting as: ' + e.devices[d]['id'])
-            s.reconnect(e.devices[d]['id'])
-            info = s.channel_info(channel_id)
+            sl.reconnect(e.devices[d]['id'])
+            info = sl.channel_info(channel_id)
+    except requests.exceptions.ConnectionError:
+        dialog = xbmcgui.Dialog()
+        dialog.ok('Skylink', _addon.getLocalizedString(30506))
 
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
