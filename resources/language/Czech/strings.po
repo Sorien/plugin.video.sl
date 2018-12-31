@@ -68,12 +68,12 @@ msgid "Preload Days"
 msgstr "Počet dní"
 
 msgctxt "#30401"
-msgid "Playlist generated"
-msgstr "Playlist byl vygenerován"
+msgid "Playlist created"
+msgstr "Playlist byl vytvořen"
 
 msgctxt "#30402"
-msgid "Playlist and EPG generated"
-msgstr "Playlist a EPG bylo vygenerováno"
+msgid "Playlist and EPG created"
+msgstr "Playlist a EPG bylo vytvořeno"
 
 msgctxt "#30501"
 msgid "User name or password is not defined"
@@ -84,11 +84,11 @@ msgid "User name or password is not valid"
 msgstr "Přístupové údaje nejsou správné!"
 
 msgctxt "#30503"
-msgid "M3U playlist can't be saved"
+msgid "M3U playlist can't be created"
 msgstr "M3U playlist nemůže být vytvořen"
 
 msgctxt "#30504"
-msgid "EPG file can't be saved"
+msgid "EPG file can't be created"
 msgstr "EPG soubor nemůže být vytvořen"
 
 msgctxt "#30505"

@@ -68,12 +68,12 @@ msgid "Preload Days"
 msgstr "Počet dni"
 
 msgctxt "#30401"
-msgid "Playlist generated"
-msgstr "Playlist bol vygenerovaný"
+msgid "M3U Playlist created"
+msgstr "M3U Playlist bol vytvorený"
 
 msgctxt "#30402"
-msgid "Playlist and EPG generated"
-msgstr "Playlist a EPG boli vygenerované"
+msgid "M3U Playlist and EPG created"
+msgstr "M3U Playlist a EPG boli vytvorený"
 
 msgctxt "#30501"
 msgid "User name or password is not defined"
@@ -84,12 +84,12 @@ msgid "User name or password is not valid"
 msgstr "Email alebo heslo nie je platné"
 
 msgctxt "#30503"
-msgid "M3U playlist can't be saved"
-msgstr "M3U playlist sa nepodarilo uložiť"
+msgid "M3U playlist can't be created"
+msgstr "M3U playlist sa nepodarilo vytvoriť"
 
 msgctxt "#30504"
-msgid "EPG file can't be saved"
-msgstr "EPG súbor sa nepodarilo uložiť"
+msgid "EPG file can't be created"
+msgstr "EPG súbor sa nepodarilo vytvoriť"
 
 msgctxt "#30505"
 msgid "Too many Skylink LiveTV connections"

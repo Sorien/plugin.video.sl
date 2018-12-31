@@ -41,7 +41,7 @@ def play(channel_id):
             info = sl.channel_info(channel_id)
     except requests.exceptions.ConnectionError:
         dialog = xbmcgui.Dialog()
-        dialog.ok('Skylink', _addon.getLocalizedString(30506))
+        dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
 
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
