@@ -10,7 +10,7 @@ try:
 except ImportError:
     from urllib.parse import urlparse, unquote, parse_qs  # 2.7
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.79 Safari/537.36'
+UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
 
 
 class SkylinkException(Exception):
