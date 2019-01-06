@@ -45,8 +45,8 @@ class SkylinkMonitor(xbmc.Monitor):
 
     def update(self, try_reconnect=False):
         sl = skylink.Skylink(self._addon.getSetting('username'), self._addon.getSetting('password'),
-                            xbmc.translatePath(self._addon.getAddonInfo('profile')).decode("utf-8"),
-                            'skylink.sk' if int(self._addon.getSetting('provider')) == 0 else 'skylink.cz')
+                             xbmc.translatePath(self._addon.getAddonInfo('profile')),
+                             'skylink.sk' if int(self._addon.getSetting('provider')) == 0 else 'skylink.cz')
 
         try:
             channels = sl.channels()
