@@ -20,8 +20,8 @@ class SkylinkMonitor(xbmc.Monitor):
         self._next_update = datetime.datetime.now() if ts == '' else datetime.datetime.fromtimestamp(float(ts))
 
     def notify(self, text, error=False):
-        icon = 'DefaultIconError.png' if error else ''
-        xbmc.executebuiltin('Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name'), text, icon))
+        icon = u'DefaultIconError.png' if error else ''
+        xbmc.executebuiltin(u'Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name'), text, icon))
 
     def select_device(self, d):
         dialog = xbmcgui.Dialog()
