@@ -5,19 +5,46 @@ import requests
 import exports
 import logger
 import skylink
+import account
 import xbmc
 import xbmcaddon
 import xbmcgui
+import sys
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class SkylinkMonitor(xbmc.Monitor):
     _addon = xbmcaddon.Addon()
     _next_update = 0
+    _accounts = []
 
     def __init__(self):
         xbmc.Monitor.__init__(self)
         ts = self._addon.getSetting('next_update')
         self._next_update = datetime.datetime.now() if ts == '' else datetime.datetime.fromtimestamp(float(ts))
+        self.update_accounts()
+
+    def update_accounts(self):
+        logger.log.info('Updating accounts...')
+
+        account_sk = account.Account('sk', self._addon.getSetting('username_sk'), self._addon.getSetting('password_sk'), 'skylink.sk')
+        account_cz = account.Account('cz', self._addon.getSetting('username_cz'), self._addon.getSetting('password_cz'), 'skylink.cz')
+
+        self._accounts.append(account_sk)
+        self._accounts.append(account_cz)
+
+    def make_unique_list(self, channels):
+        logger.log.info('Filtering channels to create unique list...')
+
+        names_list = []
+        channels_list = []
+        for channel in channels:
+            if not channel['stationid'] in names_list:
+                names_list.append(channel['stationid'])
+                channels_list.append(channel)
+
+        return channels_list
 
     def notify(self, text, error=False):
         icon = u'DefaultIconError.png' if error else ''
@@ -31,6 +58,8 @@ class SkylinkMonitor(xbmc.Monitor):
         return dialog.select(self._addon.getLocalizedString(30403), items)
 
     def onSettingsChanged(self):
+        self.update_accounts()
+
         if not self.abortRequested():
             try:
                 res = self.update(True)
@@ -44,23 +73,32 @@ class SkylinkMonitor(xbmc.Monitor):
         self._next_update = dt
 
     def update(self, try_reconnect=False):
-        sl = skylink.Skylink(self._addon.getSetting('username'), self._addon.getSetting('password'),
-                             xbmc.translatePath(self._addon.getAddonInfo('profile')),
-                             'skylink.sk' if int(self._addon.getSetting('provider')) == 0 else 'skylink.cz')
+        channels = []
 
-        try:
-            channels = sl.channels()
-        except skylink.TooManyDevicesException as e:
-            if try_reconnect:
-                d = self.select_device(e.devices)
-                if d > -1:
-                    logger.log.info('reconnecting as: ' + e.devices[d]['id'])
-                    sl.reconnect(e.devices[d]['id'])
-                    channels = sl.channels()
+        for account in self._accounts:
+            if not account.is_valid():
+                continue
+
+            sl = skylink.Skylink(account, xbmc.translatePath(self._addon.getAddonInfo('profile')).decode("utf-8"))
+
+            logger.log.info('Getting channels for account: %s' % (account.username))
+
+            try:
+                channels = channels + sl.channels()
+            except skylink.TooManyDevicesException as e:
+                if try_reconnect:
+                    d = self.select_device(e.devices)
+                    if d > -1:
+                        logger.log.info('reconnecting as: ' + e.devices[d]['id'])
+                        sl.reconnect(e.devices[d]['id'])
+                        channels = channels + sl.channels()
+                    else:
+                        raise
                 else:
                     raise
-            else:
-                raise
+
+        if bool(self._addon.getSetting('playlist_unique')):
+            channels = self.make_unique_list(channels)
 
         logger.log.info('Updating playlist [%d channels]' % len(channels))
         try:

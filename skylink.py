@@ -35,6 +35,7 @@ class TooManyDevicesException(SkylinkException):
 
 
 class Skylink:
+    _id = ''
     _username = ''
     _password = ''
     _data_root = ''
@@ -45,13 +46,14 @@ class Skylink:
     _url = ''
     _login_url = ''
 
-    def __init__(self, username, password, data_root, provider='skylink.sk'):
-        self._usermane = username
-        self._password = password
+    def __init__(self, account, data_root):
+        self._id = account.id
+        self._username = account.username
+        self._password = account.password
         self._data_root = data_root
-        self._cookies_path = os.path.join(self._data_root, '%s.cookie' % username.lower())
-        self._url = 'https://livetv.' + provider
-        self._login_url = 'https://login.' + provider
+        self._cookies_path = os.path.join(self._data_root, '%s@%s.cookie' % (self._username.lower(), account.provider))
+        self._url = 'https://livetv.' + account.provider
+        self._login_url = 'https://login.' + account.provider
 
     def _store_cookies(self):
         if not os.path.exists(self._data_root):
@@ -75,13 +77,13 @@ class Skylink:
 
     def _auth(self, ubp=''):
 
-        if (self._usermane == '') or (self._password == ''):
+        if (self._username == '') or (self._password == ''):
             raise UserNotDefinedException
 
         self._session.cookies.clear()
         self._session.get(self._url + '/sso.aspx', headers={'User-Agent': UA})
 
-        resp = self._session.post(self._login_url, data={'Username': self._usermane, 'Password': self._password},
+        resp = self._session.post(self._login_url, data={'Username': self._username, 'Password': self._password},
                                   headers={'User-Agent': UA, 'Referer': self._url})
 
         r, self._u, self._q, error = self._parse_cookies()
@@ -168,6 +170,7 @@ class Skylink:
             is_live = (len(data[3][0]) > (idx >> 5)) and (data[3][0][idx >> 5] & (1 << (idx & 31)) > 0)
 
             if is_stream and is_live:
+                c['account'] = self._id
                 result.append(c)
 
             idx += 1

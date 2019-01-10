@@ -8,8 +8,8 @@ msgid "Account"
 msgstr "Account"
 
 msgctxt "#30101"
-msgid "Provider"
-msgstr "Provider"
+msgid "Skylink SK"
+msgstr "Skylink SK"
 
 msgctxt "#30102"
 msgid "Email / Card number"
@@ -19,13 +19,17 @@ msgctxt "#30103"
 msgid "Password"
 msgstr "Password"
 
-msgctxt "#30111"
-msgid "Skylink SK"
-msgstr "Skylink SK"
-
-msgctxt "#30112"
+msgctxt "#30104"
 msgid "Skylink CZ"
 msgstr "Skylink CZ"
+
+msgctxt "#30105"
+msgid "Email / Card number"
+msgstr "Email / Card number"
+
+msgctxt "#30106"
+msgid "Password"
+msgstr "Password"
 
 msgctxt "#30200"
 msgid "Playlist"
@@ -42,6 +46,10 @@ msgstr "Directory of playlist"
 msgctxt "#30203"
 msgid "Filename"
 msgstr "Filename"
+
+msgctxt "#30204"
+msgid "Eliminate duplicate channels"
+msgstr "Eliminate duplicate channels"
 
 msgctxt "#30300"
 msgid "EPG"
@@ -90,14 +98,6 @@ msgstr "M3U playlist can't be created"
 msgctxt "#30504"
 msgid "EPG file can't be created"
 msgstr "EPG file can't be created"
-
-msgctxt "#30505"
-msgid "Too many Skylink LiveTV connections"
-msgstr "Too many active devices"
-
-msgctxt "#30506"
-msgid "Internet connection error"
-msgstr "Internet connection error"
 
 msgctxt "#30900"
 msgid "Music"

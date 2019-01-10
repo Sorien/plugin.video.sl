@@ -27,7 +27,7 @@ def create_m3u(channels, path):
         for c in channels:
             file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s.png",%s\n' % (
                 c['stationid'], logo_id(c['title']), c['title']))
-            file.write(u'plugin://plugin.video.sl/?action=play&id=%s\n' % c['id'])
+            file.write(u'plugin://plugin.video.sl/?action=play&account=%s&channel=%s\n' % (c['account'], c['id']))
 
 
 def create_epg(channels, epg, path, addon=None):

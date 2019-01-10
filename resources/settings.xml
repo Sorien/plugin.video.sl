@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <category label="30100">
-        <setting label="30101" type="select" id="provider" lvalues="30111|30112" />
-        <setting label="30102" type="text" id="username" default=""/>
-        <setting label="30103" type="text" id="password" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30101" type="lsep"/>
+        <setting label="30102" type="text" id="username_sk" default=""/>
+        <setting label="30103" type="text" id="password_sk" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30104" type="lsep"/>
+        <setting label="30105" type="text" id="username_cz" default=""/>
+        <setting label="30106" type="text" id="password_cz" option="hidden" enable="!eq(-1,)" default=""/>
     </category>
     <category label="30200">
         <setting label="30201" type="lsep"/>
         <setting label="30202" type="folder" id="playlist_folder" default=""/>
         <setting label="30203" type="text" id="playlist_file" default="playlist.m3u"/>
+        <setting label="30204" type="bool" id="playlist_unique" default="true" />
     </category>
     <category label="30300">
         <setting label="30301" type="lsep"/>

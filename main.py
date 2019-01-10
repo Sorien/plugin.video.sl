@@ -3,6 +3,7 @@ import inputstreamhelper
 import logger
 import requests
 import skylink
+import account
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -12,9 +13,6 @@ import xbmcplugin
 _id = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
 _profile = xbmc.translatePath(_addon.getAddonInfo('profile')).decode("utf-8")
-_user_name = xbmcplugin.getSetting(_id, 'username')
-_password = xbmcplugin.getSetting(_id, 'password')
-_provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
 _handle = int(sys.argv[1])
 
 
@@ -25,10 +23,23 @@ def select_device(devices):
         items.append(device['name'].replace("+", " "))
     return dialog.select(_addon.getLocalizedString(30403), items)
 
+def get_account(id):
+    if id == 'sk':
+        return account.Account('sk', xbmcplugin.getSetting(_id, 'username_sk'), xbmcplugin.getSetting(_id, 'password_sk'), 'skylink.sk')
 
-def play(channel_id):
-    logger.log.info('play: ' + channel_id)
-    sl = skylink.Skylink(_user_name, _password, _profile, _provider)
+    if id == 'cz':
+        return account.Account('cz', xbmcplugin.getSetting(_id, 'username_cz'), xbmcplugin.getSetting(_id, 'password_cz'), 'skylink.cz')
+
+    return account.Account('unknown', '', '', '')
+
+def play(account_id, channel_id):
+    account = get_account(account_id)
+
+    if not account.is_valid():
+        exit(1)
+
+    logger.log.info('Play channel %s from %s' % (channel_id, account.provider))
+    sl = skylink.Skylink(account, _profile)
 
     info = {}
     try:
@@ -53,8 +64,7 @@ def play(channel_id):
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
             xbmcplugin.setResolvedUrl(_handle, True, playitem)
 
-
 if __name__ == '__main__':
     args = urlparse.parse_qs(sys.argv[2][1:])
-    if 'id' in args:
-        play(str(args['id'][0]))
+    if 'account' in args and 'channel' in args:
+        play(str(args['account'][0]), str(args['channel'][0]))
