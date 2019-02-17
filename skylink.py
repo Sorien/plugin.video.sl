@@ -40,6 +40,9 @@ class SkylinkSessionData:
     app = ''
     type = ''
 
+    def is_valid(self):
+        return (self.device != '') and (self.type == 'user')
+
 
 class Skylink:
     _username = ''
@@ -73,8 +76,8 @@ class Skylink:
         else:
             self._session.cookies = requests.cookies.RequestsCookieJar()
 
-        ret, self._data, _ = self._parse_cookies()
-        return ret
+        self._data, _ = self._parse_cookies()
+        return self._data.is_valid()
 
     def _clear_cookies(self):
         self._session.cookies.clear()
@@ -91,18 +94,16 @@ class Skylink:
         resp = self._session.post(self._login_url, data={'Username': self._usermane, 'Password': self._password},
                                   headers={'User-Agent': UA, 'Referer': self._url})
 
-        r, self._data, error = self._parse_cookies()
+        self._data, error = self._parse_cookies()
         if ('error' in error) and (error['error'] == 'toomany'):
             if device != '':
                 self._session.get(resp.url + '&ubp=' + device, headers={'User-Agent': UA, 'Referer': resp.url})
-                _, self._data, _ = self._parse_cookies()
+                self._data, _ = self._parse_cookies()
             else:
                 raise TooManyDevicesException(error)
 
-        if self._data.device == '':
+        if not self._data.is_valid:
             raise UserInvalidException
-
-        return r
 
     def _parse_cookies(self):
         data, e = SkylinkSessionData(), {}
@@ -116,10 +117,10 @@ class Skylink:
                 data.device = cookie.value
             if cookie.name == 'err':
                 e = json.loads(unquote(str(cookie.value)))
-        if (data.device != '') and (data.type == 'user'):
-            return True, data, e
+        if data.is_valid():
+            return data, {}
         else:
-            return False, SkylinkSessionData(), e
+            return SkylinkSessionData(), e
 
     def reconnect(self, device=''):
         try:
@@ -142,8 +143,8 @@ class Skylink:
             return self._session.request(method, url, **kwargs)
         except requests.TooManyRedirects:
             # no error but user is not valid
-            r, _, _ = self._parse_cookies()
-            if not r:
+            data, _ = self._parse_cookies()
+            if not data.is_valid():
                 try:
                     self._auth()
                     self._store_cookies()
