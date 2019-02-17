@@ -23,12 +23,22 @@ class SkylinkMonitor(xbmc.Monitor):
         icon = u'DefaultIconError.png' if error else ''
         xbmc.executebuiltin(u'Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name'), text, icon))
 
-    def select_device(self, d):
+    def get_last_used_device(self, devices):
+        la = 9999999999999
+        device = ''
+        for d in devices:
+            if d['lastactivity'] < la:
+                device = d['id']
+                la = d['lastactivity']
+        return device
+
+    def select_device(self, devices):
         dialog = xbmcgui.Dialog()
         items = []
-        for device in d:
+        for device in devices:
             items.append(device['name'].replace("+", " "))
-        return dialog.select(self._addon.getLocalizedString(30403), items)
+        d = dialog.select(self._addon.getLocalizedString(30403), items)
+        return devices[d]['id'] if d > -1 else ''
 
     def onSettingsChanged(self):
         if not self.abortRequested():
@@ -51,14 +61,15 @@ class SkylinkMonitor(xbmc.Monitor):
         try:
             channels = sl.channels()
         except skylink.TooManyDevicesException as e:
-            if try_reconnect:
-                d = self.select_device(e.devices)
-                if d > -1:
-                    logger.log.info('reconnecting as: ' + e.devices[d]['id'])
-                    sl.reconnect(e.devices[d]['id'])
-                    channels = sl.channels()
-                else:
-                    raise
+            if self._addon.getSetting('reuse_last_device') == 'true':
+                device = self.get_last_used_device(e.devices)
+            else:
+                device = self.select_device(e.devices) if try_reconnect else ''
+
+            if device != '':
+                logger.log.info('reconnecting as: ' + device)
+                sl.reconnect(device)
+                channels = sl.channels()
             else:
                 raise
 

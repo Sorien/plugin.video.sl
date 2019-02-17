@@ -41,7 +41,7 @@ class Skylink:
     _cookies_path = ''
     _session = requests.Session()
     _session.max_redirects = 3
-    _u, _q = '', {}
+    _device, _q = '', {}
     _url = ''
     _login_url = ''
 
@@ -66,14 +66,14 @@ class Skylink:
         else:
             self._session.cookies = requests.cookies.RequestsCookieJar()
 
-        ret, self._u, self._q, _ = self._parse_cookies()
+        ret, self._device, self._q, _ = self._parse_cookies()
         return ret
 
     def _clear_cookies(self):
         self._session.cookies.clear()
         self._store_cookies()
 
-    def _auth(self, ubp=''):
+    def _auth(self, device=''):
 
         if (self._usermane == '') or (self._password == ''):
             raise UserNotDefinedException
@@ -84,15 +84,15 @@ class Skylink:
         resp = self._session.post(self._login_url, data={'Username': self._usermane, 'Password': self._password},
                                   headers={'User-Agent': UA, 'Referer': self._url})
 
-        r, self._u, self._q, error = self._parse_cookies()
+        r, self._device, self._q, error = self._parse_cookies()
         if ('error' in error) and (error['error'] == 'toomany'):
-            if ubp != '':
-                self._session.get(resp.url + '&ubp=' + ubp, headers={'User-Agent': UA, 'Referer': resp.url})
-                _, self._u, self._q, error = self._parse_cookies()
+            if device != '':
+                self._session.get(resp.url + '&ubp=' + device, headers={'User-Agent': UA, 'Referer': resp.url})
+                _, self._device, self._q, error = self._parse_cookies()
             else:
                 raise TooManyDevicesException(error)
 
-        if self._u == '':
+        if self._device == '':
             raise UserInvalidException
 
         return r
@@ -111,9 +111,9 @@ class Skylink:
         else:
             return False, '', {}, e
 
-    def reconnect(self, ubp=''):
+    def reconnect(self, device=''):
         try:
-            self._auth(ubp)
+            self._auth(device)
             self._store_cookies()
         except:
             self._clear_cookies()
@@ -155,7 +155,7 @@ class Skylink:
 
         self._login()
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
-        res = self._get({'z': 'epg', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
+        res = self._get({'z': 'epg', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._device,
                          'a': self._q['app'][0], 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7,
                          'd': 3})
 
@@ -184,7 +184,7 @@ class Skylink:
         self._login()
 
         # https://livetv.skylink.sk/api.aspx?z=stream&lng=cs&_=1528789722179&u=w94e14412-8cef-b880-80ea-60a78b79490a&v=1&id=rzxqQ-kzUkG3x2PGEaxnFAAAAAE&d=3'
-        res = self._post({'z': 'stream', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
+        res = self._post({'z': 'stream', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._device,
                           'v': 1, 'id': channel_id, 'd': 3},
                          json.dumps({'type': 'dash', 'flags': '4096'}).encode())
 
@@ -244,7 +244,7 @@ class Skylink:
             i += 1
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
-                res = self._get({'z': 'epg', 'lng': 'sk', self._q['lang'][0]: self._time(), 'u': self._u,
+                res = self._get({'z': 'epg', 'lng': 'sk', self._q['lang'][0]: self._time(), 'u': self._device,
                                  'a': self._q['app'][0], 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
                                  'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024, 's': channels_str[1:]})  # 212763
                 res = res.json()[1]

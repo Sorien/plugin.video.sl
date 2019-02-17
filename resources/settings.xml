@@ -4,6 +4,7 @@
         <setting label="30101" type="select" id="provider" lvalues="30111|30112" />
         <setting label="30102" type="text" id="username" default=""/>
         <setting label="30103" type="text" id="password" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30104" type="bool" id="reuse_last_device" default="true"/>
     </category>
     <category label="30200">
         <setting label="30201" type="lsep"/>
