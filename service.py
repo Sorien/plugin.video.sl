@@ -21,7 +21,10 @@ class SkylinkMonitor(xbmc.Monitor):
 
     def notify(self, text, error=False):
         icon = u'DefaultIconError.png' if error else ''
-        xbmc.executebuiltin(u'Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name'), text, icon))
+        logger.log.info(str(type(icon)) + ' - ' + icon)
+        logger.log.info(str(type(self._addon.getAddonInfo('name').encode("utf-8"))) + ' - ' + self._addon.getAddonInfo('name').encode("utf-8"))
+        logger.log.info(str(type(text)) + ' - ' + text)
+        xbmc.executebuiltin(u'Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name').encode("utf-8"), text, icon))
 
     def get_last_used_device(self, devices):
         la = 9999999999999
