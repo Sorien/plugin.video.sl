@@ -28,8 +28,8 @@ msgid "Skylink CZ"
 msgstr "Skylink CZ"
 
 msgctxt "#30104"
-msgid "When no device is available use last one"
-msgstr "When no device is available use last one"
+msgid "When no device is available use oldest"
+msgstr "When no device is available use oldest"
 
 msgctxt "#30200"
 msgid "Playlist"
