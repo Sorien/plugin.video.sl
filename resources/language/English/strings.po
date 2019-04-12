@@ -103,6 +103,26 @@ msgctxt "#30506"
 msgid "Internet connection error"
 msgstr "Internet connection error"
 
+msgctxt "#30600"
+msgid "Archive"
+msgstr "Archive"
+
+msgctxt "#30601"
+msgid "today"
+msgstr "today"
+
+msgctxt "#30602"
+msgid "yesterday"
+msgstr "yesterday"
+
+msgctxt "#30603"
+msgid "the day after"
+msgstr "the day after"
+
+msgctxt "#30604"
+msgid "the day before"
+msgstr "the day before"
+
 msgctxt "#30900"
 msgid "Music"
 msgstr "Music"

@@ -91,7 +91,7 @@ class SkylinkMonitor(xbmc.Monitor):
             logger.log.info('Updating EPG [%d days from %s]' % (days, datetime.datetime.now()))
             path = os.path.join(_addon.getSetting('epp_folder'), _addon.getSetting('epg_file'))
             try:
-                exports.create_epg(channels, sl.epg(channels, datetime.datetime.now(), days), path, _addon)
+                exports.create_epg(channels, sl.epg(channels, datetime.datetime.now(), days), path, _addon, sl.getUrl() + '/')
                 result = 2
             except IOError as e:
                 logger.log.error(str(e))

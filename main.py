@@ -75,5 +75,11 @@ if __name__ == '__main__':
     args = urlparse.parse_qs(sys.argv[2][1:])
     if 'id' in args:
         play(str(args['id'][0]))
-    if not args or 'replay' in args:
+    elif 'replay' in args:
         replay.router(args, skylink.Skylink(_user_name, _password, _profile, _provider))
+    else:
+        xbmcplugin.setPluginCategory(_handle, '')
+        xbmcplugin.setContent(_handle, 'videos')
+        xbmcplugin.addDirectoryItem(_handle, replay.get_url(replay='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30600)), True)
+        xbmcplugin.endOfDirectory(_handle)
+

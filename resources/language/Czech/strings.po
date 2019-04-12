@@ -103,6 +103,26 @@ msgctxt "#30506"
 msgid "Internet connection error"
 msgstr "Internetové spojení není dostupné"
 
+msgctxt "#30600"
+msgid "Archive"
+msgstr "Archiv"
+
+msgctxt "#30601"
+msgid "today"
+msgstr "dnes"
+
+msgctxt "#30602"
+msgid "yesterday"
+msgstr "včera"
+
+msgctxt "#30603"
+msgid "the day after"
+msgstr "následující den"
+
+msgctxt "#30604"
+msgid "the day before"
+msgstr "předešlý den"
+
 msgctxt "#30900"
 msgid "Music"
 msgstr "Hudba"
