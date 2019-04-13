@@ -123,6 +123,34 @@ msgctxt "#30604"
 msgid "the day before"
 msgstr "predošlý deň"
 
+msgctxt "#30610"
+msgid "monday"
+msgstr "pondelok"
+
+msgctxt "#30611"
+msgid "tuesday"
+msgstr "utorok"
+
+msgctxt "#30612"
+msgid "wednesday"
+msgstr "streda"
+
+msgctxt "#30613"
+msgid "thursday"
+msgstr "štvrtok"
+
+msgctxt "#30614"
+msgid "friday"
+msgstr "piatok"
+
+msgctxt "#30615"
+msgid "saturday"
+msgstr "sobota"
+
+msgctxt "#30616"
+msgid "sunday"
+msgstr "nedeľa"
+
 msgctxt "#30900"
 msgid "Music"
 msgstr "Hudba"

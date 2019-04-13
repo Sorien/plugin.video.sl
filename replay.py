@@ -14,8 +14,6 @@ import urlparse
 import urllib
 import xbmcplugin
 import datetime
-import locale
-
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -60,15 +58,12 @@ def channels(sl):
 
 def days(sl, stationid, channel):
     now = datetime.datetime.now()
-    language = xbmc.getLanguage(xbmc.ISO_639_1)
-    locale.setlocale(locale.LC_ALL, language+".UTF-8")
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
     xbmcplugin.setContent(_handle, 'videos')
     for day in range (0,7):
         d = now - datetime.timedelta(days=day) if day > 0 else now
-        title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %B').decode('UTF-8')
-        title = title[1:] if title.startswith('0') else title
-        title = d.strftime('%A').decode('UTF-8') + ', ' + title
+        title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
+        title = _addon.getLocalizedString(int('3061' + str(d.weekday()))) + ', ' + title
         list_item = xbmcgui.ListItem(label=title)
         link = get_url(replay='programs', stationid=stationid, channel=channel, day=day, first=True)
         is_folder = True
