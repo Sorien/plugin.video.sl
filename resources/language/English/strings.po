@@ -103,6 +103,54 @@ msgctxt "#30506"
 msgid "Internet connection error"
 msgstr "Internet connection error"
 
+msgctxt "#30600"
+msgid "Archive"
+msgstr "Archive"
+
+msgctxt "#30601"
+msgid "today"
+msgstr "today"
+
+msgctxt "#30602"
+msgid "yesterday"
+msgstr "yesterday"
+
+msgctxt "#30603"
+msgid "the day after"
+msgstr "the day after"
+
+msgctxt "#30604"
+msgid "the day before"
+msgstr "the day before"
+
+msgctxt "#30610"
+msgid "monday"
+msgstr "monday"
+
+msgctxt "#30611"
+msgid "tuesday"
+msgstr "tuesday"
+
+msgctxt "#30612"
+msgid "wednesday"
+msgstr "wednesday"
+
+msgctxt "#30613"
+msgid "thursday"
+msgstr "thursday"
+
+msgctxt "#30614"
+msgid "friday"
+msgstr "friday"
+
+msgctxt "#30615"
+msgid "saturday"
+msgstr "saturday"
+
+msgctxt "#30616"
+msgid "sunday"
+msgstr "sunday"
+
 msgctxt "#30900"
 msgid "Music"
 msgstr "Music"

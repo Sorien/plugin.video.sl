@@ -103,6 +103,54 @@ msgctxt "#30506"
 msgid "Internet connection error"
 msgstr "Internetové spojení není dostupné"
 
+msgctxt "#30600"
+msgid "Archive"
+msgstr "Archiv"
+
+msgctxt "#30601"
+msgid "today"
+msgstr "dnes"
+
+msgctxt "#30602"
+msgid "yesterday"
+msgstr "včera"
+
+msgctxt "#30603"
+msgid "the day after"
+msgstr "následující den"
+
+msgctxt "#30604"
+msgid "the day before"
+msgstr "předešlý den"
+
+msgctxt "#30610"
+msgid "monday"
+msgstr "pondělí"
+
+msgctxt "#30611"
+msgid "tuesday"
+msgstr "úterý"
+
+msgctxt "#30612"
+msgid "wednesday"
+msgstr "středa"
+
+msgctxt "#30613"
+msgid "thursday"
+msgstr "čtvrtek"
+
+msgctxt "#30614"
+msgid "friday"
+msgstr "pátek"
+
+msgctxt "#30615"
+msgid "saturday"
+msgstr "sobota"
+
+msgctxt "#30616"
+msgid "sunday"
+msgstr "neděle"
+
 msgctxt "#30900"
 msgid "Music"
 msgstr "Hudba"

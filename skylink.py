@@ -122,6 +122,9 @@ class Skylink:
         else:
             return SkylinkSessionData(), e
 
+    def getUrl(self):
+        return self._url
+
     def reconnect(self, device=''):
         try:
             self._auth(device)
@@ -163,7 +166,7 @@ class Skylink:
                                       'Accept': 'application/json, text/javascript, */*; q=0.01',
                                       'X-Requested-With': 'XMLHttpRequest'})
 
-    def channels(self):
+    def channels(self, replay = False):
 
         self._login()
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
@@ -177,8 +180,9 @@ class Skylink:
         for c in data[0][1]:
             is_stream = (len(data[1]) > (idx >> 5)) and (data[1][idx >> 5] & (1 << (idx & 31)) > 0)
             is_live = (len(data[3][0]) > (idx >> 5)) and (data[3][0][idx >> 5] & (1 << (idx & 31)) > 0)
+            is_replayable = (c['flags'] & 2048) > 0
 
-            if is_stream and is_live:
+            if is_stream and is_live and (not replay or is_replayable):
                 result.append(c)
 
             idx += 1
@@ -239,14 +243,23 @@ class Skylink:
     # MASK_SERIES_ID = 8192;
     # MASK_START = 64;
     # MASK_TITLE = 2;
-    def epg(self, channels, start_date=datetime.datetime.now(), days=1):
+    def epg(self, channels, start_date=datetime.datetime.now(), days=1, replay = False):
 
         self._login()
 
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528956297441&a=slsk&v=3&f=1528927200000&t=1529013600000&f_format=pg&cs=9491&s=2458762496!344807296!344809728!592296192
 
-        from_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        to_date = from_date + datetime.timedelta(days=days)
+        if replay:
+            # start_date ignored, days = 0 means today, 1 means yesterday, etc..
+            if days < 1 or days > 6: #means today
+                to_date = datetime.datetime.now()
+                from_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            else:
+                from_date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=days)
+                to_date = from_date + datetime.timedelta(days=1)
+        else:
+            from_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            to_date = from_date + datetime.timedelta(days=days)
 
         i = 0
         channels_count = len(channels)
@@ -271,6 +284,24 @@ class Skylink:
                 data['cover'] = data['cover'].replace('satplusimages', 'satplusimages/260x145')
             data.update(self._times(data['locId']))
         return epg_info
+
+    def replay_info(self, locId):
+        self._login()
+        # https://livetv.skylink.cz/api.aspx?z=replay&lng=cs&_=1554981994979&u=w1e210097-f71c-cae8-6ecf-192ca335fbb0&v=1&lid=FI1OQ6ZAwAplvlIoogWjSO52J5RWvdbT&d=3
+        res = self._post({'z': 'replay', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
+            'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
+
+        stream = res.json()
+
+        mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA}
+        drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream', 'User-Agent': UA}
+
+        return {
+            'protocol': 'mpd',
+            'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
+            'drm': 'com.widevine.alpha',
+            'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
+        }
 
     @staticmethod
     def _times(loc):
