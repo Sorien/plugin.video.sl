@@ -14,16 +14,36 @@ import urlparse
 import urllib
 import xbmcplugin
 import datetime
+import os
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
+_skylink_logos = 'false' != xbmcplugin.getSetting(_handle, 'a_sl_logos')
+if not _skylink_logos:
+    _remote_logos = '1' == xbmcplugin.getSetting(_handle, 'a_logos_location')
+    if _remote_logos:
+        _logos_base_url = xbmcplugin.getSetting(_handle, 'a_logos_base_url')
+        if not _logos_base_url.endswith("/"):
+            _logos_base_url = _logos_base_url + "/"
+    else:
+        _logos_folder = xbmcplugin.getSetting(_handle, 'a_logos_folder')
 
 LOGO_BASE = 'https://koperfieldcz.github.io/skylink-livetv-logos/' #TODO - settings?
 REPLAY_GAP = 5 #gap after program ends til it shows in replay
 
 def get_url(**kwargs):
 	return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
+
+def get_logo(title, sl):
+    if _skylink_logos:
+        return sl.getUrl() + "/" + exports.logo_sl_location(title)
+    
+    if _remote_logos:
+        return _logos_base_url + exports.logo_id(title)
+
+    return os.path.join(_logos_folder, exports.logo_id(title))
+
 
 def channels(sl):
     try:
@@ -43,14 +63,12 @@ def channels(sl):
         dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
-    xbmcplugin.setContent(_handle, 'videos')
+    #xbmcplugin.setContent(_handle, 'videos')
     if channels:
         for channel in channels:
-            logo_id = exports.logo_id(channel['title'])
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title']}) #TODO - genre?
-            list_item.setArt({'thumb': LOGO_BASE + logo_id + '.png',
-                                'icon': LOGO_BASE + logo_id + '.png'})
+            list_item.setArt({'thumb': get_logo(channel['title'], sl)})
             link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'])
             is_folder = True
             xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
@@ -59,12 +77,13 @@ def channels(sl):
 def days(sl, stationid, channel):
     now = datetime.datetime.now()
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
-    xbmcplugin.setContent(_handle, 'videos')
+    #xbmcplugin.setContent(_handle, 'videos')
     for day in range (0,7):
         d = now - datetime.timedelta(days=day) if day > 0 else now
         title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
         title = _addon.getLocalizedString(int('3061' + str(d.weekday()))) + ', ' + title
         list_item = xbmcgui.ListItem(label=title)
+        list_item.setArt({'icon':'DefaultAddonPVRClient.png'})
         link = get_url(replay='programs', stationid=stationid, channel=channel, day=day, first=True)
         is_folder = True
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
@@ -91,9 +110,10 @@ def programs(sl, stationid, channel, day=0, first=False):
         dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
-    xbmcplugin.setContent(_handle, 'videos')
+    #xbmcplugin.setContent(_handle, 'videos')
     if day < 6:
         list_item = xbmcgui.ListItem(label=_addon.getLocalizedString(30604))
+        list_item.setArt({'icon':'DefaultVideoPlaylists.png'})
         link = get_url(replay='programs', stationid=stationid, channel=channel, day=day+1)
         is_folder = True
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
@@ -120,6 +140,7 @@ def programs(sl, stationid, channel, day=0, first=False):
                 xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     if day > 0:
         list_item = xbmcgui.ListItem(label=_addon.getLocalizedString(30603))
+        list_item.setArt({'icon':'DefaultVideoPlaylists.png'})
         link = get_url(replay='programs', stationid=stationid, channel=channel, day=day-1)
         is_folder = True
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)

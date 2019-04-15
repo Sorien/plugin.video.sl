@@ -47,6 +47,10 @@ msgctxt "#30203"
 msgid "Filename"
 msgstr "Filename"
 
+msgctxt "#30204"
+msgid "Logo urls directly from Skylink Live TV site"
+msgstr "Logo urls directly from Skylink Live TV site"
+
 msgctxt "#30300"
 msgid "EPG"
 msgstr "EPG"
@@ -70,6 +74,34 @@ msgstr "Filename"
 msgctxt "#30305"
 msgid "Preload Days"
 msgstr "Preload Days"
+
+msgctxt "#30350"
+msgid "Archive"
+msgstr "Archive"
+
+msgctxt "#30351"
+msgid "Logos directly from Skylink Live TV site"
+msgstr "Logos directly from Skylink Live TV site"
+
+msgctxt "#30352"
+msgid "Logos location"
+msgstr "Logos location"
+
+msgctxt "#30353"
+msgid "local drive"
+msgstr "local drive"
+
+msgctxt "#30354"
+msgid "remote web"
+msgstr "remote web"
+
+msgctxt "#30355"
+msgid "Directory with logos"
+msgstr "Directory with logos"
+
+msgctxt "#30356"
+msgid "Base url for logos"
+msgstr "Base url for logos"
 
 msgctxt "#30401"
 msgid "M3U Playlist created"

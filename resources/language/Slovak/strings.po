@@ -47,6 +47,10 @@ msgctxt "#30203"
 msgid "Filename"
 msgstr "Súbor"
 
+msgctxt "#30204"
+msgid "Logo urls directly from Skylink Live TV site"
+msgstr "Url adresy pre logá staníc priamo zo stránky Skylink Live TV"
+
 msgctxt "#30300"
 msgid "EPG"
 msgstr "EPG"
@@ -70,6 +74,34 @@ msgstr "Súbor"
 msgctxt "#30305"
 msgid "Preload Days"
 msgstr "Počet dni"
+
+msgctxt "#30350"
+msgid "Archive"
+msgstr "Archív"
+
+msgctxt "#30351"
+msgid "Logos directly from Skylink Live TV site"
+msgstr "Logá staníc priamo zo stránky Skylink Live TV"
+
+msgctxt "#30352"
+msgid "Logos location"
+msgstr "Umiestnenie pre logá"
+
+msgctxt "#30353"
+msgid "local drive"
+msgstr "lokálne dostupné"
+
+msgctxt "#30354"
+msgid "remote web"
+msgstr "web stránka"
+
+msgctxt "#30355"
+msgid "Directory with logos"
+msgstr "Adresár s logami"
+
+msgctxt "#30356"
+msgid "Base url for logos"
+msgstr "Url stránky s logami"
 
 msgctxt "#30401"
 msgid "M3U Playlist created"

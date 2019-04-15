@@ -17,16 +17,23 @@ def html_escape(text):
 def logo_id(title):
     for ch in [' ', '/', '(18+)', ':']:
         title = title.replace(ch, '')
-    return title.replace('+', 'plus').lower()
+    return title.replace('+', 'plus').lower() + '.png'
 
+def logo_sl_location(title):
+    rplcmnts = {':':'', '/':'', ':':'','+':'',' ':'%20'}
+    for ch in rplcmnts.keys():
+        title = title.replace(ch, rplcmnts[ch])
+    return 'mmchan/channelicons/' + title + '_w267.png'
 
-def create_m3u(channels, path):
+def create_m3u(channels, path, url):
     with io.open(path, 'w', encoding='utf8') as file:
         file.write(u'#EXTM3U\n')
 
         for c in channels:
-            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s.png",%s\n' % (
-                c['stationid'], logo_id(c['title']), c['title']))
+            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s",%s\n' % ( #
+                c['stationid'],
+                url + logo_sl_location(c['title']) if url is not None else logo_id(c['title']),
+                c['title']))
             file.write(u'plugin://plugin.video.sl/?action=play&id=%s\n' % c['id'])
 
 
