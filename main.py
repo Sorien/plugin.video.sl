@@ -39,9 +39,15 @@ _handle = int(sys.argv[1])
 #    return device
 
 
-def play(channel_id):
+def play(channel_id, askpin):
     logger.log.info('play: ' + channel_id)
     sl = skylink.Skylink(_user_name, _password, _profile, _provider)
+
+    if askpin != 'False' and not utils.ask_for_pin(sl):
+        xbmc.log("bad pin",level=xbmc.LOGNOTICE)
+        xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
+        return
+
 
     info = {}
     #try:
@@ -77,7 +83,7 @@ def play(channel_id):
 if __name__ == '__main__':
     args = urlparse.parse_qs(sys.argv[2][1:])
     if 'id' in args:
-        play(str(args['id'][0]))
+        play(str(args['id'][0]), str(args['askpin'][0]) if 'askpin' in args else 'False')
     elif 'replay' in args:
         replay.router(args, skylink.Skylink(_user_name, _password, _profile, _provider))
     else:

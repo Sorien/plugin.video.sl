@@ -47,21 +47,23 @@ def get_logo(title, sl):
 
 def channels(sl):
     channels = utils.call(sl, lambda: sl.channels(True))
-
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
     if channels:
         for channel in channels:
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title']}) #TODO - genre?
             list_item.setArt({'thumb': get_logo(channel['title'], sl)})
-            link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'])
+            link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'], askpin=channel['pin'])
             is_folder = True
             xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     xbmcplugin.endOfDirectory(_handle)
 
-def days(sl, stationid, channel):
+def days(sl, stationid, channel, askpin):
     now = datetime.datetime.now()
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
+    if askpin != 'False' and not utils.ask_for_pin(sl):
+        xbmcplugin.endOfDirectory(_handle)
+        return
     for day in range (0,7):
         d = now - datetime.timedelta(days=day) if day > 0 else now
         title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
@@ -135,7 +137,7 @@ def router(args, sl):
         elif args['replay'][0] == 'replay':
             replay(sl, args['locId'][0])
         elif args['replay'][0] == 'days':
-            days(sl, args['stationid'][0], args['channel'][0])
+            days(sl, args['stationid'][0], args['channel'][0], args['askpin'][0])
         else:
             channels(sl)
     else:

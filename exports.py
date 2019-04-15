@@ -34,7 +34,7 @@ def create_m3u(channels, path, url):
                 c['stationid'],
                 url + logo_sl_location(c['title']) if url is not None else logo_id(c['title']),
                 c['title']))
-            file.write(u'plugin://plugin.video.sl/?action=play&id=%s\n' % c['id'])
+            file.write(u'plugin://plugin.video.sl/?action=play&id=%s&askpin=%s\n' % (c['id'], c['pin']))
 
 
 def create_epg(channels, epg, path, addon=None, url='https://livetv.skylink.sk/'):

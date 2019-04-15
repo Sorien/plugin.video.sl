@@ -181,8 +181,10 @@ class Skylink:
             is_stream = (len(data[1]) > (idx >> 5)) and (data[1][idx >> 5] & (1 << (idx & 31)) > 0)
             is_live = (len(data[3][0]) > (idx >> 5)) and (data[3][0][idx >> 5] & (1 << (idx & 31)) > 0)
             is_replayable = (c['flags'] & 2048) > 0
+            is_pin_protected = (c['flags'] & 256) > 0
 
             if is_stream and is_live and (not replay or is_replayable):
+                c['pin'] = is_pin_protected
                 result.append(c)
 
             idx += 1
@@ -287,7 +289,7 @@ class Skylink:
 
     def replay_info(self, locId):
         self._login()
-        # https://livetv.skylink.cz/api.aspx?z=replay&lng=cs&_=1554981994979&u=w1e210097-f71c-cae8-6ecf-192ca335fbb0&v=1&lid=FI1OQ6ZAwAplvlIoogWjSO52J5RWvdbT&d=3
+        # https://livetv.skylink.cz/api.aspx?z=replay&lng=cs&_=1554981994979&u=...&v=1&lid=FI1OQ6ZAwAplvlIoogWjSO52J5RWvdbT&d=3
         res = self._post({'z': 'replay', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
             'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
 
@@ -302,6 +304,17 @@ class Skylink:
             'drm': 'com.widevine.alpha',
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
+
+    def pin_info(self):
+        #https://livetv.skylink.cz/api.aspx?z=parentalPIN&lng=cs&_=1555347355278&u=...&a=slcz&r=1
+        res = self._get({'z': 'parentalPIN', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
+            'a': self._data.app, 'r': 1})
+        raw = res.text
+        if raw.startswith('"') and raw.endswith('"') and not raw.startswith('"-'):
+            pin = raw.replace('"','')
+            if len(pin) == 4:
+                return pin
+        return None
 
     @staticmethod
     def _times(loc):

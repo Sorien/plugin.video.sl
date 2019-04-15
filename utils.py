@@ -66,3 +66,11 @@ def call(sl, fn):
 
     return result
     
+def ask_for_pin(sl):
+    pin = sl.pin_info()
+    if pin is not None:
+        dialog = xbmcgui.Dialog()
+        d = dialog.input('PIN', type=xbmcgui.INPUT_NUMERIC) #TODO?
+        if d != pin:
+            return False
+    return True
