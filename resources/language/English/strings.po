@@ -31,6 +31,10 @@ msgctxt "#30104"
 msgid "When no device is available use oldest"
 msgstr "When no device is available use oldest"
 
+msgctxt "#30105"
+msgid "Limit devices list to web browser"
+msgstr "Limit devices list to web browser"
+
 msgctxt "#30200"
 msgid "Playlist"
 msgstr "Playlist"
@@ -134,6 +138,10 @@ msgstr "Too many active devices"
 msgctxt "#30506"
 msgid "Internet connection error"
 msgstr "Internet connection error"
+
+msgctxt "#30507"
+msgid "There are no web devices to choose!"
+msgstr "There are no web devices to choose!"
 
 msgctxt "#30600"
 msgid "Archive"

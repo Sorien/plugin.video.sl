@@ -31,6 +31,10 @@ msgctxt "#30104"
 msgid "When no device is available use oldest"
 msgstr "Pokud není k dispozici žádné zařízení, použij nejstarší
 
+msgctxt "#30105"
+msgid "Limit devices list to web browser"
+msgstr "Omezit zařízení v seznamu pouze na prohlížeče"
+
 msgctxt "#30200"
 msgid "Playlist"
 msgstr "Playlist"
@@ -134,6 +138,10 @@ msgstr "Přihlášených příliš mnoho zařízení"
 msgctxt "#30506"
 msgid "Internet connection error"
 msgstr "Internetové spojení není dostupné"
+
+msgctxt "#30507"
+msgid "There are no web devices to choose!"
+msgstr "Nejsou k dispozici žádné prohlížeče na výběr!"
 
 msgctxt "#30600"
 msgid "Archive"

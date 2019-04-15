@@ -21,7 +21,8 @@
   <news>
 1.2.1
 - Tuning loga stanic - moznosti nastavenia pre archiv, moznost pouzit loga zo stranky live, aj pre playlist
-
+- Fix vyberu zariadeni v archive
+- Moznost obmedzenia vyberu zariadeni len na prehliadace (aby to neodhlasovalo z telefonu ci TV)
 1.2.0
 - Pridanie archivu vo video doplnkoch
 

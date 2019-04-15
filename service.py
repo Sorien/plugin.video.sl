@@ -8,6 +8,7 @@ import skylink
 import xbmc
 import xbmcaddon
 import xbmcgui
+import utils
 
 _addon = xbmcaddon.Addon()
 
@@ -27,22 +28,22 @@ class SkylinkMonitor(xbmc.Monitor):
         logger.log.info(str(type(text)) + ' - ' + text)
         xbmc.executebuiltin(u'Notification("%s","%s",5000, %s)' % (_addon.getAddonInfo('name').encode("utf-8"), text, icon))
 
-    def get_last_used_device(self, devices):
-        la = 9999999999999
-        device = ''
-        for d in devices:
-            if d['lastactivity'] < la:
-                device = d['id']
-                la = d['lastactivity']
-        return device
-
-    def select_device(self, devices):
-        dialog = xbmcgui.Dialog()
-        items = []
-        for device in devices:
-            items.append(device['name'].replace("+", " "))
-        d = dialog.select(_addon.getLocalizedString(30403), items)
-        return devices[d]['id'] if d > -1 else ''
+    #def get_last_used_device(self, devices):
+    #    la = 9999999999999
+    #    device = ''
+    #    for d in devices:
+    #        if d['lastactivity'] < la:
+    #            device = d['id']
+    #            la = d['lastactivity']
+    #    return device
+    #
+    #def select_device(self, devices):
+    #    dialog = xbmcgui.Dialog()
+    #    items = []
+    #    for device in devices:
+    #        items.append(device['name'].replace("+", " "))
+    #    d = dialog.select(_addon.getLocalizedString(30403), items)
+    #    return devices[d]['id'] if d > -1 else ''
 
     def onSettingsChanged(self):
         if not self.abortRequested():
@@ -66,9 +67,9 @@ class SkylinkMonitor(xbmc.Monitor):
             channels = sl.channels()
         except skylink.TooManyDevicesException as e:
             if _addon.getSetting('reuse_last_device') == 'true':
-                device = self.get_last_used_device(e.devices)
+                device = utils.get_last_used_device(e.devices)
             else:
-                device = self.select_device(e.devices) if try_reconnect else ''
+                device = utils.select_device(e.devices) if try_reconnect else ''
 
             if device != '':
                 logger.log.info('reconnecting as: ' + device)

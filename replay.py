@@ -15,6 +15,7 @@ import urllib
 import xbmcplugin
 import datetime
 import os
+import utils
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -29,7 +30,6 @@ if not _skylink_logos:
     else:
         _logos_folder = xbmcplugin.getSetting(_handle, 'a_logos_folder')
 
-LOGO_BASE = 'https://koperfieldcz.github.io/skylink-livetv-logos/' #TODO - settings?
 REPLAY_GAP = 5 #gap after program ends til it shows in replay
 
 def get_url(**kwargs):
@@ -46,24 +46,9 @@ def get_logo(title, sl):
 
 
 def channels(sl):
-    try:
-        channels = sl.channels(True)
-    except skylink.TooManyDevicesException as e:
-        if _addon.getSetting('reuse_last_device') == 'true':
-            device = get_last_used_device(e.devices)
-        else:
-            device = select_device(e.devices)
-
-        if device != '':
-            logger.log.info('reconnecting as: ' + device)
-            sl.reconnect(device)
-            channels = sl.channels(True)
-    except requests.exceptions.ConnectionError:
-        dialog = xbmcgui.Dialog()
-        dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
+    channels = utils.call(sl, lambda: sl.channels(True))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
-    #xbmcplugin.setContent(_handle, 'videos')
     if channels:
         for channel in channels:
             list_item = xbmcgui.ListItem(label=channel['title'])
@@ -77,7 +62,6 @@ def channels(sl):
 def days(sl, stationid, channel):
     now = datetime.datetime.now()
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
-    #xbmcplugin.setContent(_handle, 'videos')
     for day in range (0,7):
         d = now - datetime.timedelta(days=day) if day > 0 else now
         title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
@@ -91,26 +75,9 @@ def days(sl, stationid, channel):
 
 def programs(sl, stationid, channel, day=0, first=False):
     today = day == 0
-    if today:
-        now = datetime.datetime.now()
-    try:
-        epg = sl.epg([{'stationid':stationid}], None, day, True)
-    except skylink.TooManyDevicesException as e:
-        if _addon.getSetting('reuse_last_device') == 'true':
-            device = get_last_used_device(e.devices)
-        else:
-            device = select_device(e.devices)
-
-        if device != '':
-            logger.log.info('reconnecting as: ' + device)
-            sl.reconnect(device)
-            epg = sl.epg([{'stationid':stationid}], None, day, True)
-    except requests.exceptions.ConnectionError:
-        dialog = xbmcgui.Dialog()
-        dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
+    epg = utils.call(sl, lambda: sl.epg([{'stationid':stationid}], None, day, True))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
-    #xbmcplugin.setContent(_handle, 'videos')
     if day < 6:
         list_item = xbmcgui.ListItem(label=_addon.getLocalizedString(30604))
         list_item.setArt({'icon':'DefaultVideoPlaylists.png'})
@@ -148,21 +115,7 @@ def programs(sl, stationid, channel, day=0, first=False):
     xbmcplugin.endOfDirectory(_handle, updateListing=not first)
 
 def replay(sl, locId):
-    try:
-        info = sl.replay_info(locId)
-    except skylink.TooManyDevicesException as e:
-        if _addon.getSetting('reuse_last_device') == 'true':
-            device = get_last_used_device(e.devices)
-        else:
-            device = select_device(e.devices)
-
-        if device != '':
-            logger.log.info('reconnecting as: ' + device)
-            sl.reconnect(device)
-            info = sl.replay_info(locId)
-    except requests.exceptions.ConnectionError:
-        dialog = xbmcgui.Dialog()
-        dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
+    info = utils.call(sl, lambda: sl.replay_info(locId))
 
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
