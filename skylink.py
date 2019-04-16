@@ -102,7 +102,7 @@ class Skylink:
             else:
                 raise TooManyDevicesException(error)
 
-        if not self._data.is_valid:
+        if not self._data.is_valid():
             raise UserInvalidException
 
     def _parse_cookies(self):
