@@ -11,13 +11,17 @@ import xbmcgui
 import utils
 
 class SkylinkMonitor(xbmc.Monitor):
-    _addon = xbmcaddon.Addon()
+    _addon = None
     _next_update = 0
 
     def __init__(self):
         xbmc.Monitor.__init__(self)
+        self._addon = xbmcaddon.Addon()
         ts = self._addon.getSetting('next_update')
         self._next_update = datetime.datetime.now() if ts == '' else datetime.datetime.fromtimestamp(float(ts))
+    
+    def __del__(self):
+        logger.log.info('service destroyed')
 
     def notify(self, text, error=False):
         ltext = text = text.encode("utf-8") if type(text) is unicode else text
