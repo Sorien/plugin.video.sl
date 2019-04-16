@@ -61,9 +61,11 @@ def channels(sl):
 def days(sl, stationid, channel, askpin):
     now = datetime.datetime.now()
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
-    if askpin != 'False' and not utils.ask_for_pin(sl):
-        xbmcplugin.endOfDirectory(_handle)
-        return
+    if askpin != 'False':
+        pin_ok = utils.ask_for_pin(sl)
+        if not pin_ok:
+            xbmcplugin.endOfDirectory(_handle)
+            return
     for day in range (0,7):
         d = now - datetime.timedelta(days=day) if day > 0 else now
         title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
@@ -77,6 +79,9 @@ def days(sl, stationid, channel, askpin):
 
 def programs(sl, stationid, channel, day=0, first=False):
     today = day == 0
+    if today:
+        now = datetime.datetime.now()
+
     epg = utils.call(sl, lambda: sl.epg([{'stationid':stationid}], None, day, True))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)

@@ -35,6 +35,10 @@ msgctxt "#30105"
 msgid "Limit devices list to web browser"
 msgstr "Omezit zařízení v seznamu pouze na prohlížeče"
 
+msgctxt "#30106"
+msgid "Generate and show pin protected channels"
+msgstr "Generovat a zobrazovat obsah chráněný PIN-em"
+
 msgctxt "#30200"
 msgid "Playlist"
 msgstr "Playlist"
@@ -142,6 +146,14 @@ msgstr "Internetové spojení není dostupné"
 msgctxt "#30507"
 msgid "There are no web devices to choose!"
 msgstr "Nejsou k dispozici žádné prohlížeče na výběr!"
+
+msgctxt "#30508"
+msgid "Enter your PIN code:"
+msgstr "Zadejte svůj PIN kód:"
+
+msgctxt "#30509"
+msgid "Nope!"
+msgstr "Špatný PIN!"
 
 msgctxt "#30600"
 msgid "Archive"

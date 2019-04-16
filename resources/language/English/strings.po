@@ -35,6 +35,10 @@ msgctxt "#30105"
 msgid "Limit devices list to web browser"
 msgstr "Limit devices list to web browser"
 
+msgctxt "#30106"
+msgid "Generate and show pin protected channels"
+msgstr "Generate and show pin protected channels"
+
 msgctxt "#30200"
 msgid "Playlist"
 msgstr "Playlist"
@@ -142,6 +146,14 @@ msgstr "Internet connection error"
 msgctxt "#30507"
 msgid "There are no web devices to choose!"
 msgstr "There are no web devices to choose!"
+
+msgctxt "#30508"
+msgid "Enter your PIN code:"
+msgstr "Enter your PIN code:"
+
+msgctxt "#30509"
+msgid "Nope!"
+msgstr "Nope!"
 
 msgctxt "#30600"
 msgid "Archive"

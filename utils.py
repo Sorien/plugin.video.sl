@@ -70,7 +70,8 @@ def ask_for_pin(sl):
     pin = sl.pin_info()
     if pin is not None:
         dialog = xbmcgui.Dialog()
-        d = dialog.input('PIN', type=xbmcgui.INPUT_NUMERIC) #TODO?
+        d = dialog.input(_addon.getLocalizedString(30508), type=xbmcgui.INPUT_NUMERIC)
         if d != pin:
+            dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30509))
             return False
     return True

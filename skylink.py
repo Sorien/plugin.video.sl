@@ -54,14 +54,16 @@ class Skylink:
     _data = SkylinkSessionData()
     _url = ''
     _login_url = ''
+    _show_pin_protected = True
 
-    def __init__(self, username, password, cookies_storage_dir, provider='skylink.sk'):
+    def __init__(self, username, password, cookies_storage_dir, provider='skylink.sk', show_pin_protected=True):
         self._usermane = username
         self._password = password
         self._cookies_path = cookies_storage_dir
         self._cookies_file = os.path.join(self._cookies_path, '%s.cookie' % username.lower())
         self._url = 'https://livetv.' + provider
         self._login_url = 'https://login.' + provider
+        self._show_pin_protected = show_pin_protected
 
     def _store_cookies(self):
         if not os.path.exists(self._cookies_path):
@@ -183,7 +185,8 @@ class Skylink:
             is_replayable = (c['flags'] & 2048) > 0
             is_pin_protected = (c['flags'] & 256) > 0
 
-            if is_stream and is_live and (not replay or is_replayable):
+            if (is_stream and is_live and (not replay or is_replayable) and
+                (self._show_pin_protected or (not self._show_pin_protected and not is_pin_protected))):
                 c['pin'] = is_pin_protected
                 result.append(c)
 
@@ -306,6 +309,7 @@ class Skylink:
         }
 
     def pin_info(self):
+        self._login()
         #https://livetv.skylink.cz/api.aspx?z=parentalPIN&lng=cs&_=1555347355278&u=...&a=slcz&r=1
         res = self._get({'z': 'parentalPIN', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
             'a': self._data.app, 'r': 1})
