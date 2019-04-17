@@ -31,23 +31,6 @@ class SkylinkMonitor(xbmc.Monitor):
         logger.log.info(str(type(text)) + ' - ' + ltext)
         xbmc.executebuiltin('Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name').encode("utf-8"), ltext, icon)) #u
 
-    #def get_last_used_device(self, devices):
-    #    la = 9999999999999
-    #    device = ''
-    #    for d in devices:
-    #        if d['lastactivity'] < la:
-    #            device = d['id']
-    #            la = d['lastactivity']
-    #    return device
-    #
-    #def select_device(self, devices):
-    #    dialog = xbmcgui.Dialog()
-    #    items = []
-    #    for device in devices:
-    #        items.append(device['name'].replace("+", " "))
-    #    d = dialog.select(_addon.getLocalizedString(30403), items)
-    #    return devices[d]['id'] if d > -1 else ''
-
     def onSettingsChanged(self):
         self._addon = xbmcaddon.Addon() #refresh for updated settings!
         if not self.abortRequested():

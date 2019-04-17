@@ -19,26 +19,6 @@ _password = xbmcplugin.getSetting(_id, 'password')
 _provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
 _pin_protected_content = 'false' != xbmcplugin.getSetting(_id, 'pin_protected_content')
 
-
-#def select_device(devices):
-#    dialog = xbmcgui.Dialog()
-#    items = []
-#    for device in devices:
-#        items.append(device['name'].replace("+", " "))
-#    d = dialog.select(_addon.getLocalizedString(30403), items)
-#    return devices[d]['id'] if d > -1 else ''
-#
-#
-#def get_last_used_device(devices):
-#    la = 9999999999999
-#    device = ''
-#    for d in devices:
-#        if d['lastactivity'] < la:
-#            device = d['id']
-#            la = d['lastactivity']
-#    return device
-
-
 def play(channel_id, askpin):
     logger.log.info('play: ' + channel_id)
     sl = skylink.Skylink(_user_name, _password, _profile, _provider)
@@ -51,22 +31,6 @@ def play(channel_id, askpin):
 
 
     info = {}
-    #try:
-    #    info = sl.channel_info(channel_id)
-    #except skylink.TooManyDevicesException as e:
-    #    if _addon.getSetting('reuse_last_device') == 'true':
-    #        device = get_last_used_device(e.devices)
-    #    else:
-    #        device = select_device(e.devices)
-    #
-    #    if device != '':
-    #        logger.log.info('reconnecting as: ' + device)
-    #        sl.reconnect(device)
-    #        info = sl.channel_info(channel_id)
-    #
-    #except requests.exceptions.ConnectionError:
-    #    dialog = xbmcgui.Dialog()
-    #    dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
 
     info = utils.call(sl, lambda: sl.channel_info(channel_id))
 
