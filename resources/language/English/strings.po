@@ -8,36 +8,32 @@ msgid "Account"
 msgstr "Account"
 
 msgctxt "#30101"
-msgid "Provider"
-msgstr "Provider"
-
-msgctxt "#30102"
-msgid "Email / Card number"
-msgstr "Email / Card number"
-
-msgctxt "#30103"
-msgid "Password"
-msgstr "Password"
-
-msgctxt "#30111"
 msgid "Skylink SK"
 msgstr "Skylink SK"
 
-msgctxt "#30112"
+msgctxt "#30102"
 msgid "Skylink CZ"
 msgstr "Skylink CZ"
 
+msgctxt "#30103"
+msgid "Email / Card number"
+msgstr "Email / Card number"
+
 msgctxt "#30104"
+msgid "Password"
+msgstr "Password"
+
+msgctxt "#30105"
+msgid "Generate and show pin protected channels"
+msgstr "Generate and show pin protected channels"
+
+msgctxt "#30106"
 msgid "When no device is available use oldest"
 msgstr "When no device is available use oldest"
 
-msgctxt "#30105"
+msgctxt "#30107"
 msgid "Limit devices list to web browser"
 msgstr "Limit devices list to web browser"
-
-msgctxt "#30106"
-msgid "Generate and show pin protected channels"
-msgstr "Generate and show pin protected channels"
 
 msgctxt "#30200"
 msgid "Playlist"
@@ -56,6 +52,10 @@ msgid "Filename"
 msgstr "Filename"
 
 msgctxt "#30204"
+msgid "Eliminate duplicate channels"
+msgstr "Eliminate duplicate channels"
+
+msgctxt "#30205"
 msgid "Logo urls directly from Skylink Live TV site"
 msgstr "Logo urls directly from Skylink Live TV site"
 

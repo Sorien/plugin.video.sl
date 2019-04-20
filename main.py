@@ -3,6 +3,7 @@ import inputstreamhelper
 import logger
 import requests
 import skylink
+import account
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -13,15 +14,14 @@ import utils
 
 _id = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
-_profile = xbmc.translatePath(_addon.getAddonInfo('profile')).decode("utf-8")
-_user_name = xbmcplugin.getSetting(_id, 'username')
-_password = xbmcplugin.getSetting(_id, 'password')
-_provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
-_pin_protected_content = 'false' != xbmcplugin.getSetting(_id, 'pin_protected_content')
 
-def play(channel_id, askpin):
-    logger.log.info('play: ' + channel_id)
-    sl = skylink.Skylink(_user_name, _password, _profile, _provider)
+def play(account_id, channel_id, askpin):
+    sl = utils.get_provider(account_id)
+
+    if not sl:
+        return
+
+    logger.log.info('Play channel %s from %s' % (channel_id, sl.account.provider))
 
     if askpin != 'False':
         pin_ok = utils.ask_for_pin(sl)
@@ -44,13 +44,12 @@ def play(channel_id, askpin):
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
             xbmcplugin.setResolvedUrl(_id, True, playitem)
 
-
 if __name__ == '__main__':
     args = urlparse.parse_qs(sys.argv[2][1:])
-    if 'id' in args:
-        play(str(args['id'][0]), str(args['askpin'][0]) if 'askpin' in args else 'False')
+    if 'account' in args and 'channel' in args:
+        play(str(args['account'][0]), str(args['channel'][0]), str(args['askpin'][0]) if 'askpin' in args else 'False')
     elif 'replay' in args:
-        replay.router(args, skylink.Skylink(_user_name, _password, _profile, _provider, _pin_protected_content))
+        replay.router(args)
     else:
         xbmcplugin.setPluginCategory(_id, '')
         xbmcplugin.setContent(_id, 'videos')

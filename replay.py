@@ -45,20 +45,34 @@ def get_logo(title, sl):
     return os.path.join(_logos_folder, exports.logo_id(title))
 
 
-def channels(sl):
-    channels = utils.call(sl, lambda: sl.channels(True))
+
+def channels():
+    providers = utils.get_available_providers()
+    channels = []
+
+    for sl in providers:
+        channels = channels + utils.call(sl, lambda: sl.channels(True))
+
+    if bool(_addon.getSetting('playlist_unique')):
+        channels = utils.unique_channels(channels)
+
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
     if channels:
         for channel in channels:
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title']}) #TODO - genre?
             list_item.setArt({'thumb': get_logo(channel['title'], sl)})
-            link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'], askpin=channel['pin'])
+            link = get_url(replay='days', accountid=channel['account'], stationid=channel['stationid'], channel=channel['title'], askpin=channel['pin'])
             is_folder = True
             xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     xbmcplugin.endOfDirectory(_handle)
 
-def days(sl, stationid, channel, askpin):
+def days(accountid, stationid, channel, askpin):
+    sl = utils.get_provider(accountid)
+
+    if not sl:
+        return
+
     now = datetime.datetime.now()
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
     if askpin != 'False':
@@ -72,12 +86,17 @@ def days(sl, stationid, channel, askpin):
         title = _addon.getLocalizedString(int('3061' + str(d.weekday()))) + ', ' + title
         list_item = xbmcgui.ListItem(label=title)
         list_item.setArt({'icon':'DefaultAddonPVRClient.png'})
-        link = get_url(replay='programs', stationid=stationid, channel=channel, day=day, first=True)
+        link = get_url(replay='programs', accountid=accountid, stationid=stationid, channel=channel, day=day, first=True)
         is_folder = True
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     xbmcplugin.endOfDirectory(_handle)
 
-def programs(sl, stationid, channel, day=0, first=False):
+def programs(accountid, stationid, channel, day=0, first=False):
+    sl = utils.get_provider(accountid)
+
+    if not sl:
+        return
+
     today = day == 0
     if today:
         now = datetime.datetime.now()
@@ -88,7 +107,7 @@ def programs(sl, stationid, channel, day=0, first=False):
     if day < 6:
         list_item = xbmcgui.ListItem(label=_addon.getLocalizedString(30604))
         list_item.setArt({'icon':'DefaultVideoPlaylists.png'})
-        link = get_url(replay='programs', stationid=stationid, channel=channel, day=day+1)
+        link = get_url(replay='programs', accountid=accountid, stationid=stationid, channel=channel, day=day+1)
         is_folder = True
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     if epg:
@@ -108,20 +127,25 @@ def programs(sl, stationid, channel, day=0, first=False):
                     cover = sl.getUrl() + "/" + program['cover']
                     list_item.setArt({'thumb': cover, 'icon': cover})
                 
-                link = get_url(replay='replay', locId=program['locId'])
+                link = get_url(replay='replay', accountid=accountid, locId=program['locId'])
                 is_folder = False
                 list_item.setProperty('IsPlayable','true')
                 xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     if day > 0:
         list_item = xbmcgui.ListItem(label=_addon.getLocalizedString(30603))
         list_item.setArt({'icon':'DefaultVideoPlaylists.png'})
-        link = get_url(replay='programs', stationid=stationid, channel=channel, day=day-1)
+        link = get_url(replay='programs', accountid=accountid, stationid=stationid, channel=channel, day=day-1)
         is_folder = True
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
 
     xbmcplugin.endOfDirectory(_handle, updateListing=not first)
 
-def replay(sl, locId):
+def replay(accountid, locId):
+    sl = utils.get_provider(accountid)
+
+    if not sl:
+        return
+
     info = utils.call(sl, lambda: sl.replay_info(locId))
 
     if info:
@@ -135,15 +159,15 @@ def replay(sl, locId):
             xbmcplugin.setResolvedUrl(_handle, True, playitem)
 
 
-def router(args, sl):
+def router(args):
     if args:
         if args['replay'][0] == 'programs':
-            programs(sl, args['stationid'][0], args['channel'][0], int(args['day'][0]) if 'day' in args else 0, 'first' in args)
+            programs(args['accountid'][0], args['stationid'][0], args['channel'][0], int(args['day'][0]) if 'day' in args else 0, 'first' in args)
         elif args['replay'][0] == 'replay':
-            replay(sl, args['locId'][0])
+            replay(args['accountid'][0], args['locId'][0])
         elif args['replay'][0] == 'days':
-            days(sl, args['stationid'][0], args['channel'][0], args['askpin'][0])
+            days(args['accountid'][0], args['stationid'][0], args['channel'][0], args['askpin'][0])
         else:
-            channels(sl)
+            channels()
     else:
-        channels(sl)
+        channels()

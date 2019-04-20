@@ -46,28 +46,31 @@ class SkylinkMonitor(xbmc.Monitor):
         self._next_update = dt
 
     def update(self, try_reconnect=False):
-        _username = self._addon.getSetting('username')
-        _password = self._addon.getSetting('password')
-        _profile = xbmc.translatePath(self._addon.getAddonInfo('profile'))
-        _provider = 'skylink.sk' if int(self._addon.getSetting('provider')) == 0 else 'skylink.cz'
-        _pin_protected_content = 'false' != self._addon.getSetting('pin_protected_content')
-        sl = skylink.Skylink(_username, _password, _profile, _provider, _pin_protected_content)
-        logger.log.info('SL created')
+        providers = utils.get_available_providers()
+        channels = []
 
-        try:
-            channels = sl.channels()
-        except skylink.TooManyDevicesException as e:
-            if self._addon.getSetting('reuse_last_device') == 'true':
-                device = utils.get_last_used_device(e.devices)
-            else:
-                device = utils.select_device(e.devices) if try_reconnect else ''
+        for sl in providers:
+            logger.log.info('Getting channels for account: %s' % (sl.account.username))
 
-            if device != '':
-                logger.log.info('reconnecting as: ' + device)
-                sl.reconnect(device)
-                channels = sl.channels()
-            else:
-                raise
+            try:
+                channels = channels + sl.channels()
+            except skylink.TooManyDevicesException as e:
+                if self._addon.getSetting('reuse_last_device') == 'true':
+                    device = utils.get_last_used_device(e.devices)
+                else:
+                    device = utils.select_device(e.devices) if try_reconnect else ''
+
+                if device != '':
+                    logger.log.info('reconnecting as: ' + device)
+                    sl.reconnect(device)
+                    channels = channels + sl.channels()
+                else:
+                    raise
+
+        # Remove duplicate channels (same channels provided by skylink.sk and skylink.cz)
+        if bool(self._addon.getSetting('playlist_unique')):
+            logger.log.info('Filtering channels to create unique list...')
+            channels = utils.unique_channels(channels)
 
         logger.log.info('Updating playlist [%d channels]' % len(channels))
         try:

@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <category label="30100">
-        <setting label="30100" type="lsep"/>
-        <setting label="30101" type="select" id="provider" lvalues="30111|30112" />
-        <setting label="30102" type="text" id="username" default=""/>
-        <setting label="30103" type="text" id="password" option="hidden" enable="!eq(-1,)" default=""/>
-        <setting label="30104" type="bool" id="reuse_last_device" default="true"/>
-        <setting label="30105" type="bool" id="device_web_only" default="false"/>
-        <setting type="sep"/>
-        <setting label="30106" type="bool" id="pin_protected_content" default="true"/>
+        <setting label="30101" type="lsep"/>
+        <setting label="30103" type="text" id="username_sk" default=""/>
+        <setting label="30104" type="text" id="password_sk" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30105" type="bool" id="pin_protected_content_sk" default="true"/>
+        <setting label="30102" type="lsep"/>
+        <setting label="30103" type="text" id="username_cz" default=""/>
+        <setting label="30104" type="text" id="password_cz" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30105" type="bool" id="pin_protected_content_cz" default="true"/>
+        <setting label="" type="lsep"/>
+        <setting label="30106" type="bool" id="reuse_last_device" default="true"/>
+        <setting label="30107" type="bool" id="device_web_only" default="false"/>
     </category>
     <category label="30200">
         <setting label="30201" type="lsep"/>
         <setting label="30202" type="folder" id="playlist_folder" default=""/>
         <setting label="30203" type="text" id="playlist_file" default="playlist.m3u"/>
-        <setting label="30204" type="bool" id="sl_logos" default="false"/>
+        <setting label="30204" type="bool" id="playlist_unique" default="true" />
+        <setting label="30205" type="bool" id="sl_logos" default="false"/>
     </category>
     <category label="30300">
         <setting label="30301" type="lsep"/>

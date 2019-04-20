@@ -8,36 +8,32 @@ msgid "Account"
 msgstr "Účet"
 
 msgctxt "#30101"
-msgid "Provider"
-msgstr "Provider"
-
-msgctxt "#30102"
-msgid "Email / Card number"
-msgstr "Email / číslo karty"
-
-msgctxt "#30103"
-msgid "Password"
-msgstr "Heslo"
-
-msgctxt "#30111"
 msgid "Skylink SK"
 msgstr "Skylink SK"
 
-msgctxt "#30112"
+msgctxt "#30102"
 msgid "Skylink CZ"
 msgstr "Skylink CZ"
 
+msgctxt "#30103"
+msgid "Email / Card number"
+msgstr "Email / číslo karty"
+
 msgctxt "#30104"
+msgid "Password"
+msgstr "Heslo"
+
+msgctxt "#30105"
+msgid "Generate and show pin protected channels"
+msgstr "Generovať a zobrazovať obsah chránený PIN-om"
+
+msgctxt "#30106"
 msgid "When no device is available use oldest"
 msgstr "Ak žiadne zariadenie nie je dostupé, použi najstaršie"
 
-msgctxt "#30105"
+msgctxt "#30107"
 msgid "Limit devices list to web browser"
 msgstr "Obmedziť zariadenia v zozname len na prehliadače"
-
-msgctxt "#30106"
-msgid "Generate and show pin protected channels"
-msgstr "Generovať a zobrazovať obsah chránený PIN-om"
 
 msgctxt "#30200"
 msgid "Playlist"
@@ -56,6 +52,10 @@ msgid "Filename"
 msgstr "Súbor"
 
 msgctxt "#30204"
+msgid "Eliminate duplicate channels"
+msgstr "Odstrániť duplikátne stanice"
+
+msgctxt "#30205"
 msgid "Logo urls directly from Skylink Live TV site"
 msgstr "Url adresy pre logá staníc priamo zo stránky Skylink Live TV"
 

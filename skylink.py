@@ -45,6 +45,8 @@ class SkylinkSessionData:
 
 
 class Skylink:
+    account = None
+    _id = ''
     _username = ''
     _password = ''
     _cookies_path = ''
@@ -56,14 +58,16 @@ class Skylink:
     _login_url = ''
     _show_pin_protected = True
 
-    def __init__(self, username, password, cookies_storage_dir, provider='skylink.sk', show_pin_protected=True):
-        self._usermane = username
-        self._password = password
-        self._cookies_path = cookies_storage_dir
-        self._cookies_file = os.path.join(self._cookies_path, '%s.cookie' % username.lower())
-        self._url = 'https://livetv.' + provider
-        self._login_url = 'https://login.' + provider
-        self._show_pin_protected = show_pin_protected
+    def __init__(self, account):
+        self.account = account
+        self._id = account.id
+        self._username = account.username
+        self._password = account.password
+        self._cookies_path = account.cookies_path
+        self._cookies_file = os.path.join(self._cookies_path, '%s@%s.cookie' % (self._username.lower(), account.provider))
+        self._url = 'https://livetv.' + account.provider
+        self._login_url = 'https://login.' + account.provider
+        self._show_pin_protected = account.pin_protected
 
     def _store_cookies(self):
         if not os.path.exists(self._cookies_path):
@@ -87,13 +91,13 @@ class Skylink:
 
     def _auth(self, device=''):
 
-        if (self._usermane == '') or (self._password == ''):
+        if (self._username == '') or (self._password == ''):
             raise UserNotDefinedException
 
         self._session.cookies.clear()
         self._session.get(self._url + '/sso.aspx', headers={'User-Agent': UA})
 
-        resp = self._session.post(self._login_url, data={'Username': self._usermane, 'Password': self._password},
+        resp = self._session.post(self._login_url, data={'Username': self._username, 'Password': self._password},
                                   headers={'User-Agent': UA, 'Referer': self._url})
 
         self._data, error = self._parse_cookies()
@@ -187,6 +191,7 @@ class Skylink:
 
             if (is_stream and is_live and (not replay or is_replayable) and
                 (self._show_pin_protected or (not self._show_pin_protected and not is_pin_protected))):
+                c['account'] = self._id
                 c['pin'] = is_pin_protected
                 result.append(c)
 
