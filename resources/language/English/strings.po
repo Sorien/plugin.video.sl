@@ -31,6 +31,14 @@ msgctxt "#30104"
 msgid "When no device is available use oldest"
 msgstr "When no device is available use oldest"
 
+msgctxt "#30105"
+msgid "Limit devices list to web browser"
+msgstr "Limit devices list to web browser"
+
+msgctxt "#30106"
+msgid "Generate and show pin protected channels"
+msgstr "Generate and show pin protected channels"
+
 msgctxt "#30200"
 msgid "Playlist"
 msgstr "Playlist"
@@ -46,6 +54,10 @@ msgstr "Directory of playlist"
 msgctxt "#30203"
 msgid "Filename"
 msgstr "Filename"
+
+msgctxt "#30204"
+msgid "Logo urls directly from Skylink Live TV site"
+msgstr "Logo urls directly from Skylink Live TV site"
 
 msgctxt "#30300"
 msgid "EPG"
@@ -70,6 +82,34 @@ msgstr "Filename"
 msgctxt "#30305"
 msgid "Preload Days"
 msgstr "Preload Days"
+
+msgctxt "#30350"
+msgid "Archive"
+msgstr "Archive"
+
+msgctxt "#30351"
+msgid "Logos directly from Skylink Live TV site"
+msgstr "Logos directly from Skylink Live TV site"
+
+msgctxt "#30352"
+msgid "Logos location"
+msgstr "Logos location"
+
+msgctxt "#30353"
+msgid "local drive"
+msgstr "local drive"
+
+msgctxt "#30354"
+msgid "remote web"
+msgstr "remote web"
+
+msgctxt "#30355"
+msgid "Directory with logos"
+msgstr "Directory with logos"
+
+msgctxt "#30356"
+msgid "Base url for logos"
+msgstr "Base url for logos"
 
 msgctxt "#30401"
 msgid "M3U Playlist created"
@@ -102,6 +142,18 @@ msgstr "Too many active devices"
 msgctxt "#30506"
 msgid "Internet connection error"
 msgstr "Internet connection error"
+
+msgctxt "#30507"
+msgid "There are no web devices to choose!"
+msgstr "There are no web devices to choose!"
+
+msgctxt "#30508"
+msgid "Enter your PIN code:"
+msgstr "Enter your PIN code:"
+
+msgctxt "#30509"
+msgid "Nope!"
+msgstr "Nope!"
 
 msgctxt "#30600"
 msgid "Archive"
