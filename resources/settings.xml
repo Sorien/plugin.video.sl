@@ -2,17 +2,23 @@
 <settings>
     <category label="30100">
         <setting label="30101" type="lsep"/>
-        <setting label="30102" type="text" id="username_sk" default=""/>
-        <setting label="30103" type="text" id="password_sk" option="hidden" enable="!eq(-1,)" default=""/>
-        <setting label="30104" type="lsep"/>
-        <setting label="30105" type="text" id="username_cz" default=""/>
-        <setting label="30106" type="text" id="password_cz" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30103" type="text" id="username_sk" default=""/>
+        <setting label="30104" type="text" id="password_sk" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30105" type="bool" id="pin_protected_content_sk" default="true"/>
+        <setting label="30102" type="lsep"/>
+        <setting label="30103" type="text" id="username_cz" default=""/>
+        <setting label="30104" type="text" id="password_cz" option="hidden" enable="!eq(-1,)" default=""/>
+        <setting label="30105" type="bool" id="pin_protected_content_cz" default="true"/>
+        <setting label="" type="lsep"/>
+        <setting label="30106" type="bool" id="reuse_last_device" default="true"/>
+        <setting label="30107" type="bool" id="device_web_only" default="false"/>
     </category>
     <category label="30200">
         <setting label="30201" type="lsep"/>
         <setting label="30202" type="folder" id="playlist_folder" default=""/>
         <setting label="30203" type="text" id="playlist_file" default="playlist.m3u"/>
         <setting label="30204" type="bool" id="playlist_unique" default="true" />
+        <setting label="30205" type="bool" id="sl_logos" default="false"/>
     </category>
     <category label="30300">
         <setting label="30301" type="lsep"/>
@@ -20,5 +26,12 @@
         <setting label="30303" type="folder" id="epp_folder" default="" enable="eq(-1,true)"/>
         <setting label="30304" type="text" id="epg_file" default="epg.xml" enable="eq(-2,true)"/>
         <setting label="30305" type="slider" id="epg_days" default="2" range="1,1,7" option="int" enable="eq(-3,true)"/>
+    </category>
+    <category label="30350">
+        <setting label="30350" type="lsep"/>
+        <setting label="30351" type="bool" id="a_sl_logos" default="true"/>
+        <setting label="30352" type="enum" id="a_logos_location" lvalues="30353|30354" visible="eq(-1,false)" enable="eq(-1,false)"/>
+        <setting label="30355" type="folder" id="a_logos_folder" default="" visible="eq(-2,false)+eq(-1,0)" enable="eq(-2,false)+eq(-1,0)"/>
+        <setting label="30356" type="text" id="a_logos_base_url" default="https://koperfieldcz.github.io/skylink-livetv-logos/" visible="eq(-3,false)+eq(-2,1)" enable="eq(-3,false)+eq(-2,1)"/>
     </category>
 </settings>

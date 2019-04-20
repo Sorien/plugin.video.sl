@@ -12,24 +12,28 @@ msgid "Skylink SK"
 msgstr "Skylink SK"
 
 msgctxt "#30102"
-msgid "Email / Card number"
-msgstr "Email / Card number"
-
-msgctxt "#30103"
-msgid "Password"
-msgstr "Password"
-
-msgctxt "#30104"
 msgid "Skylink CZ"
 msgstr "Skylink CZ"
 
-msgctxt "#30105"
+msgctxt "#30103"
 msgid "Email / Card number"
 msgstr "Email / Card number"
 
-msgctxt "#30106"
+msgctxt "#30104"
 msgid "Password"
 msgstr "Password"
+
+msgctxt "#30105"
+msgid "Generate and show pin protected channels"
+msgstr "Generate and show pin protected channels"
+
+msgctxt "#30106"
+msgid "When no device is available use oldest"
+msgstr "When no device is available use oldest"
+
+msgctxt "#30107"
+msgid "Limit devices list to web browser"
+msgstr "Limit devices list to web browser"
 
 msgctxt "#30200"
 msgid "Playlist"
@@ -50,6 +54,10 @@ msgstr "Filename"
 msgctxt "#30204"
 msgid "Eliminate duplicate channels"
 msgstr "Eliminate duplicate channels"
+
+msgctxt "#30205"
+msgid "Logo urls directly from Skylink Live TV site"
+msgstr "Logo urls directly from Skylink Live TV site"
 
 msgctxt "#30300"
 msgid "EPG"
@@ -75,6 +83,34 @@ msgctxt "#30305"
 msgid "Preload Days"
 msgstr "Preload Days"
 
+msgctxt "#30350"
+msgid "Archive"
+msgstr "Archive"
+
+msgctxt "#30351"
+msgid "Logos directly from Skylink Live TV site"
+msgstr "Logos directly from Skylink Live TV site"
+
+msgctxt "#30352"
+msgid "Logos location"
+msgstr "Logos location"
+
+msgctxt "#30353"
+msgid "local drive"
+msgstr "local drive"
+
+msgctxt "#30354"
+msgid "remote web"
+msgstr "remote web"
+
+msgctxt "#30355"
+msgid "Directory with logos"
+msgstr "Directory with logos"
+
+msgctxt "#30356"
+msgid "Base url for logos"
+msgstr "Base url for logos"
+
 msgctxt "#30401"
 msgid "M3U Playlist created"
 msgstr "M3U Playlist created"
@@ -98,6 +134,74 @@ msgstr "M3U playlist can't be created"
 msgctxt "#30504"
 msgid "EPG file can't be created"
 msgstr "EPG file can't be created"
+
+msgctxt "#30505"
+msgid "Too many Skylink LiveTV connections"
+msgstr "Too many active devices"
+
+msgctxt "#30506"
+msgid "Internet connection error"
+msgstr "Internet connection error"
+
+msgctxt "#30507"
+msgid "There are no web devices to choose!"
+msgstr "There are no web devices to choose!"
+
+msgctxt "#30508"
+msgid "Enter your PIN code:"
+msgstr "Enter your PIN code:"
+
+msgctxt "#30509"
+msgid "Nope!"
+msgstr "Nope!"
+
+msgctxt "#30600"
+msgid "Archive"
+msgstr "Archive"
+
+msgctxt "#30601"
+msgid "today"
+msgstr "today"
+
+msgctxt "#30602"
+msgid "yesterday"
+msgstr "yesterday"
+
+msgctxt "#30603"
+msgid "the day after"
+msgstr "the day after"
+
+msgctxt "#30604"
+msgid "the day before"
+msgstr "the day before"
+
+msgctxt "#30610"
+msgid "monday"
+msgstr "monday"
+
+msgctxt "#30611"
+msgid "tuesday"
+msgstr "tuesday"
+
+msgctxt "#30612"
+msgid "wednesday"
+msgstr "wednesday"
+
+msgctxt "#30613"
+msgid "thursday"
+msgstr "thursday"
+
+msgctxt "#30614"
+msgid "friday"
+msgstr "friday"
+
+msgctxt "#30615"
+msgid "saturday"
+msgstr "saturday"
+
+msgctxt "#30616"
+msgid "sunday"
+msgstr "sunday"
 
 msgctxt "#30900"
 msgid "Music"

@@ -34,48 +34,62 @@ class TooManyDevicesException(SkylinkException):
         self.devices = data['devices']
 
 
+class SkylinkSessionData:
+    device = ''
+    lang = ''
+    app = ''
+    type = ''
+
+    def is_valid(self):
+        return (self.device != '') and (self.type == 'user')
+
+
 class Skylink:
+    account = None
     _id = ''
     _username = ''
     _password = ''
-    _data_root = ''
     _cookies_path = ''
+    _cookies_file = ''
     _session = requests.Session()
     _session.max_redirects = 3
-    _u, _q = '', {}
+    _data = SkylinkSessionData()
     _url = ''
     _login_url = ''
+    _show_pin_protected = True
 
-    def __init__(self, account, data_root):
+    def __init__(self, account):
+        self.account = account
         self._id = account.id
         self._username = account.username
         self._password = account.password
-        self._data_root = data_root
-        self._cookies_path = os.path.join(self._data_root, '%s@%s.cookie' % (self._username.lower(), account.provider))
+        self._cookies_path = account.cookies_path
+        self._cookies_file = os.path.join(self._cookies_path, '%s@%s.cookie' % (self._username.lower(), account.provider))
         self._url = 'https://livetv.' + account.provider
         self._login_url = 'https://login.' + account.provider
+        self._show_pin_protected = account.pin_protected
 
     def _store_cookies(self):
-        if not os.path.exists(self._data_root):
-            os.makedirs(self._data_root)
-        with open(self._cookies_path, 'w') as f:
+        if not os.path.exists(self._cookies_path):
+            os.makedirs(self._cookies_path)
+        with open(self._cookies_file, 'w') as f:
             json.dump(requests.utils.dict_from_cookiejar(self._session.cookies), f)
 
     def _load_cookies(self):
-        if os.path.exists(self._cookies_path):
-            with open(self._cookies_path, 'r') as f:
+        if os.path.exists(self._cookies_file):
+            with open(self._cookies_file, 'r') as f:
                 self._session.cookies = requests.utils.cookiejar_from_dict(json.load(f))
         else:
             self._session.cookies = requests.cookies.RequestsCookieJar()
 
-        ret, self._u, self._q, _ = self._parse_cookies()
-        return ret
+        self._data, _ = self._parse_cookies()
+        return self._data.is_valid()
 
     def _clear_cookies(self):
         self._session.cookies.clear()
         self._store_cookies()
 
-    def _auth(self, ubp=''):
+    def _auth(self, device=''):
 
         if (self._username == '') or (self._password == ''):
             raise UserNotDefinedException
@@ -86,36 +100,40 @@ class Skylink:
         resp = self._session.post(self._login_url, data={'Username': self._username, 'Password': self._password},
                                   headers={'User-Agent': UA, 'Referer': self._url})
 
-        r, self._u, self._q, error = self._parse_cookies()
+        self._data, error = self._parse_cookies()
         if ('error' in error) and (error['error'] == 'toomany'):
-            if ubp != '':
-                self._session.get(resp.url + '&ubp=' + ubp, headers={'User-Agent': UA, 'Referer': resp.url})
-                _, self._u, self._q, error = self._parse_cookies()
+            if device != '':
+                self._session.get(resp.url + '&ubp=' + device, headers={'User-Agent': UA, 'Referer': resp.url})
+                self._data, _ = self._parse_cookies()
             else:
                 raise TooManyDevicesException(error)
 
-        if self._u == '':
+        if not self._data.is_valid():
             raise UserInvalidException
 
-        return r
-
     def _parse_cookies(self):
-        u, q, e = '', {}, {}
+        data, e = SkylinkSessionData(), {}
         for cookie in self._session.cookies:
             if cookie.name == 'solocoo_user':
                 q = parse_qs(cookie.value)
+                data.app = q['app'][0]
+                data.lang = q['lang'][0]
+                data.type = q['type'][0]
             if cookie.name == 'slcuser_stats':
-                u = cookie.value
+                data.device = cookie.value
             if cookie.name == 'err':
                 e = json.loads(unquote(str(cookie.value)))
-        if (u != '') and (q['type'][0] == 'user'):
-            return True, u, q, e
+        if data.is_valid():
+            return data, {}
         else:
-            return False, '', {}, e
+            return SkylinkSessionData(), e
 
-    def reconnect(self, ubp=''):
+    def getUrl(self):
+        return self._url
+
+    def reconnect(self, device=''):
         try:
-            self._auth(ubp)
+            self._auth(device)
             self._store_cookies()
         except:
             self._clear_cookies()
@@ -125,7 +143,8 @@ class Skylink:
         if not self._load_cookies():
             self.reconnect('')
 
-    def _time(self):
+    @staticmethod
+    def _time():
         return int(time.time() * 1000)
 
     def _request(self, method, url, **kwargs):
@@ -133,8 +152,8 @@ class Skylink:
             return self._session.request(method, url, **kwargs)
         except requests.TooManyRedirects:
             # no error but user is not valid
-            r, _, _, _ = self._parse_cookies()
-            if not r:
+            data, _ = self._parse_cookies()
+            if not data.is_valid():
                 try:
                     self._auth()
                     self._store_cookies()
@@ -153,13 +172,12 @@ class Skylink:
                                       'Accept': 'application/json, text/javascript, */*; q=0.01',
                                       'X-Requested-With': 'XMLHttpRequest'})
 
-    def channels(self):
+    def channels(self, replay = False):
 
         self._login()
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
-        res = self._get({'z': 'epg', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
-                         'a': self._q['app'][0], 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7,
-                         'd': 3})
+        res = self._get({'z': 'epg', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
+                         'a': self._data.app, 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7, 'd': 3})
 
         data = res.json()
         result = []
@@ -168,9 +186,13 @@ class Skylink:
         for c in data[0][1]:
             is_stream = (len(data[1]) > (idx >> 5)) and (data[1][idx >> 5] & (1 << (idx & 31)) > 0)
             is_live = (len(data[3][0]) > (idx >> 5)) and (data[3][0][idx >> 5] & (1 << (idx & 31)) > 0)
+            is_replayable = (c['flags'] & 2048) > 0
+            is_pin_protected = (c['flags'] & 256) > 0
 
-            if is_stream and is_live:
+            if (is_stream and is_live and (not replay or is_replayable) and
+                (self._show_pin_protected or (not self._show_pin_protected and not is_pin_protected))):
                 c['account'] = self._id
+                c['pin'] = is_pin_protected
                 result.append(c)
 
             idx += 1
@@ -187,7 +209,7 @@ class Skylink:
         self._login()
 
         # https://livetv.skylink.sk/api.aspx?z=stream&lng=cs&_=1528789722179&u=w94e14412-8cef-b880-80ea-60a78b79490a&v=1&id=rzxqQ-kzUkG3x2PGEaxnFAAAAAE&d=3'
-        res = self._post({'z': 'stream', 'lng': self._q['lang'][0], '_': self._time(), 'u': self._u,
+        res = self._post({'z': 'stream', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
                           'v': 1, 'id': channel_id, 'd': 3},
                          json.dumps({'type': 'dash', 'flags': '4096'}).encode())
 
@@ -204,7 +226,8 @@ class Skylink:
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
 
-    def _ts(self, dt):
+    @staticmethod
+    def _ts(dt):
         return int(time.mktime(dt.timetuple())) * 1000
 
     # CS = 10011;
@@ -230,14 +253,23 @@ class Skylink:
     # MASK_SERIES_ID = 8192;
     # MASK_START = 64;
     # MASK_TITLE = 2;
-    def epg(self, channels, start_date=datetime.datetime.now(), days=1):
+    def epg(self, channels, start_date=datetime.datetime.now(), days=1, replay = False):
 
         self._login()
 
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528956297441&a=slsk&v=3&f=1528927200000&t=1529013600000&f_format=pg&cs=9491&s=2458762496!344807296!344809728!592296192
 
-        from_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        to_date = from_date + datetime.timedelta(days=days)
+        if replay:
+            # start_date ignored, days = 0 means today, 1 means yesterday, etc..
+            if days < 1 or days > 6: #means today
+                to_date = datetime.datetime.now()
+                from_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            else:
+                from_date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=days)
+                to_date = from_date + datetime.timedelta(days=1)
+        else:
+            from_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            to_date = from_date + datetime.timedelta(days=days)
 
         i = 0
         channels_count = len(channels)
@@ -247,8 +279,8 @@ class Skylink:
             i += 1
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
-                res = self._get({'z': 'epg', 'lng': 'sk', self._q['lang'][0]: self._time(), 'u': self._u,
-                                 'a': self._q['app'][0], 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
+                res = self._get({'z': 'epg', 'lng': 'sk', self._data.lang: self._time(), 'u': self._data.device,
+                                 'a': self._data.app, 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
                                  'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024, 's': channels_str[1:]})  # 212763
                 res = res.json()[1]
                 for channel_id in res:
@@ -263,7 +295,38 @@ class Skylink:
             data.update(self._times(data['locId']))
         return epg_info
 
-    def _times(self, loc):
+    def replay_info(self, locId):
+        self._login()
+        # https://livetv.skylink.cz/api.aspx?z=replay&lng=cs&_=1554981994979&u=...&v=1&lid=FI1OQ6ZAwAplvlIoogWjSO52J5RWvdbT&d=3
+        res = self._post({'z': 'replay', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
+            'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
+
+        stream = res.json()
+
+        mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA}
+        drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream', 'User-Agent': UA}
+
+        return {
+            'protocol': 'mpd',
+            'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
+            'drm': 'com.widevine.alpha',
+            'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
+        }
+
+    def pin_info(self):
+        self._login()
+        #https://livetv.skylink.cz/api.aspx?z=parentalPIN&lng=cs&_=1555347355278&u=...&a=slcz&r=1
+        res = self._get({'z': 'parentalPIN', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
+            'a': self._data.app, 'r': 1})
+        raw = res.text
+        if raw.startswith('"') and raw.endswith('"') and not raw.startswith('"-'):
+            pin = raw.replace('"','')
+            if len(pin) == 4:
+                return pin
+        return None
+
+    @staticmethod
+    def _times(loc):
         loc_base64 = loc.replace('-', '+').replace('_', '/')
         try:
             binstr = bytes(loc_base64)  # 2.7

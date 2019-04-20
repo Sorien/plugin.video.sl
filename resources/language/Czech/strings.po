@@ -12,24 +12,28 @@ msgid "Skylink SK"
 msgstr "Skylink SK"
 
 msgctxt "#30102"
-msgid "Email / Card number"
-msgstr "Email / číslo karty"
-
-msgctxt "#30103"
-msgid "Password"
-msgstr "Heslo"
-
-msgctxt "#30104"
 msgid "Skylink CZ"
 msgstr "Skylink CZ"
 
-msgctxt "#30105"
+msgctxt "#30103"
 msgid "Email / Card number"
 msgstr "Email / číslo karty"
 
-msgctxt "#30106"
+msgctxt "#30104"
 msgid "Password"
 msgstr "Heslo"
+
+msgctxt "#30105"
+msgid "Generate and show pin protected channels"
+msgstr "Generovat a zobrazovat obsah chráněný PIN-em"
+
+msgctxt "#30106"
+msgid "When no device is available use oldest"
+msgstr "Pokud není k dispozici žádné zařízení, použij nejstarší
+
+msgctxt "#30107"
+msgid "Limit devices list to web browser"
+msgstr "Omezit zařízení v seznamu pouze na prohlížeče"
 
 msgctxt "#30200"
 msgid "Playlist"
@@ -49,7 +53,11 @@ msgstr "Název souboru"
 
 msgctxt "#30204"
 msgid "Eliminate duplicate channels"
-msgstr "Odstrániť duplikátne stanice"
+msgstr "Odstranit duplicitní stanice"
+
+msgctxt "#30205"
+msgid "Logo urls directly from Skylink Live TV site"
+msgstr "Url adresy pro loga stanic přímo ze stránky Skylink Live TV"
 
 msgctxt "#30300"
 msgid "EPG"
@@ -75,6 +83,34 @@ msgctxt "#30305"
 msgid "Preload Days"
 msgstr "Počet dní"
 
+msgctxt "#30350"
+msgid "Archive"
+msgstr "Archiv"
+
+msgctxt "#30351"
+msgid "Logos directly from Skylink Live TV site"
+msgstr "Loga stanic přímo ze stránky Skylink Live TV"
+
+msgctxt "#30352"
+msgid "Logos location"
+msgstr "Umístění pro loga"
+
+msgctxt "#30353"
+msgid "local drive"
+msgstr "lokálně dostupné"
+
+msgctxt "#30354"
+msgid "remote web"
+msgstr "web stránka"
+
+msgctxt "#30355"
+msgid "Directory with logos"
+msgstr "Adresář s logy"
+
+msgctxt "#30356"
+msgid "Base url for logos"
+msgstr "Url stránky s logy"
+
 msgctxt "#30401"
 msgid "Playlist created"
 msgstr "Playlist byl vytvořen"
@@ -98,6 +134,74 @@ msgstr "M3U playlist nemůže být vytvořen"
 msgctxt "#30504"
 msgid "EPG file can't be created"
 msgstr "EPG soubor nemůže být vytvořen"
+
+msgctxt "#30505"
+msgid "Too many Skylink LiveTV connections"
+msgstr "Přihlášených příliš mnoho zařízení"
+
+msgctxt "#30506"
+msgid "Internet connection error"
+msgstr "Internetové spojení není dostupné"
+
+msgctxt "#30507"
+msgid "There are no web devices to choose!"
+msgstr "Nejsou k dispozici žádné prohlížeče na výběr!"
+
+msgctxt "#30508"
+msgid "Enter your PIN code:"
+msgstr "Zadejte svůj PIN kód:"
+
+msgctxt "#30509"
+msgid "Nope!"
+msgstr "Špatný PIN!"
+
+msgctxt "#30600"
+msgid "Archive"
+msgstr "Archiv"
+
+msgctxt "#30601"
+msgid "today"
+msgstr "dnes"
+
+msgctxt "#30602"
+msgid "yesterday"
+msgstr "včera"
+
+msgctxt "#30603"
+msgid "the day after"
+msgstr "následující den"
+
+msgctxt "#30604"
+msgid "the day before"
+msgstr "předešlý den"
+
+msgctxt "#30610"
+msgid "monday"
+msgstr "pondělí"
+
+msgctxt "#30611"
+msgid "tuesday"
+msgstr "úterý"
+
+msgctxt "#30612"
+msgid "wednesday"
+msgstr "středa"
+
+msgctxt "#30613"
+msgid "thursday"
+msgstr "čtvrtek"
+
+msgctxt "#30614"
+msgid "friday"
+msgstr "pátek"
+
+msgctxt "#30615"
+msgid "saturday"
+msgstr "sobota"
+
+msgctxt "#30616"
+msgid "sunday"
+msgstr "neděle"
 
 msgctxt "#30900"
 msgid "Music"
