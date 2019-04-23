@@ -111,6 +111,14 @@ msgctxt "#30356"
 msgid "Base url for logos"
 msgstr "Url stránky s logy"
 
+msgctxt "#30360"
+msgid "Live TV streams"
+msgstr "Zobrazit také živé vysílání"
+
+msgctxt "#30361"
+msgid "Next programs in improvised EPG"
+msgstr "Počet programů v improvizovaném EPG"
+
 msgctxt "#30401"
 msgid "Playlist created"
 msgstr "Playlist byl vytvořen"
@@ -202,6 +210,10 @@ msgstr "sobota"
 msgctxt "#30616"
 msgid "sunday"
 msgstr "neděle"
+
+msgctxt "#30700"
+msgid "Live TV"
+msgstr "Živé vysílání TV"
 
 msgctxt "#30900"
 msgid "Music"

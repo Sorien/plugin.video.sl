@@ -111,6 +111,14 @@ msgctxt "#30356"
 msgid "Base url for logos"
 msgstr "Base url for logos"
 
+msgctxt "#30360"
+msgid "Live TV streams"
+msgstr "Live TV streams"
+
+msgctxt "#30361"
+msgid "Next programs in improvised EPG"
+msgstr "Next programs in improvised EPG"
+
 msgctxt "#30401"
 msgid "M3U Playlist created"
 msgstr "M3U Playlist created"
@@ -202,6 +210,10 @@ msgstr "saturday"
 msgctxt "#30616"
 msgid "sunday"
 msgstr "sunday"
+
+msgctxt "#30700"
+msgid "Live TV"
+msgstr "Live TV"
 
 msgctxt "#30900"
 msgid "Music"
