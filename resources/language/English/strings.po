@@ -59,6 +59,10 @@ msgctxt "#30204"
 msgid "Logo urls directly from Skylink Live TV site"
 msgstr "Logo urls directly from Skylink Live TV site"
 
+msgctxt "#30205"
+msgid "Enabled M3U"
+msgstr "Enabled M3U"
+
 msgctxt "#30300"
 msgid "EPG"
 msgstr "EPG"
@@ -68,8 +72,8 @@ msgid "XMLTV"
 msgstr "XMLTV"
 
 msgctxt "#30302"
-msgid "Enabled"
-msgstr "Enabled"
+msgid "Enabled EPG"
+msgstr "Enabled EPG"
 
 msgctxt "#30303"
 msgid "Directory of EPG file"

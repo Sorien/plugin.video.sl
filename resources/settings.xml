@@ -12,9 +12,10 @@
     </category>
     <category label="30200">
         <setting label="30201" type="lsep"/>
-        <setting label="30202" type="folder" id="playlist_folder" default=""/>
-        <setting label="30203" type="text" id="playlist_file" default="playlist.m3u"/>
-        <setting label="30204" type="bool" id="sl_logos" default="false"/>
+        <setting label="30205" type="bool" id="playlist_generate" default="true" />
+        <setting label="30202" type="folder" id="playlist_folder" default="" enable="eq(-1,true)"/>
+        <setting label="30203" type="text" id="playlist_file" default="playlist.m3u" enable="eq(-2,true)"/>
+        <setting label="30204" type="bool" id="sl_logos" default="false" enable="eq(-3,true)"/>
     </category>
     <category label="30300">
         <setting label="30301" type="lsep"/>

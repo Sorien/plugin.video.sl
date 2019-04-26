@@ -36,7 +36,8 @@ class SkylinkMonitor(xbmc.Monitor):
         if not self.abortRequested():
             try:
                 res = self.update(True)
-                self.notify(self._addon.getLocalizedString(30400 + res))
+                if (-1 != res):
+                    self.notify(self._addon.getLocalizedString(30400 + res))
             except skylink.SkylinkException as e:
                 self.notify(self._addon.getLocalizedString(e.id), True)
 
@@ -44,8 +45,13 @@ class SkylinkMonitor(xbmc.Monitor):
         dt = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
         logger.log.info('Next update %s' % dt)
         self._next_update = dt
-
+    
     def update(self, try_reconnect=False):
+        _playlist_generate = 'true' == self._addon.getSetting('playlist_generate')
+        _epg_generate = 'true' == self._addon.getSetting('epg_generate')
+        if (not _playlist_generate and not _epg_generate):
+            return -1
+
         _username = self._addon.getSetting('username')
         _password = self._addon.getSetting('password')
         _profile = xbmc.translatePath(self._addon.getAddonInfo('profile'))
@@ -69,21 +75,22 @@ class SkylinkMonitor(xbmc.Monitor):
             else:
                 raise
 
-        logger.log.info('Updating playlist [%d channels]' % len(channels))
-        try:
-            path = os.path.join(self._addon.getSetting('playlist_folder'), self._addon.getSetting('playlist_file'))
-            _skylink_logos = 'true' == self._addon.getSetting('sl_logos')
-            exports.create_m3u(channels, path, sl.getUrl() + '/' if _skylink_logos else None)
-            result = 1
-        except IOError as e:
-            logger.log.error(str(e))
-            raise skylink.SkylinkException(30503)
-
-        if bool(self._addon.getSetting('epg_generate')):
-            days = int(self._addon.getSetting('epg_days'))
-            logger.log.info('Updating EPG [%d days from %s]' % (days, datetime.datetime.now()))
-            path = os.path.join(self._addon.getSetting('epp_folder'), self._addon.getSetting('epg_file'))
+        if _playlist_generate:
             try:
+                path = os.path.join(self._addon.getSetting('playlist_folder'), self._addon.getSetting('playlist_file'))
+                _skylink_logos = 'true' == self._addon.getSetting('sl_logos')
+                logger.log.info('Updating playlist [%d channels]' % len(channels))
+                exports.create_m3u(channels, path, sl.getUrl() + '/' if _skylink_logos else None)
+                result = 1
+            except IOError as e:
+                logger.log.error(str(e))
+                raise skylink.SkylinkException(30503)
+
+        if _epg_generate:
+            try:
+                days = int(self._addon.getSetting('epg_days'))
+                path = os.path.join(self._addon.getSetting('epp_folder'), self._addon.getSetting('epg_file'))
+                logger.log.info('Updating EPG [%d days from %s]' % (days, datetime.datetime.now()))
                 exports.create_epg(channels, sl.epg(channels, datetime.datetime.now(), days), path, self._addon, sl.getUrl() + '/')
                 result = 2
             except IOError as e:
