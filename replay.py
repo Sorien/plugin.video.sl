@@ -4,46 +4,21 @@
 import sys
 import inputstreamhelper
 import logger
-import requests
-import skylink
-import exports
-import xbmc
 import xbmcaddon
 import xbmcgui
-import urlparse
-import urllib
 import xbmcplugin
+import urllib
 import datetime
-import os
 import utils
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
-_skylink_logos = 'false' != xbmcplugin.getSetting(_handle, 'a_sl_logos')
-if not _skylink_logos:
-    _remote_logos = '1' == xbmcplugin.getSetting(_handle, 'a_logos_location')
-    if _remote_logos:
-        _logos_base_url = xbmcplugin.getSetting(_handle, 'a_logos_base_url')
-        if not _logos_base_url.endswith("/"):
-            _logos_base_url = _logos_base_url + "/"
-    else:
-        _logos_folder = xbmcplugin.getSetting(_handle, 'a_logos_folder')
 
 REPLAY_GAP = 5 #gap after program ends til it shows in replay
 
 def get_url(**kwargs):
 	return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
-
-def get_logo(title, sl):
-    if _skylink_logos:
-        return sl.getUrl() + "/" + exports.logo_sl_location(title)
-    
-    if _remote_logos:
-        return _logos_base_url + exports.logo_id(title)
-
-    return os.path.join(_logos_folder, exports.logo_id(title))
-
 
 def channels(sl):
     channels = utils.call(sl, lambda: sl.channels(True))
@@ -52,7 +27,7 @@ def channels(sl):
         for channel in channels:
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title']}) #TODO - genre?
-            list_item.setArt({'thumb': get_logo(channel['title'], sl)})
+            list_item.setArt({'thumb': utils.get_logo(channel['title'], sl)})
             link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'], askpin=channel['pin'])
             is_folder = True
             xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)

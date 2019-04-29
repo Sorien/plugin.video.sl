@@ -12,9 +12,10 @@
     </category>
     <category label="30200">
         <setting label="30201" type="lsep"/>
-        <setting label="30202" type="folder" id="playlist_folder" default=""/>
-        <setting label="30203" type="text" id="playlist_file" default="playlist.m3u"/>
-        <setting label="30204" type="bool" id="sl_logos" default="false"/>
+        <setting label="30205" type="bool" id="playlist_generate" default="true" />
+        <setting label="30202" type="folder" id="playlist_folder" default="" enable="eq(-1,true)"/>
+        <setting label="30203" type="text" id="playlist_file" default="playlist.m3u" enable="eq(-2,true)"/>
+        <setting label="30204" type="bool" id="sl_logos" default="false" enable="eq(-3,true)"/>
     </category>
     <category label="30300">
         <setting label="30301" type="lsep"/>
@@ -29,5 +30,7 @@
         <setting label="30352" type="enum" id="a_logos_location" lvalues="30353|30354" visible="eq(-1,false)" enable="eq(-1,false)"/>
         <setting label="30355" type="folder" id="a_logos_folder" default="" visible="eq(-2,false)+eq(-1,0)" enable="eq(-2,false)+eq(-1,0)"/>
         <setting label="30356" type="text" id="a_logos_base_url" default="https://koperfieldcz.github.io/skylink-livetv-logos/" visible="eq(-3,false)+eq(-2,1)" enable="eq(-3,false)+eq(-2,1)"/>
+        <setting label="30360" type="bool" id="a_show_live" default="false"/>
+        <setting label="30361" type="slider" id="a_live_epg_next" default="7" range="2,1,14" option="int" visible="eq(-1,true)"/>
     </category>
 </settings>

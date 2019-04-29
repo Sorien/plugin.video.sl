@@ -59,6 +59,10 @@ msgctxt "#30204"
 msgid "Logo urls directly from Skylink Live TV site"
 msgstr "Logo urls directly from Skylink Live TV site"
 
+msgctxt "#30205"
+msgid "Enabled M3U"
+msgstr "Enabled M3U"
+
 msgctxt "#30300"
 msgid "EPG"
 msgstr "EPG"
@@ -68,8 +72,8 @@ msgid "XMLTV"
 msgstr "XMLTV"
 
 msgctxt "#30302"
-msgid "Enabled"
-msgstr "Enabled"
+msgid "Enabled EPG"
+msgstr "Enabled EPG"
 
 msgctxt "#30303"
 msgid "Directory of EPG file"
@@ -110,6 +114,14 @@ msgstr "Directory with logos"
 msgctxt "#30356"
 msgid "Base url for logos"
 msgstr "Base url for logos"
+
+msgctxt "#30360"
+msgid "Live TV streams"
+msgstr "Live TV streams"
+
+msgctxt "#30361"
+msgid "Next programs in improvised EPG"
+msgstr "Next programs in improvised EPG"
 
 msgctxt "#30401"
 msgid "M3U Playlist created"
@@ -202,6 +214,10 @@ msgstr "saturday"
 msgctxt "#30616"
 msgid "sunday"
 msgstr "sunday"
+
+msgctxt "#30700"
+msgid "Live TV"
+msgstr "Live TV"
 
 msgctxt "#30900"
 msgid "Music"

@@ -59,6 +59,10 @@ msgctxt "#30204"
 msgid "Logo urls directly from Skylink Live TV site"
 msgstr "Url adresy pre logá staníc priamo zo stránky Skylink Live TV"
 
+msgctxt "#30205"
+msgid "Enabled M3U"
+msgstr "Generovať M3U"
+
 msgctxt "#30300"
 msgid "EPG"
 msgstr "EPG"
@@ -68,8 +72,8 @@ msgid "XMLTV"
 msgstr "XMLTV"
 
 msgctxt "#30302"
-msgid "Enabled"
-msgstr "Generovať"
+msgid "Enabled EPG"
+msgstr "Generovať EPG"
 
 msgctxt "#30303"
 msgid "Directory of EPG file"
@@ -110,6 +114,14 @@ msgstr "Adresár s logami"
 msgctxt "#30356"
 msgid "Base url for logos"
 msgstr "Url stránky s logami"
+
+msgctxt "#30360"
+msgid "Live TV streams"
+msgstr "Zobraziť aj živé vysielanie"
+
+msgctxt "#30361"
+msgid "Next programs in improvised EPG"
+msgstr "Počet programov v improvizovanom EPG"
 
 msgctxt "#30401"
 msgid "M3U Playlist created"
@@ -202,6 +214,10 @@ msgstr "sobota"
 msgctxt "#30616"
 msgid "sunday"
 msgstr "nedeľa"
+
+msgctxt "#30700"
+msgid "Live TV"
+msgstr "Živé vysielanie TV"
 
 msgctxt "#30900"
 msgid "Music"

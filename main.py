@@ -9,6 +9,7 @@ import xbmcgui
 import urlparse
 import xbmcplugin
 import replay
+import live
 import utils
 
 _id = int(sys.argv[1])
@@ -18,6 +19,7 @@ _user_name = xbmcplugin.getSetting(_id, 'username')
 _password = xbmcplugin.getSetting(_id, 'password')
 _provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
 _pin_protected_content = 'false' != xbmcplugin.getSetting(_id, 'pin_protected_content')
+_a_show_live = 'false' != xbmcplugin.getSetting(_id, 'a_show_live')
 
 def play(channel_id, askpin):
     logger.log.info('play: ' + channel_id)
@@ -51,9 +53,13 @@ if __name__ == '__main__':
         play(str(args['id'][0]), str(args['askpin'][0]) if 'askpin' in args else 'False')
     elif 'replay' in args:
         replay.router(args, skylink.Skylink(_user_name, _password, _profile, _provider, _pin_protected_content))
+    elif 'live' in args:
+        live.router(args, skylink.Skylink(_user_name, _password, _profile, _provider, _pin_protected_content))
     else:
         xbmcplugin.setPluginCategory(_id, '')
         xbmcplugin.setContent(_id, 'videos')
         xbmcplugin.addDirectoryItem(_id, replay.get_url(replay='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30600)), True)
+        if _a_show_live:
+            xbmcplugin.addDirectoryItem(_id, replay.get_url(live='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30700)), True)
         xbmcplugin.endOfDirectory(_id)
 

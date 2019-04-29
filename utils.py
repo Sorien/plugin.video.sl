@@ -1,14 +1,34 @@
 # -*- coding: utf-8 -*-
 # Author: cache
 # Created on: 15.4.2019
-
+import sys
 import xbmcaddon
 import xbmcgui
 import skylink
+import exports
 import requests
 import logger
+import os
 
 _addon = xbmcaddon.Addon()
+_skylink_logos = 'false' != _addon.getSetting('a_sl_logos')
+if not _skylink_logos:
+    _remote_logos = '1' == _addon.getSetting('a_logos_location')
+    if _remote_logos:
+        _logos_base_url = _addon.getSetting('a_logos_base_url')
+        if not _logos_base_url.endswith("/"):
+            _logos_base_url = _logos_base_url + "/"
+    else:
+        _logos_folder = _addon.getSetting('a_logos_folder')
+
+def get_logo(title, sl):
+    if _skylink_logos:
+        return sl.getUrl() + "/" + exports.logo_sl_location(title)
+    
+    if _remote_logos:
+        return _logos_base_url + exports.logo_id(title)
+
+    return os.path.join(_logos_folder, exports.logo_id(title))
 
 def strip_devices(devices):
     strip = _addon.getSetting('device_web_only') == 'true'
