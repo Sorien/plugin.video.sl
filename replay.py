@@ -57,7 +57,9 @@ def programs(sl, stationid, channel, day=0, first=False):
     if today:
         now = datetime.datetime.now()
 
-    epg = utils.call(sl, lambda: sl.epg([{'stationid':stationid}], None, day, True))
+    epg_from = datetime.datetime.now() - datetime.timedelta(days=day)
+    epg_to = epg_from + datetime.timedelta(days=1)
+    epg = utils.call(sl, lambda: sl.epg([{'stationid':stationid}], epg_from, epg_to))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
     if day < 6:
