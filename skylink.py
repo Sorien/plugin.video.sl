@@ -1,4 +1,5 @@
 import binascii
+import datetime
 import json
 import os
 import time
@@ -250,7 +251,7 @@ class Skylink:
         """
         self._login()
         from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
 
         i = 0
         channels_count = len(channels)
