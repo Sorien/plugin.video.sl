@@ -20,7 +20,7 @@ def logo_id(title):
     return title.replace('+', 'plus').lower() + '.png'
 
 def logo_sl_location(title):
-    rplcmnts = {':':'', '/':'', ':':'','+':'',' ':'%20'}
+    rplcmnts = {':':'', '/':'', '+':'',' ':'%20'}
     for ch in rplcmnts.keys():
         title = title.replace(ch, rplcmnts[ch])
     return 'mmchan/channelicons/' + title + '_w267.png'

@@ -7,8 +7,8 @@ import logger
 import skylink
 import xbmc
 import xbmcaddon
-import xbmcgui
 import utils
+
 
 class SkylinkMonitor(xbmc.Monitor):
     _addon = None
@@ -19,38 +19,37 @@ class SkylinkMonitor(xbmc.Monitor):
         self._addon = xbmcaddon.Addon()
         ts = self._addon.getSetting('next_update')
         self._next_update = datetime.datetime.now() if ts == '' else datetime.datetime.fromtimestamp(float(ts))
-    
+
     def __del__(self):
         logger.log.info('service destroyed')
 
     def notify(self, text, error=False):
-        ltext = text = text.encode("utf-8") if type(text) is unicode else text
-        icon = 'DefaultIconError.png' if error else '' #u
-        logger.log.info(str(type(icon)) + ' - ' + icon)
-        logger.log.info(str(type(self._addon.getAddonInfo('name').encode("utf-8"))) + ' - ' + self._addon.getAddonInfo('name').encode("utf-8"))
-        logger.log.info(str(type(text)) + ' - ' + ltext)
-        xbmc.executebuiltin('Notification("%s","%s",5000, %s)' % (self._addon.getAddonInfo('name').encode("utf-8"), ltext, icon)) #u
+        text = text.encode("utf-8") if type(text) is unicode else text
+        icon = 'DefaultIconError.png' if error else ''
+        xbmc.executebuiltin('Notification("%s","%s",5000,%s)' % (self._addon.getAddonInfo('name').encode("utf-8"), text, icon))
 
     def onSettingsChanged(self):
-        self._addon = xbmcaddon.Addon() #refresh for updated settings!
+        self._addon = xbmcaddon.Addon()  # refresh for updated settings!
         if not self.abortRequested():
             try:
                 res = self.update(True)
-                if (-1 != res):
+                if res != -1:
                     self.notify(self._addon.getLocalizedString(30400 + res))
             except skylink.SkylinkException as e:
                 self.notify(self._addon.getLocalizedString(e.id), True)
 
-    def shedule_next(self, seconds):
+    def schedule_next(self, seconds):
         dt = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
         logger.log.info('Next update %s' % dt)
         self._next_update = dt
-    
+
     def update(self, try_reconnect=False):
+        result = -1
+
         _playlist_generate = 'true' == self._addon.getSetting('playlist_generate')
         _epg_generate = 'true' == self._addon.getSetting('epg_generate')
-        if (not _playlist_generate and not _epg_generate):
-            return -1
+        if not _playlist_generate and not _epg_generate:
+            return result
 
         _username = self._addon.getSetting('username')
         _password = self._addon.getSetting('password')
@@ -92,7 +91,8 @@ class SkylinkMonitor(xbmc.Monitor):
                 path = os.path.join(self._addon.getSetting('epp_folder'), self._addon.getSetting('epg_file'))
                 logger.log.info('Updating EPG [%d days from %s]' % (days, datetime.datetime.now()))
                 today = datetime.datetime.now()
-                exports.create_epg(channels, sl.epg(channels, today, today + datetime.timedelta(days=days)), path, self._addon, sl.getUrl() + '/')
+                exports.create_epg(channels, sl.epg(channels, today, today + datetime.timedelta(days=days)), path,
+                                   self._addon, sl.getUrl() + '/')
                 result = 2
             except IOError as e:
                 logger.log.error(str(e))
@@ -103,12 +103,12 @@ class SkylinkMonitor(xbmc.Monitor):
     def tick(self):
         if datetime.datetime.now() > self._next_update:
             try:
-                self.shedule_next(12 * 60 * 60)
+                self.schedule_next(12 * 60 * 60)
                 self.update()
             except skylink.UserNotDefinedException:
                 pass
             except requests.exceptions.ConnectionError:
-                self.shedule_next(60)
+                self.schedule_next(60)
                 logger.log.info('Can''t update, no internet connection')
                 pass
             except skylink.SkylinkException as e:
