@@ -168,9 +168,13 @@ class Skylink:
                                       'X-Requested-With': 'XMLHttpRequest'})
 
     def channels(self, replay=False):
+        """Returns available live channels, when reply is set returns replayable channels as well
+        :param replay: bool
+        :return: Channels data
 
+        Api call: https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
+        """
         self._login()
-        # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
         res = self._get({'z': 'epg', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
                          'a': self._data.app, 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7, 'd': 3})
 
@@ -199,8 +203,13 @@ class Skylink:
         return res[1:]
 
     def channel_info(self, channel_id):
+        """Returns channel info
+        :param channel_id:
+        :return: Channel info
+
+        Api call: https://livetv.skylink.sk/api.aspx?z=stream&lng=cs&_=1528789722179&u=w94e14412-8cef-b880-80ea-60a78b79490a&v=1&id=rzxqQ-kzUkG3x2PGEaxnFAAAAAE&d=3
+        """
         self._login()
-        # https://livetv.skylink.sk/api.aspx?z=stream&lng=cs&_=1528789722179&u=w94e14412-8cef-b880-80ea-60a78b79490a&v=1&id=rzxqQ-kzUkG3x2PGEaxnFAAAAAE&d=3'
         res = self._post({'z': 'stream', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
                           'v': 1, 'id': channel_id, 'd': 3},
                          json.dumps({'type': 'dash', 'flags': '4096'}).encode())
@@ -222,32 +231,24 @@ class Skylink:
     def _ts(dt):
         return int(time.mktime(dt.timetuple())) * 1000
 
-    # CS = 10011;
-    # CS_DETAILS = 212763;
-    # CS_FOR_REMINDERS = 9475;
-    # CS_FOR_SEARCH = 42779;
-    # CS_TV_GUIDE = 259;
-    # LIMIT_NONE = -1;
-    # MASK_AGE = 16;
-    # MASK_AIRDATE = 16777216;
-    # MASK_CATEGORY = 32;
-    # MASK_CHANEL_NAME = 32768;
-    # MASK_COVER = 1024;
-    # MASK_CREDITS = 131072;
-    # MASK_DESCRIPTION = 8;
-    # MASK_END = 128;
-    # MASK_EPISODE_NO = 4096;
-    # MASK_FLAGS = 256;
-    # MASK_GENRE = 512;
-    # MASK_GENRES = 65536;
-    # MASK_ID = 1;
-    # MASK_SEASON_NO = 2048;
-    # MASK_SERIES_ID = 8192;
-    # MASK_START = 64;
-    # MASK_TITLE = 2;
     def epg(self, channels, from_date, to_date):
+        """Returns EPG data
+        :param channels: Result from channels function
+        :param from_date: datetime First day of requested Epg
+        :param to_date: datetime Last day of requested Epg
+        :return: Epg data
+
+        Api call: https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528956297441&a=slsk&v=3&f=1528927200000&t=1529013600000&f_format=pg&cs=9491&s=2458762496!344807296!344809728!592296192
+
+        cs param values:
+            CS = 10011; CS_DETAILS = 212763; CS_FOR_REMINDERS = 9475; CS_FOR_SEARCH = 42779; CS_TV_GUIDE = 259;
+            LIMIT_NONE = -1;
+            MASK_AGE = 16; MASK_AIRDATE = 16777216; MASK_CATEGORY = 32; MASK_CHANEL_NAME = 32768; MASK_COVER = 1024;
+            MASK_CREDITS = 131072; MASK_DESCRIPTION = 8; MASK_END = 128; MASK_EPISODE_NO = 4096; MASK_FLAGS = 256;
+            MASK_GENRE = 512; MASK_GENRES = 65536; MASK_ID = 1; MASK_SEASON_NO = 2048; MASK_SERIES_ID = 8192;
+            MASK_START = 64;  MASK_TITLE = 2;
+        """
         self._login()
-        # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528956297441&a=slsk&v=3&f=1528927200000&t=1529013600000&f_format=pg&cs=9491&s=2458762496!344807296!344809728!592296192
         from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
         to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
@@ -276,8 +277,13 @@ class Skylink:
         return epg_info
 
     def replay_info(self, locId):
+        """Returns reply info
+        :param locId:
+        :return: Reply info
+
+        Api call: https://livetv.skylink.cz/api.aspx?z=replay&lng=cs&_=1554981994979&u=...&v=1&lid=FI1OQ6ZAwAplvlIoogWjSO52J5RWvdbT&d=3
+        """
         self._login()
-        # https://livetv.skylink.cz/api.aspx?z=replay&lng=cs&_=1554981994979&u=...&v=1&lid=FI1OQ6ZAwAplvlIoogWjSO52J5RWvdbT&d=3
         res = self._post({'z': 'replay', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
                           'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
 
@@ -295,8 +301,12 @@ class Skylink:
         }
 
     def pin_info(self):
+        """Returns pin info
+        :return:
+
+        Api call: https://livetv.skylink.cz/api.aspx?z=parentalPIN&lng=cs&_=1555347355278&u=...&a=slcz&r=1
+        """
         self._login()
-        # https://livetv.skylink.cz/api.aspx?z=parentalPIN&lng=cs&_=1555347355278&u=...&a=slcz&r=1
         res = self._get({'z': 'parentalPIN', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
                          'a': self._data.app, 'r': 1})
         raw = res.text
