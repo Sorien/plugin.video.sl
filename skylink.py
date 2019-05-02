@@ -248,23 +248,14 @@ class Skylink:
     # MASK_SERIES_ID = 8192;
     # MASK_START = 64;
     # MASK_TITLE = 2;
-    def epg(self, channels, start_date=datetime.datetime.now(), days=1, replay = False):
+    def epg(self, channels, from_date, to_date):
 
         self._login()
 
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528956297441&a=slsk&v=3&f=1528927200000&t=1529013600000&f_format=pg&cs=9491&s=2458762496!344807296!344809728!592296192
 
-        if replay:
-            # start_date ignored, days = 0 means today, 1 means yesterday, etc..
-            if days < 1 or days > 6: #means today
-                to_date = datetime.datetime.now()
-                from_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0)
-            else:
-                from_date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=days)
-                to_date = from_date + datetime.timedelta(days=1)
-        else:
-            from_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
-            to_date = from_date + datetime.timedelta(days=days)
+        from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
+        to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
 
         i = 0
         channels_count = len(channels)
