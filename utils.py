@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: cache
 # Created on: 15.4.2019
-import sys
 import xbmcaddon
 import xbmcgui
 import skylink

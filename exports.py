@@ -19,18 +19,20 @@ def logo_id(title):
         title = title.replace(ch, '')
     return title.replace('+', 'plus').lower() + '.png'
 
+
 def logo_sl_location(title):
-    rplcmnts = {':':'', '/':'', '+':'',' ':'%20'}
-    for ch in rplcmnts.keys():
-        title = title.replace(ch, rplcmnts[ch])
+    replacements = {':': '', '/': '', '+': '', ' ': '%20'}
+    for ch in replacements.keys():
+        title = title.replace(ch, replacements[ch])
     return 'mmchan/channelicons/' + title + '_w267.png'
+
 
 def create_m3u(channels, path, url):
     with io.open(path, 'w', encoding='utf8') as file:
         file.write(u'#EXTM3U\n')
 
         for c in channels:
-            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s",%s\n' % ( #
+            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s",%s\n' % (
                 c['stationid'],
                 url + logo_sl_location(c['title']) if url is not None else logo_id(c['title']),
                 c['title']))
@@ -52,7 +54,6 @@ def create_epg(channels, epg, path, addon=None, url='https://livetv.skylink.sk/'
         for e in epg:
             for c in e:
                 for p in e[str(c)]:
-                    # delta = datetime.datetime.fromtimestamp(p['start']) - datetime.datetime.utcfromtimestamp(p['start'])
                     b = datetime.datetime.fromtimestamp(p['start'])
                     e = b + datetime.timedelta(minutes=p['duration'])
                     file.write(u'<programme channel="%s" start="%s" stop="%s">\n' % (
