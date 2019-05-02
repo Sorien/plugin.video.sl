@@ -59,9 +59,9 @@ def days(sl, stationid, channel, askpin):
 def programs(sl, stationid, channel, day=0, first=False):
     today = day == 0
     now = datetime.datetime.now()
+    actual_date = now.replace(hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=day)
 
-    current_date = now - datetime.timedelta(days=day)
-    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], current_date, current_date))
+    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], actual_date, actual_date))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
     if day < 6:
@@ -73,7 +73,8 @@ def programs(sl, stationid, channel, day=0, first=False):
     if epg:
         for program in epg[0][stationid]:
             start = datetime.datetime.fromtimestamp(program['start'])
-            show_item = ((start - current_date).days == 0) and (not today or start + datetime.timedelta(minutes=program['duration'] + REPLAY_GAP) < now)
+            started_actual_date = (start.replace(hour=0, minute=0, second=0, microsecond=0) - actual_date).days == 0
+            show_item = started_actual_date and (not today or start + datetime.timedelta(minutes=program['duration'] + REPLAY_GAP) < now)
             if show_item:
                 title = start.strftime('%H:%M').decode('UTF-8')
                 title = title[1:] if title.startswith('0') else title
