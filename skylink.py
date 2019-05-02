@@ -137,7 +137,7 @@ class Skylink:
 
     def _login(self):
         if not self._load_cookies():
-            self.reconnect('')
+            self.reconnect()
 
     @staticmethod
     def _time():
@@ -168,7 +168,7 @@ class Skylink:
                                       'Accept': 'application/json, text/javascript, */*; q=0.01',
                                       'X-Requested-With': 'XMLHttpRequest'})
 
-    def channels(self, replay = False):
+    def channels(self, replay=False):
 
         self._login()
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528800771023&u=w94e14412-8cef-b880-80ea-60a78b79490a&a=slsk&v=3&cs=111&f_format=clx&streams=7&d=3
@@ -186,7 +186,7 @@ class Skylink:
             is_pin_protected = (c['flags'] & 256) > 0
 
             if (is_stream and is_live and (not replay or is_replayable) and
-                (self._show_pin_protected or (not self._show_pin_protected and not is_pin_protected))):
+                    (self._show_pin_protected or (not self._show_pin_protected and not is_pin_protected))):
                 c['pin'] = is_pin_protected
                 result.append(c)
 
@@ -200,9 +200,7 @@ class Skylink:
         return res[1:]
 
     def channel_info(self, channel_id):
-
         self._login()
-
         # https://livetv.skylink.sk/api.aspx?z=stream&lng=cs&_=1528789722179&u=w94e14412-8cef-b880-80ea-60a78b79490a&v=1&id=rzxqQ-kzUkG3x2PGEaxnFAAAAAE&d=3'
         res = self._post({'z': 'stream', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
                           'v': 1, 'id': channel_id, 'd': 3},
@@ -249,11 +247,8 @@ class Skylink:
     # MASK_START = 64;
     # MASK_TITLE = 2;
     def epg(self, channels, from_date, to_date):
-
         self._login()
-
         # https://livetv.skylink.sk/api.aspx?z=epg&lng=cs&_=1528956297441&a=slsk&v=3&f=1528927200000&t=1529013600000&f_format=pg&cs=9491&s=2458762496!344807296!344809728!592296192
-
         from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
         to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
 
@@ -285,12 +280,13 @@ class Skylink:
         self._login()
         # https://livetv.skylink.cz/api.aspx?z=replay&lng=cs&_=1554981994979&u=...&v=1&lid=FI1OQ6ZAwAplvlIoogWjSO52J5RWvdbT&d=3
         res = self._post({'z': 'replay', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
-            'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
+                          'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
 
         stream = res.json()
 
         mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA}
-        drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream', 'User-Agent': UA}
+        drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
+                          'User-Agent': UA}
 
         return {
             'protocol': 'mpd',
@@ -301,12 +297,12 @@ class Skylink:
 
     def pin_info(self):
         self._login()
-        #https://livetv.skylink.cz/api.aspx?z=parentalPIN&lng=cs&_=1555347355278&u=...&a=slcz&r=1
+        # https://livetv.skylink.cz/api.aspx?z=parentalPIN&lng=cs&_=1555347355278&u=...&a=slcz&r=1
         res = self._get({'z': 'parentalPIN', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
-            'a': self._data.app, 'r': 1})
+                         'a': self._data.app, 'r': 1})
         raw = res.text
         if raw.startswith('"') and raw.endswith('"') and not raw.startswith('"-'):
-            pin = raw.replace('"','')
+            pin = raw.replace('"', '')
             if len(pin) == 4:
                 return pin
         return None

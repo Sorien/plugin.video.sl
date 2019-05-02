@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: cache
 # Created on: 15.4.2019
-import sys
 import xbmcaddon
 import xbmcgui
 import skylink
@@ -21,14 +20,16 @@ if not _skylink_logos:
     else:
         _logos_folder = _addon.getSetting('a_logos_folder')
 
+
 def get_logo(title, sl):
     if _skylink_logos:
         return sl.getUrl() + "/" + exports.logo_sl_location(title)
-    
+
     if _remote_logos:
         return _logos_base_url + exports.logo_id(title)
 
     return os.path.join(_logos_folder, exports.logo_id(title))
+
 
 def strip_devices(devices):
     strip = _addon.getSetting('device_web_only') == 'true'
@@ -43,7 +44,7 @@ def strip_devices(devices):
         dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
 
     return stripped
-    
+
 
 def select_device(devices):
     devices = strip_devices(devices)
@@ -85,7 +86,8 @@ def call(sl, fn):
         dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30506))
 
     return result
-    
+
+
 def ask_for_pin(sl):
     pin = sl.pin_info()
     if pin is not None:
