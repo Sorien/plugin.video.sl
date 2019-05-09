@@ -53,7 +53,7 @@ def play(sl, lid, stationid, askpin):
     def get_plot_line(start, title):
         return '[B]' + start.strftime('%H:%M').decode('UTF-8') + '[/B] ' + title + '[CR]'
 
-    plot = ''
+    plot = u''
     today = datetime.datetime.now()
     epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=2)))
     if epg:
