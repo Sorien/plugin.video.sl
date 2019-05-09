@@ -67,7 +67,7 @@ def play(sl, lid, stationid, askpin):
                 if last_program is not None:
                     last_start = datetime.datetime.fromtimestamp(last_program['start'])
                     if last_start + datetime.timedelta(minutes=last_program['duration'] + EPG_GAP) > now:
-                        plot += + get_plot_line(last_start, last_program['title'])
+                        plot += get_plot_line(last_start, last_program['title'])
                         items_left -= 1
                         last_program = None
                 plot += get_plot_line(start, program['title'])
