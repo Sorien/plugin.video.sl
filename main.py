@@ -1,7 +1,6 @@
 import sys
 import inputstreamhelper
 import logger
-import requests
 import skylink
 import xbmc
 import xbmcaddon
@@ -21,6 +20,7 @@ _provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 els
 _pin_protected_content = 'false' != xbmcplugin.getSetting(_id, 'pin_protected_content')
 _a_show_live = 'false' != xbmcplugin.getSetting(_id, 'a_show_live')
 
+
 def play(channel_id, askpin):
     logger.log.info('play: ' + channel_id)
     sl = skylink.Skylink(_user_name, _password, _profile, _provider)
@@ -30,9 +30,6 @@ def play(channel_id, askpin):
         if not pin_ok:
             xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
             return
-
-
-    info = {}
 
     info = utils.call(sl, lambda: sl.channel_info(channel_id))
 
@@ -62,4 +59,3 @@ if __name__ == '__main__':
         if _a_show_live:
             xbmcplugin.addDirectoryItem(_id, replay.get_url(live='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30700)), True)
         xbmcplugin.endOfDirectory(_id)
-
