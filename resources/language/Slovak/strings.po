@@ -123,6 +123,50 @@ msgctxt "#30361"
 msgid "Next programs in improvised EPG"
 msgstr "Počet programov v improvizovanom EPG"
 
+msgctxt "#30370"
+msgid "Skins"
+msgstr "Vzhľady"
+
+msgctxt "#30371"
+msgid "Apply skin modification process"
+msgstr "Aplikuj modifikáciu vzhľadu"
+
+msgctxt "#30372"
+msgid "Please read this whole.\nNow a duplicate of your active skin will be created with a modification of the menu on the TV section, removing the recordings and timers (which are not supported for this plugin) and adding a direct link to the archive.\nOnly Estuary and Confluence skins are supported.\nThis is an experimental function. I recommend Kodi restart before and after using it."
+msgstr "Prečítajte to prosím celé.\nTeraz sa vytvorí duplikát vášho aktívneho vzhľadu s modifikáciou menu v TV časti, z ktorej odstráni nahrávky a časovače (ktoré nie sú pre tento plugin podporované) a pridá priamy odkaz na archív.\nPodporované sú len vzhľady Estuary a Confluence.\nToto je experimenálna funkcia. Pred a aj po jej použití odporúčam spraviť reštart Kodi."
+
+msgctxt "#30373"
+msgid "Skin not supported"
+msgstr "Nepodporovaný vzhľad"
+
+msgctxt "#30374"
+msgid "Only Estuary and Confluence skins are supported."
+msgstr "Podporované sú len vzhľady Estuary a Confluence."
+
+msgctxt "#30375"
+msgid "Skin duplicate already exists, you must uninstall it first!"
+msgstr "Duplikát vzhľadu už existuje, je nutné ho najprv odinštalovať!"
+
+msgctxt "#30376"
+msgid "Also copy the settings of the active skin?"
+msgstr "Skopírovať aj nastavenia aktívneho vzhľadu?"
+
+msgctxt "#30377"
+msgid "An error has occurred during process, modification is not possible."
+msgstr "Vznikla chyba pri aplikácii, modifikácia nieje možná."
+
+msgctxt "#30378"
+msgid "Process was successful, should I set a new skin?"
+msgstr "Aplikácia bola úspešná, mám nastaviť nový vzhľad?"
+
+msgctxt "#30379"
+msgid "Failed to set a new skin, do it manually."
+msgstr "Nepodarilo sa nastaviť nový vzhľad, spravte to manuálne."
+
+msgctxt "#30380"
+msgid "Failed to activate the new skin, do it manually, and then set it."
+msgstr "Nepodarilo sa aktivovať nový vzhľad, spravte to manuálne a potom si ho nastavte."
+
 msgctxt "#30401"
 msgid "M3U Playlist created"
 msgstr "M3U Playlist bol vytvorený"
