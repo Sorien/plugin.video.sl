@@ -54,7 +54,7 @@ def create_epg(channels, epg, path, addon=None, url='https://livetv.skylink.sk/'
         for e in epg:
             for c in e:
                 for p in e[str(c)]:
-                    b = datetime.datetime.fromtimestamp(p['start'])
+                    b = datetime.datetime.utcfromtimestamp(p['start'])
                     e = b + datetime.timedelta(minutes=p['duration'])
                     file.write(u'<programme channel="%s" start="%s" stop="%s">\n' % (
                         c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S')))
