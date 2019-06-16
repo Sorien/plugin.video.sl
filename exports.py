@@ -39,7 +39,7 @@ def create_m3u(channels, path, url):
             file.write(u'plugin://plugin.video.sl/?action=play&id=%s&askpin=%s\n' % (c['id'], c['pin']))
 
 
-def create_epg(channels, epg, path, addon=None, url='https://livetv.skylink.sk/'):
+def create_epg(channels, epg, path):
     with io.open(path, 'w', encoding='utf8') as file:
         file.write(u'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n')
         file.write(u'<tv>\n')
@@ -60,12 +60,12 @@ def create_epg(channels, epg, path, addon=None, url='https://livetv.skylink.sk/'
                         c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S')))
                     if 'title' in p:
                         file.write(u'<title>%s</title>\n' % html_escape(p['title']))
-                    if 'description' in p:
+                    if 'description' in p and p['description'] != '':
                         file.write(u'<desc>%s</desc>\n' % html_escape(p['description']))
                     if 'cover' in p:
-                        file.write(u'<icon src="' + url + '%s" />\n' % html_escape(p['cover']))
-                    if (addon is not None) and ('genre' in p) and (len(p['genre']) != 0) and (10000 <= p['genre'][0] <= 11000):
-                        file.write('<category>%s</category>\n' % addon.getLocalizedString(p['genre'][0] + 20900))
+                        file.write(u'<icon src="%s"/>\n' % html_escape(p['cover']))
+                    if 'genres' in p and len(p['genres']) > 0:
+                        file.write('<category>%s</category>\n' % ', '.join(p['genres']))
                     file.write(u'</programme>\n')
 
         file.write(u'</tv>\n')

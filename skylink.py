@@ -263,7 +263,7 @@ class Skylink:
             if ((i % 100) == 0) or (i == channels_count):
                 res = self._get({'z': 'epg', 'lng': 'sk', self._data.lang: self._time(), 'u': self._data.device,
                                  'a': self._data.app, 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
-                                 'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024, 's': channels_str[1:]})  # 212763
+                                 'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024 | 65536, 's': channels_str[1:]})  # 212763
                 res = res.json()[1]
                 for channel_id in res:
                     result.append({channel_id: self._epg(res[channel_id])})
@@ -272,8 +272,10 @@ class Skylink:
 
     def _epg(self, epg_info):
         for data in epg_info:
+            if 'description' in data:
+                data['description'] = data['description'].strip()
             if 'cover' in data:
-                data['cover'] = data['cover'].replace('satplusimages', 'satplusimages/260x145')
+                data['cover'] = self._url + '/' + data['cover'].replace('satplusimages', 'satplusimages/260x145')
             data.update(self._times(data['locId']))
         return epg_info
 
