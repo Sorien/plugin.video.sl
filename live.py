@@ -26,21 +26,50 @@ EPG_GAP = 5  # gap for previous program
 def get_url(**kwargs):
     return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
 
+def generate_plot(epg, items_left = _a_live_epg_next):
+
+    def get_plot_line(start, title):
+        return '[B]' + start.strftime('%H:%M').decode('UTF-8') + '[/B] ' + title + '[CR]'
+
+    plot = u''
+    now = datetime.datetime.now()
+    last_program = None
+    for program in epg:
+        start = datetime.datetime.fromtimestamp(program['start'])
+        show_item = start + datetime.timedelta(minutes=program['duration']) > now
+        if show_item:
+            if last_program is not None:
+                last_start = datetime.datetime.fromtimestamp(last_program['start'])
+                if last_start + datetime.timedelta(minutes=last_program['duration'] + EPG_GAP) > now:
+                    plot += get_plot_line(last_start, last_program['title'])
+                    items_left -= 1
+                    last_program = None
+            plot += get_plot_line(start, program['title'])
+            items_left -= 1
+            if items_left == 0:
+                break
+        else:
+            last_program = program
+    plot = plot[:-4]
+    return plot
 
 def channels(sl):
     channels = utils.call(sl, lambda: sl.channels(False))
+    today = datetime.datetime.now()
+    epg = utils.call(sl, lambda: sl.epg(channels, today, today + datetime.timedelta(days=1)))
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
     if channels:
         for channel in channels:
+            stationid=str(channel['stationid']) #because it is long
+            plot = generate_plot([x for x in epg if stationid in x][0][stationid],4) if epg else u''
             list_item = xbmcgui.ListItem(label=channel['title'])
-            list_item.setInfo('video', {'title': channel['title']})  # TODO - genre?
+            list_item.setInfo('video', {'title': channel['title'], 'plot': plot})
             list_item.setArt({'thumb': utils.get_logo(channel['title'], sl)})
             list_item.setProperty('IsPlayable', 'true')
-            link = get_url(live='play', lid=channel['id'], stationid=channel['stationid'], askpin=channel['pin'])
+            link = get_url(live='play', lid=channel['id'], stationid=stationid, askpin=channel['pin'])
             is_folder = False
             xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     xbmcplugin.endOfDirectory(_handle)
-
 
 def play(sl, lid, stationid, askpin):
     if askpin != 'False':
@@ -49,34 +78,9 @@ def play(sl, lid, stationid, askpin):
             xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
             return
 
-    # improvised epg
-    def get_plot_line(start, title):
-        return '[B]' + start.strftime('%H:%M').decode('UTF-8') + '[/B] ' + title + '[CR]'
-
-    plot = u''
     today = datetime.datetime.now()
     epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=2)))
-    if epg:
-        now = datetime.datetime.now()
-        last_program = None
-        items_left = _a_live_epg_next
-        for program in epg[0][stationid]:
-            start = datetime.datetime.fromtimestamp(program['start'])
-            show_item = start + datetime.timedelta(minutes=program['duration']) > now
-            if show_item:
-                if last_program is not None:
-                    last_start = datetime.datetime.fromtimestamp(last_program['start'])
-                    if last_start + datetime.timedelta(minutes=last_program['duration'] + EPG_GAP) > now:
-                        plot += get_plot_line(last_start, last_program['title'])
-                        items_left -= 1
-                        last_program = None
-                plot += get_plot_line(start, program['title'])
-                items_left -= 1
-                if items_left == 0:
-                    break
-            else:
-                last_program = program
-        plot = plot[:-4]
+    plot = generate_plot(epg[0][stationid]) if epg else u''
 
     info = utils.call(sl, lambda: sl.channel_info(lid))
 
