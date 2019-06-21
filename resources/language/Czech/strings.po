@@ -29,7 +29,7 @@ msgstr "Skylink CZ"
 
 msgctxt "#30104"
 msgid "When no device is available use oldest"
-msgstr "Pokud není k dispozici žádné zařízení, použij nejstarší
+msgstr "Pokud není k dispozici žádné zařízení, použij nejstarší"
 
 msgctxt "#30105"
 msgid "Limit devices list to web browser"
@@ -122,6 +122,50 @@ msgstr "Zobrazit také živé vysílání"
 msgctxt "#30361"
 msgid "Next programs in improvised EPG"
 msgstr "Počet programů v improvizovaném EPG"
+
+msgctxt "#30370"
+msgid "Skins"
+msgstr "Vzhledy"
+
+msgctxt "#30371"
+msgid "Apply skin modification process"
+msgstr "Aplikuj modifikaci vzhledu"
+
+msgctxt "#30372"
+msgid "Please read this whole.\nNow a duplicate of your active skin will be created with a modification of the menu on the TV section, removing the recordings and timers (which are not supported for this plugin) and adding a direct link to the archive.\nOnly Estuary and Confluence skins are supported.\nThis is an experimental function. I recommend Kodi restart before and after using it."
+msgstr "Přečtěte to prosím celé.\nNyní se vytvoří duplikát vašeho aktivního vzhledu s modifikací menu v TV části, ze které odstraní nahrávky a časovače (které nejsou pro tento plugin podporované) a přidá přímý odkaz na archiv.\nPodporovány jsou jenom vzhledy Estuary a Confluence.\nToto je experimenální funkce. Před i po jejím použití doporučuji udělat restart Kodi."
+
+msgctxt "#30373"
+msgid "Skin not supported"
+msgstr "Nepodporovaný vzhled"
+
+msgctxt "#30374"
+msgid "Only Estuary and Confluence skins are supported."
+msgstr "Podporovány jsou pouze vzhledy Estuary a Confluence."
+
+msgctxt "#30375"
+msgid "Skin duplicate already exists, you must uninstall it first!"
+msgstr "Duplikát vzhledu již existuje, je nutné jej nejprve odinstalovat!"
+
+msgctxt "#30376"
+msgid "Also copy the settings of the active skin?"
+msgstr "Zkopírovat i nastavení aktivního vzhledu?"
+
+msgctxt "#30377"
+msgid "An error has occurred during process, modification is not possible."
+msgstr "Vznikla chyba při aplikaci, modifikace není možná."
+
+msgctxt "#30378"
+msgid "Process was successful, should I set a new skin?"
+msgstr "Aplikace byla úspěšná, mám nastavit nový vzhled?"
+
+msgctxt "#30379"
+msgid "Failed to set a new skin, do it manually."
+msgstr "Nelze nastavit nový vzhled, udělejte to ručně."
+
+msgctxt "#30380"
+msgid "Failed to activate the new skin, do it manually, and then set it."
+msgstr "Nepodařilo se aktivovat nový vzhled, udělejte to manuálně a pak si ho nastavte."
 
 msgctxt "#30401"
 msgid "Playlist created"

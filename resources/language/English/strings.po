@@ -123,6 +123,50 @@ msgctxt "#30361"
 msgid "Next programs in improvised EPG"
 msgstr "Next programs in improvised EPG"
 
+msgctxt "#30370"
+msgid "Skins"
+msgstr "Skins"
+
+msgctxt "#30371"
+msgid "Apply skin modification process"
+msgstr "Apply skin modification process"
+
+msgctxt "#30372"
+msgid "Please read this whole.\nNow a duplicate of your active skin will be created with a modification of the menu on the TV section, removing the recordings and timers (which are not supported for this plugin) and adding a direct link to the archive.\nOnly Estuary and Confluence skins are supported.\nThis is an experimental function. I recommend Kodi restart before and after using it."
+msgstr "Please read this whole.\nNow a duplicate of your active skin will be created with a modification of the menu on the TV section, removing the recordings and timers (which are not supported for this plugin) and adding a direct link to the archive.\nOnly Estuary and Confluence skins are supported.\nThis is an experimental function. I recommend Kodi restart before and after using it."
+
+msgctxt "#30373"
+msgid "Skin not supported"
+msgstr "Skin not supported"
+
+msgctxt "#30374"
+msgid "Only Estuary and Confluence skins are supported."
+msgstr "Only Estuary and Confluence skins are supported."
+
+msgctxt "#30375"
+msgid "Skin duplicate already exists, you must uninstall it first!"
+msgstr "Skin duplicate already exists, you must uninstall it first!"
+
+msgctxt "#30376"
+msgid "Also copy the settings of the active skin?"
+msgstr "Also copy the settings of the active skin?"
+
+msgctxt "#30377"
+msgid "An error has occurred during process, modification is not possible."
+msgstr "An error has occurred during process, modification is not possible."
+
+msgctxt "#30378"
+msgid "Process was successful, should I set a new skin?"
+msgstr "Process was successful, should I set a new skin?"
+
+msgctxt "#30379"
+msgid "Failed to set a new skin, do it manually."
+msgstr "Failed to set a new skin, do it manually."
+
+msgctxt "#30380"
+msgid "Failed to activate the new skin, do it manually, and then set it."
+msgstr "Failed to activate the new skin, do it manually, and then set it."
+
 msgctxt "#30401"
 msgid "M3U Playlist created"
 msgstr "M3U Playlist created"
