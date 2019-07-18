@@ -80,8 +80,6 @@ class Skylink:
         if os.path.exists(self._cookies_file):
             with open(self._cookies_file, 'r') as f:
                 self._data.__dict__ = json.load(f)
-        else:
-            self._data = SkylinkSessionData()
 
     def _auth(self, device):
 
@@ -124,8 +122,7 @@ class Skylink:
                                        "model": "web",
                                        "serial": self._data.uid,
                                        "oauthcode": oauthcode,
-                                       "apikey": ""}
-                                 ,
+                                       "apikey": ""},
                                  headers={'User-Agent': UA, 'Referer': ref})
 
             data = resp.json()
@@ -143,8 +140,7 @@ class Skylink:
                                                "apikey": "",
                                                "secret": data['secret'],
                                                "userid": data['id']},
-                                         headers={'User-Agent': UA, 'Referer': ref}
-                                         )
+                                         headers={'User-Agent': UA, 'Referer': ref})
                     data = resp.json()
                 else:
                     raise TooManyDevicesException(data)
