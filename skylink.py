@@ -248,10 +248,6 @@ class Skylink:
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
 
-    @staticmethod
-    def _ts(dt):
-        return int(time.mktime(dt.timetuple())) * 1000
-
     def epg(self, channels, from_date, to_date):
         """Returns EPG data
         :param channels: Result from channels function
@@ -267,6 +263,32 @@ class Skylink:
             MASK_GENRE = 512; MASK_GENRES = 65536; MASK_ID = 1; MASK_SEASON_NO = 2048; MASK_SERIES_ID = 8192;
             MASK_START = 64;  MASK_TITLE = 2;
         """
+
+        def tidy_epg(epg_info):
+
+            def times(loc):
+                loc_base64 = loc.replace('-', '+').replace('_', '/')
+                try:
+                    binstr = bytes(loc_base64)  # 2.7
+                except:
+                    binstr = bytes(loc_base64, encoding='ascii')  # 3.x
+
+                a = list(bytearray(binascii.a2b_base64(binstr)))
+                start_in_minutes_since2012 = ((a[3] & 63) << 20) + (a[4] << 12) + (a[5] << 4) + ((a[6] & 240) >> 4)
+
+                return {'duration': ((a[6] & 15) << 8) + a[7], 'start': (start_in_minutes_since2012 * 60) + 1325376000}
+
+            for data in epg_info:
+                if 'description' in data:
+                    data['description'] = data['description'].strip()
+                if 'cover' in data:
+                    data['cover'] = M7_API_WEB + data['cover'].replace('satplusimages', 'satplusimages/447x251')
+                data.update(times(data['locId']))
+            return epg_info
+
+        def ts(dt):
+            return int(time.mktime(dt.timetuple())) * 1000
+
         self._login()
         from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
         to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
@@ -279,23 +301,14 @@ class Skylink:
             i += 1
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
-                res = self._get({'z': 'epg', 'lng': self._lang, 'a': self._app, 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
+                res = self._get({'z': 'epg', 'lng': self._lang, 'a': self._app, 'v': 3, 'f': ts(from_date), 't': ts(to_date),
                                  'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024 | 65536,
                                  's': channels_str[1:]})  # 212763
                 res = res.json()[1]
                 for channel_id in res:
-                    result.append({channel_id: self._epg(res[channel_id])})
+                    result.append({channel_id: tidy_epg(res[channel_id])})
                 channels_str = ''
         return result
-
-    def _epg(self, epg_info):
-        for data in epg_info:
-            if 'description' in data:
-                data['description'] = data['description'].strip()
-            if 'cover' in data:
-                data['cover'] = M7_API_WEB + data['cover'].replace('satplusimages', 'satplusimages/447x251')
-            data.update(self._times(data['locId']))
-        return epg_info
 
     def replay_info(self, locId):
         """Returns reply info
@@ -330,17 +343,3 @@ class Skylink:
             if len(pin) == 4:
                 return pin
         return None
-
-    @staticmethod
-    def _times(loc):
-        loc_base64 = loc.replace('-', '+').replace('_', '/')
-        try:
-            binstr = bytes(loc_base64)  # 2.7
-        except:
-            binstr = bytes(loc_base64, encoding='ascii')  # 3.x
-
-        byte_array = list(bytearray(binascii.a2b_base64(binstr)))
-        start_in_minutes_since2012 = ((byte_array[3] & 63) << 20) + (byte_array[4] << 12) + (byte_array[5] << 4) + (
-                (byte_array[6] & 240) >> 4)
-        return {'duration': ((byte_array[6] & 15) << 8) + byte_array[7],
-                'start': (start_in_minutes_since2012 * 60) + 1325376000}
