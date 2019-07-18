@@ -314,7 +314,7 @@ class Skylink:
             if 'description' in data:
                 data['description'] = data['description'].strip()
             if 'cover' in data:
-                data['cover'] = self._url + '/' + data['cover'].replace('satplusimages', 'satplusimages/260x145')
+                data['cover'] = M7_API_WEB + data['cover'].replace('satplusimages', 'satplusimages/260x145') #447x251 there exist bigger resolution
             data.update(self._times(data['locId']))
         return epg_info
 
