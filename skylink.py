@@ -98,7 +98,7 @@ class Skylink:
 
             session = requests.Session()
             resp = session.get('https://login.' + self._provider + '/authenticate',
-                               params={'redirect_uri': 'https://livetv.skylink.cz/auth.aspx',
+                               params={'redirect_uri': 'https://livetv.' + self._provider + '/auth.aspx',
                                        'state': self._time(),
                                        'response_type': 'code',
                                        'scope': 'TVE',
@@ -344,8 +344,7 @@ class Skylink:
         :return:
        """
         self._login()
-        res = self._get({'z': 'parentalPIN', 'lng': self._lang, '_': self._time(), 'u': self._data.device,
-                         'a': self._data.app, 'r': 1})
+        res = self._get({'z': 'parentalPIN', 'lng': self._lang, 'a': self._app, 'r': 1})
         raw = res.text
         if raw.startswith('"') and raw.endswith('"') and not raw.startswith('"-'):
             pin = raw.replace('"', '')
