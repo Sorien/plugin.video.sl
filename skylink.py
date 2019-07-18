@@ -8,7 +8,7 @@ import uuid
 import requests.cookies
 
 try:
-    from urlparse import urlparse, unquote, parse_qs  # 3
+    from urlparse import urlparse, unquote, parse_qs  # 3.x
 except ImportError:
     from urllib.parse import urlparse, unquote, parse_qs  # 2.7
 
@@ -61,7 +61,6 @@ class Skylink:
     _session.max_redirects = 3
     _data = SkylinkSessionData()
     _url = ''
-    _login_url = ''
     _show_pin_protected = True
 
     def __init__(self, username, password, storage_dir, provider='skylink.sk', show_pin_protected=True):
@@ -175,14 +174,6 @@ class Skylink:
     def reconnect(self, device):
         self._data.clear()
         self._auth(device)
-
-    def userinfo(self):
-        self._login()
-        resp = self._get({'z': 'userinfo'})
-        print(resp.json())
-
-    def getUrl(self):
-        return self._url
 
     @staticmethod
     def _time():
@@ -302,7 +293,7 @@ class Skylink:
             if 'description' in data:
                 data['description'] = data['description'].strip()
             if 'cover' in data:
-                data['cover'] = M7_API_WEB + data['cover'].replace('satplusimages', 'satplusimages/260x145') #447x251 there exist bigger resolution
+                data['cover'] = M7_API_WEB + data['cover'].replace('satplusimages', 'satplusimages/447x251')
             data.update(self._times(data['locId']))
         return epg_info
 
