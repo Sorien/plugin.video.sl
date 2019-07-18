@@ -13,6 +13,9 @@ except ImportError:
     from urllib.parse import urlparse, unquote, parse_qs  # 2.7
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+M7_DOMAIN = 'm7cz.solocoo.tv'
+M7_API_WEB = 'https://' + M7_DOMAIN + "/"
+M7_API_URL = M7_API_WEB + 'm7cziphone/'
 
 
 class SkylinkException(Exception):
@@ -62,6 +65,9 @@ class Skylink:
     _show_pin_protected = True
 
     def __init__(self, username, password, cookies_storage_dir, provider='skylink.sk', show_pin_protected=True):
+    	self._provider = provider
+    	self._lang = 'sk' if provider == 'skylink.sk' else 'cs'
+    	self._app = 'slsk' if provider == 'skylink.sk' else 'slcz'
         self._usermane = username
         self._password = password
         self._cookies_path = cookies_storage_dir
@@ -91,8 +97,8 @@ class Skylink:
                 raise UserNotDefinedException
 
             session = requests.Session()
-            resp = session.get('https://login.skylink.sk/authenticate',
-                               params={'redirect_uri': 'https://livetv.skylink.sk/auth.aspx',
+            resp = session.get('https://login.' + self._provider + '/authenticate',
+                               params={'redirect_uri': 'https://livetv.skylink.cz/auth.aspx',
                                        'state': self._time(),
                                        'response_type': 'code',
                                        'scope': 'TVE',
@@ -100,12 +106,12 @@ class Skylink:
                                        },
                                headers={'User-Agent': UA}
                                )
-            resp = session.post('https://login.skylink.sk/',
+            resp = session.post('https://login.' + self._provider + '/',
                                 data={'Username': self._usermane, 'Password': self._password},
                                 headers={'User-Agent': UA, 'Referer': resp.url})
 
             if self._data.uid == '':
-                self._data.uid = str(uuid.uuid4())
+                self._data.uid = 'w' + str(uuid.uuid4())
 
             ref = resp.url
             params = parse_qs(urlparse(resp.url).query)
@@ -115,9 +121,9 @@ class Skylink:
             else:
                 raise UserInvalidException()
 
-            resp = requests.post('https://m7cz.solocoo.tv/m7cziphone/challenge.aspx',
+            resp = requests.post(M7_API_URL + 'challenge.aspx',
                                  json={"autotype": "nl",
-                                       "app": "slsk",
+                                       "app": self._app,
                                        "prettyname": "Chrome",
                                        "model": "web",
                                        "serial": self._data.uid,
@@ -129,9 +135,9 @@ class Skylink:
 
             if ('error' in data) and (data['error'] == 'toomany'):
                 if device != '':
-                    resp = requests.post('https://m7cz.solocoo.tv/m7cziphone/challenge.aspx?r=1',
+                    resp = requests.post(M7_API_URL + 'challenge.aspx?r=1',
                                          json={"autotype": "nl",
-                                               "app": "slsk",
+                                               "app": self._app,
                                                "prettyname": "Chrome",
                                                "model": "web",
                                                "serial": self._data.uid,
@@ -147,7 +153,7 @@ class Skylink:
 
             self._data.secret = data['secret']
             self._data.id = data['id']
-
+            
             self._store_session()
         except:
             self._data.clear()
@@ -156,9 +162,9 @@ class Skylink:
 
     def _login(self):
         if self._data.is_valid():
-            resp = self._session.post('https://m7cz.solocoo.tv/m7cziphone/login.aspx',
+            resp = self._session.post(M7_API_URL + 'login.aspx',
                                       data={'secret': self._data.id + "\t" + self._data.secret,
-                                            'uid': self._data.uid, 'app': 'slsk'},
+                                            'uid': self._data.uid, 'app': self._app},
                                       headers={'User-Agent': UA})
             if resp.text != 'disconnected':
                 return
@@ -168,9 +174,9 @@ class Skylink:
 
     def _login(self):
         if self._data.is_valid():
-            resp = self._session.post('https://m7cz.solocoo.tv/m7cziphone/login.aspx',
+            resp = self._session.post(M7_API_URL + 'login.aspx',
                                       data={'secret': self._data.id + "\t" + self._data.secret,
-                                            'uid': self._data.uid, 'app': 'slsk'},
+                                            'uid': self._data.uid, 'app': self._app},
                                       headers={'User-Agent': UA})
             if resp.text != 'disconnected':
                 return
@@ -198,12 +204,12 @@ class Skylink:
         return self._session.request(method, url, **kwargs)
 
     def _get(self, params):
-        return self._request('GET', 'https://m7cz.solocoo.tv/m7cziphone/capi.aspx', params=params, allow_redirects=True,
+        return self._request('GET', M7_API_URL + 'capi.aspx', params=params, allow_redirects=True,
                              headers={'User-Agent': UA, 'Referer': self._url,
                                       'Accept': 'application/json, text/javascript, */*; q=0.01'})
 
     def _post(self, params, data):
-        return self._request('POST', 'https://m7cz.solocoo.tv/m7cziphone/capi.aspx', params=params, data=data,
+        return self._request('POST', M7_API_URL + 'capi.aspx', params=params, data=data,
                              json=None,
                              headers={'User-Agent': UA, 'Referer': self._url,
                                       'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -215,8 +221,7 @@ class Skylink:
         :return: Channels data
         """
         self._login()
-        res = self._get({'z': 'epg', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
-                         'a': self._data.app, 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7, 'd': 3})
+        res = self._get({'z': 'epg', 'lng': self._lang, 'a': self._app, 'v': 3, 'cs': '111', 'f_format': 'clx', 'streams': 7, 'd': 3}) #15?
 
         data = res.json()
         result = []
@@ -248,8 +253,7 @@ class Skylink:
         :return: Channel info
         """
         self._login()
-        res = self._post({'z': 'stream', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
-                          'v': 1, 'id': channel_id, 'd': 3},
+        res = self._post({'z': 'stream', 'lng': self._lang, 'v': 1, 'id': channel_id, 'd': 3},
                          json.dumps({'type': 'dash', 'flags': '4096'}).encode())
 
         stream = res.json()
@@ -296,8 +300,7 @@ class Skylink:
             i += 1
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
-                res = self._get({'z': 'epg', 'lng': 'sk', self._data.lang: self._time(), 'u': self._data.device,
-                                 'a': self._data.app, 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
+                res = self._get({'z': 'epg', 'lng':self._lang, 'a': self._app, 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
                                  'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024 | 65536,
                                  's': channels_str[1:]})  # 212763
                 res = res.json()[1]
@@ -321,8 +324,7 @@ class Skylink:
         :return: Reply info
         """
         self._login()
-        res = self._post({'z': 'replay', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
-                          'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
+        res = self._post({'z': 'replay', 'lng': self._lang, 'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
 
         stream = res.json()
 
@@ -342,7 +344,7 @@ class Skylink:
         :return:
        """
         self._login()
-        res = self._get({'z': 'parentalPIN', 'lng': self._data.lang, '_': self._time(), 'u': self._data.device,
+        res = self._get({'z': 'parentalPIN', 'lng': self._lang, '_': self._time(), 'u': self._data.device,
                          'a': self._data.app, 'r': 1})
         raw = res.text
         if raw.startswith('"') and raw.endswith('"') and not raw.startswith('"-'):

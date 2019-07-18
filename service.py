@@ -79,7 +79,7 @@ class SkylinkMonitor(xbmc.Monitor):
                 path = os.path.join(self._addon.getSetting('playlist_folder'), self._addon.getSetting('playlist_file'))
                 _skylink_logos = 'true' == self._addon.getSetting('sl_logos')
                 logger.log.info('Updating playlist [%d channels]' % len(channels))
-                exports.create_m3u(channels, path, sl.getUrl() + '/' if _skylink_logos else None)
+                exports.create_m3u(channels, path, skylink.M7_API_WEB if _skylink_logos else None)
                 result = 1
             except IOError as e:
                 logger.log.error(str(e))

@@ -1,5 +1,12 @@
 import datetime
 import io
+from skylink import M7_DOMAIN
+
+try:
+    from urlparse import urlparse # 3
+except ImportError:
+    from urllib.parse import urlparse  # 2.7
+
 
 html_escape_table = {
     "&": "&amp;",
@@ -63,7 +70,10 @@ def create_epg(channels, epg, path):
                     if 'description' in p and p['description'] != '':
                         file.write(u'<desc>%s</desc>\n' % html_escape(p['description']))
                     if 'cover' in p:
-                        file.write(u'<icon src="%s"/>\n' % html_escape(p['cover']))
+                        cover = urlparse(p['cover'])
+                        cover = cover._replace(netloc=M7_DOMAIN)
+                        courl = cover.geturl()
+                        file.write(u'<icon src="%s"/>\n' % html_escape(courl))
                     if 'genres' in p and len(p['genres']) > 0:
                         file.write('<category>%s</category>\n' % ', '.join(p['genres']))
                     file.write(u'</programme>\n')

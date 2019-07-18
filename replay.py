@@ -9,6 +9,13 @@ import xbmcplugin
 import urllib
 import datetime
 import utils
+from skylink import M7_DOMAIN
+
+try:
+    from urlparse import urlparse # 3
+except ImportError:
+    from urllib.parse import urlparse  # 2.7
+
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -28,7 +35,7 @@ def channels(sl):
         for channel in channels:
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title']})  # TODO - genre?
-            list_item.setArt({'thumb': utils.get_logo(channel['title'], sl)})
+            list_item.setArt({'thumb': utils.get_logo(channel['title'])})
             link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'],
                            askpin=channel['pin'])
             is_folder = True
@@ -85,8 +92,10 @@ def programs(sl, stationid, channel, day=0, first=False):
                     'duration': program['duration'] * 60
                 })
                 if 'cover' in program:
-                    cover = sl.getUrl() + "/" + program['cover']
-                    list_item.setArt({'thumb': cover, 'icon': cover})
+                    cover = urlparse(program['cover'])
+                    cover = cover._replace(netloc=M7_DOMAIN)
+                    courl = cover.geturl()
+                    list_item.setArt({'thumb': courl, 'icon': courl})
 
                 link = get_url(replay='replay', locId=program['locId'])
                 is_folder = False

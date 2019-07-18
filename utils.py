@@ -21,9 +21,9 @@ if not _skylink_logos:
         _logos_folder = _addon.getSetting('a_logos_folder')
 
 
-def get_logo(title, sl):
+def get_logo(title):
     if _skylink_logos:
-        return sl.getUrl() + "/" + exports.logo_sl_location(title)
+        return skylink.M7_API_WEB + exports.logo_sl_location(title)
 
     if _remote_logos:
         return _logos_base_url + exports.logo_id(title)
