@@ -55,8 +55,8 @@ class SkylinkSessionData:
 class Skylink:
     _username = ''
     _password = ''
-    _cookies_path = ''
-    _cookies_file = ''
+    _storage_path = ''
+    _storage_file = ''
     _session = requests.Session()
     _session.max_redirects = 3
     _data = SkylinkSessionData()
@@ -64,27 +64,27 @@ class Skylink:
     _login_url = ''
     _show_pin_protected = True
 
-    def __init__(self, username, password, cookies_storage_dir, provider='skylink.sk', show_pin_protected=True):
-    	self._provider = provider
-    	self._lang = 'sk' if provider == 'skylink.sk' else 'cs'
-    	self._app = 'slsk' if provider == 'skylink.sk' else 'slcz'
+    def __init__(self, username, password, storage_dir, provider='skylink.sk', show_pin_protected=True):
+        self._provider = provider
+        self._lang = 'sk' if provider == 'skylink.sk' else 'cs'
+        self._app = 'slsk' if provider == 'skylink.sk' else 'slcz'
         self._usermane = username
         self._password = password
-        self._cookies_path = cookies_storage_dir
-        self._cookies_file = os.path.join(self._cookies_path, '%s.session' % username.lower())
+        self._storage_path = storage_dir
+        self._storage_file = os.path.join(self._storage_path, '%s.session' % username.lower())
         self._url = 'https://livetv.' + provider
         self._show_pin_protected = show_pin_protected
         self._load_session()
 
     def _store_session(self):
-        if not os.path.exists(self._cookies_path):
-            os.makedirs(self._cookies_path)
-        with open(self._cookies_file, 'w') as f:
+        if not os.path.exists(self._storage_path):
+            os.makedirs(self._storage_path)
+        with open(self._storage_file, 'w') as f:
             json.dump(self._data.__dict__, f)
 
     def _load_session(self):
-        if os.path.exists(self._cookies_file):
-            with open(self._cookies_file, 'r') as f:
+        if os.path.exists(self._storage_file):
+            with open(self._storage_file, 'r') as f:
                 self._data.__dict__ = json.load(f)
 
     def _auth(self, device):
@@ -159,18 +159,6 @@ class Skylink:
             self._data.clear()
             self._store_session()
             raise
-
-    def _login(self):
-        if self._data.is_valid():
-            resp = self._session.post(M7_API_URL + 'login.aspx',
-                                      data={'secret': self._data.id + "\t" + self._data.secret,
-                                            'uid': self._data.uid, 'app': self._app},
-                                      headers={'User-Agent': UA})
-            if resp.text != 'disconnected':
-                return
-
-        self._auth('')
-        self._login()
 
     def _login(self):
         if self._data.is_valid():
@@ -300,7 +288,7 @@ class Skylink:
             i += 1
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
-                res = self._get({'z': 'epg', 'lng':self._lang, 'a': self._app, 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
+                res = self._get({'z': 'epg', 'lng': self._lang, 'a': self._app, 'v': 3, 'f': self._ts(from_date), 't': self._ts(to_date),
                                  'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024 | 65536,
                                  's': channels_str[1:]})  # 212763
                 res = res.json()[1]
