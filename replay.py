@@ -28,7 +28,7 @@ def channels(sl):
         for channel in channels:
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title']})  # TODO - genre?
-            list_item.setArt({'thumb': utils.get_logo(channel['title'], sl)})
+            list_item.setArt({'thumb': utils.get_logo(channel['title'])})
             link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'],
                            askpin=channel['pin'])
             is_folder = True
@@ -85,8 +85,7 @@ def programs(sl, stationid, channel, day=0, first=False):
                     'duration': program['duration'] * 60
                 })
                 if 'cover' in program:
-                    cover = sl.getUrl() + "/" + program['cover']
-                    list_item.setArt({'thumb': cover, 'icon': cover})
+                    list_item.setArt({'thumb': program['cover'], 'icon': program['cover']})
 
                 link = get_url(replay='replay', locId=program['locId'])
                 is_folder = False
