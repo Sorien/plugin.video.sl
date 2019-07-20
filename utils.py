@@ -57,13 +57,18 @@ def select_device(devices):
 
 
 def get_last_used_device(devices):
-    devices = strip_devices(devices)
     la = 9999999999999
     device = ''
+    device_not_use = ''
     for d in devices:
         if d['lastactivity'] < la:
             device = d['id']
-            la = d['lastactivity']
+            if d['lastactivity'] > 0:
+                device_not_use = d['id']
+
+    if device_not_use != '':
+        return device_not_use
+
     return device
 
 

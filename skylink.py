@@ -345,3 +345,20 @@ class Skylink:
             if len(pin) == 4:
                 return pin
         return None
+
+    def devices(self, remove_device=''):
+        """Returns devices info
+        :return:
+        """
+        def tidy_devices(devices_info):
+            r = []
+            for data in devices_info:
+                r.append({'id': data['s'], 'name': data['n'], 'type': data['t'], 'lastactivity': data['a']})
+            return r
+
+        self._login()
+        if remove_device != '':
+            res = self._get({'z': 'devices', 'lng': self._lang, 'a': self._app, 'rm': remove_device})
+        else:
+            res = self._get({'z': 'devices', 'lng': self._lang, 'a': self._app})
+        return tidy_devices(res.json())
