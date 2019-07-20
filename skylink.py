@@ -234,7 +234,7 @@ class Skylink:
         :return: Channel info
         """
         self._login()
-        res = self._post({'z': 'stream', 'lng': self._lang, 'v': 1, 'id': channel_id, 'd': 3},
+        res = self._post({'z': 'stream', 'lng': self._lang, 'v': 1, 'id': channel_id, 'd': 3, 'u': self._data.uid},
                          json.dumps({'type': 'dash', 'flags': '4096'}).encode())
 
         stream = res.json()
