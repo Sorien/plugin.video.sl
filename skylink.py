@@ -165,7 +165,9 @@ class Skylink:
                                       data={'secret': self._data.id + "\t" + self._data.secret,
                                             'uid': self._data.uid, 'app': self._app},
                                       headers={'User-Agent': UA})
-            if resp.text != 'disconnected':
+            if resp.text == 'disconnected':
+                self._data.clear()
+            else:
                 return
 
         self._auth('')
