@@ -318,7 +318,8 @@ class Skylink:
         :return: Reply info
         """
         self._login()
-        res = self._post({'z': 'replay', 'lng': self._lang, 'v': 1, 'lid': locId, 'd': 3}, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
+        res = self._post({'z': 'replay', 'lng': self._lang, 'v': 1, 'lid': locId, 'd': 3, 'u': self._data.uid},
+                         json.dumps({'type': 'dash', 'flags': '1024'}).encode())
 
         stream = res.json()
 
