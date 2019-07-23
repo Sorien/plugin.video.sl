@@ -43,13 +43,19 @@ class SkylinkSessionData:
     uid = ''
     secret = ''
     id = ''
+    cookies = []
+    cookies_expire = 0
 
     def is_valid(self):
         return (self.secret != '') and (self.id != '')
 
+    def has_valid_cookies(self):
+        return self.cookies != [] and (self.cookies_expire >= time.mktime(datetime.datetime.now().timetuple()))
+
     def clear(self):
         self.secret = ''
         self.id = ''
+        self.cookies = []
 
 
 class Skylink:
@@ -70,7 +76,7 @@ class Skylink:
         self._usermane = username
         self._password = password
         self._storage_path = storage_dir
-        self._storage_file = os.path.join(self._storage_path, '%s.session' % username.lower())
+        self._storage_file = os.path.join(self._storage_path, '%s.%s.session' % (username.lower(), self._app))
         self._url = 'https://livetv.' + provider
         self._show_pin_protected = show_pin_protected
         self._load_session()
@@ -85,6 +91,11 @@ class Skylink:
         if os.path.exists(self._storage_file):
             with open(self._storage_file, 'r') as f:
                 self._data.__dict__ = json.load(f)
+
+    def _store_cookies(self):
+        self._data.cookies = self._session.cookies.get_dict()
+        self._data.cookies_expire = time.mktime((datetime.datetime.now() + datetime.timedelta(minutes=30)).timetuple())
+        self._store_session()
 
     def _auth(self, device):
 
@@ -152,7 +163,7 @@ class Skylink:
 
             self._data.secret = data['secret']
             self._data.id = data['id']
-            
+
             self._store_session()
         except:
             self._data.clear()
@@ -160,14 +171,21 @@ class Skylink:
             raise
 
     def _login(self):
+
+        if self._data.has_valid_cookies():
+            self._session.cookies.update(self._data.cookies)
+            return
+
         if self._data.is_valid():
             resp = self._session.post(M7_API_URL + 'login.aspx',
                                       data={'secret': self._data.id + "\t" + self._data.secret,
                                             'uid': self._data.uid, 'app': self._app},
                                       headers={'User-Agent': UA})
+
             if resp.text == 'disconnected':
                 self._data.clear()
             else:
+                self._store_cookies()
                 return
 
         self._auth('')
@@ -182,7 +200,9 @@ class Skylink:
         return int(time.time() * 1000)
 
     def _request(self, method, url, **kwargs):
-        return self._session.request(method, url, **kwargs)
+        resp = self._session.request(method, url, **kwargs)
+        self._store_cookies()
+        return resp
 
     def _get(self, params):
         return self._request('GET', M7_API_URL + 'capi.aspx', params=params, allow_redirects=True,
