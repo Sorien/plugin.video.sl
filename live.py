@@ -64,7 +64,7 @@ def channels(sl):
             plot = generate_plot([x for x in epg if stationid in x][0][stationid],4) if epg else u''
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title'], 'plot': plot})
-            list_item.setArt({'thumb': utils.get_logo(channel['title'])})
+            list_item.setArt({'thumb': utils.get_logo(channel['title'], sl._api_url)})
             list_item.setProperty('IsPlayable', 'true')
             link = get_url(live='play', lid=channel['id'], stationid=stationid, askpin=channel['pin'])
             is_folder = False
