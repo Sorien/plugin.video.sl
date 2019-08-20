@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Author: cache
+# Author: cache-sk
 # Created on: 11.4.2019
 import sys
 import inputstreamhelper

@@ -17,6 +17,9 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 #M7_API_WEB = 'https://' + M7_DOMAIN + "/"
 #M7_API_URL = M7_API_WEB + 'm7cziphone/'
 
+LIBRARY_SOURCES='skylink7,filmboxcz,m7fvfecz,banaxigo,m7svaxn,amc,viasat'
+LIBRARY_SOURCES_PIN = LIBRARY_SOURCES + ',m7svleo'
+
 
 class SkylinkException(Exception):
     def __init__(self, id):
@@ -368,3 +371,37 @@ class Skylink:
         else:
             res = self._get({'z': 'devices', 'lng': self._lang, 'a': self._app})
         return tidy_devices(res.json())
+
+    def library(self, types):
+        self._login()
+        parameters = {'v':'4', 'os':LIBRARY_SOURCES_PIN if self._show_pin_protected else LIBRARY_SOURCES}
+        parameters.update(types)
+        res = self._get(parameters)
+        data = res.json()
+        return data
+
+    def library_info(self, id):
+        #https://livetv.skylink.cz/m7cziphone/capi.aspx?d=3&u=w78f2ba70-a7ea-11e9-be82-cf65ecb88c92&z=movieurl&v=5&id=79007
+        self._login()
+        res = self._post({'z': 'movieurl', 'v': 5, 'd': 3, 'u': self._data.uid, 'id':id},
+                         json.dumps({'type': 'dash', 'flags': '1024'}).encode())
+
+        try:
+            stream = res.json()
+        except:
+            return {'error':'not json'}
+
+        if not 'url' in stream or not 'drm' in stream: 
+            return {'error':'not valid'}
+
+        mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA, 
+                       'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
+        drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
+                          'User-Agent': UA, 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
+        return {
+            'protocol': 'mpd',
+            'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
+            'drm': 'com.widevine.alpha',
+            'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
+        }
+        

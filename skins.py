@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Author: cache-sk
+# Created on: 12.6.2019
 import xbmc
 import xbmcgui
 import xbmcaddon

@@ -262,3 +262,91 @@ msgstr "sunday"
 msgctxt "#30700"
 msgid "Live TV"
 msgstr "Live TV"
+
+msgctxt "#30800"
+msgid "Library"
+msgstr "Library"
+
+msgctxt "#30801"
+msgid "Movies"
+msgstr "Movies"
+
+msgctxt "#30802"
+msgid "Series"
+msgstr "Series"
+
+msgctxt "#30810"
+msgid "Action"
+msgstr "Action"
+
+msgctxt "#30811"
+msgid "Comedy"
+msgstr "Comedy"
+
+msgctxt "#30812"
+msgid "Family"
+msgstr "Family"
+
+msgctxt "#30813"
+msgid "Kids"
+msgstr "Kids"
+
+msgctxt "#30814"
+msgid "Science Fiction"
+msgstr "Science Fiction"
+
+msgctxt "#30815"
+msgid "Fantasy"
+msgstr "Fantasy"
+
+msgctxt "#30816"
+msgid "Adventure"
+msgstr "Adventure"
+
+msgctxt "#30817"
+msgid "Crime"
+msgstr "Crime"
+
+msgctxt "#30818"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#30819"
+msgid "Romance"
+msgstr "Romance"
+
+msgctxt "#30820"
+msgid "Thriller"
+msgstr "Thriller"
+
+msgctxt "#30821"
+msgid "Horror"
+msgstr "Horror"
+
+msgctxt "#30822"
+msgid "Documentary"
+msgstr "Documentary"
+
+msgctxt "#30823"
+msgid "Biography"
+msgstr "Biography"
+
+msgctxt "#30824"
+msgid "History"
+msgstr "History"
+
+msgctxt "#30825"
+msgid "Music"
+msgstr "Music"
+
+msgctxt "#30826"
+msgid "Sport"
+msgstr "Sport"
+
+msgctxt "#30827"
+msgid "Other"
+msgstr "Other"
+
+msgctxt "#30828"
+msgid "Erotic"
+msgstr "Erotic"

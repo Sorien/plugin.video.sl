@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Author: cache
+# Author: cache-sk
 # Created on: 15.4.2019
 import xbmcaddon
 import xbmcgui
