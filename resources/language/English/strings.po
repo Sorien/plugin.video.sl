@@ -264,8 +264,8 @@ msgid "Live TV"
 msgstr "Live TV"
 
 msgctxt "#30800"
-msgid "Library"
-msgstr "Library"
+msgid "Library (prototype)"
+msgstr "Library (prototype)"
 
 msgctxt "#30801"
 msgid "Movies"
@@ -274,6 +274,22 @@ msgstr "Movies"
 msgctxt "#30802"
 msgid "Series"
 msgstr "Series"
+
+msgctxt "#30803"
+msgid "Play"
+msgstr "Play"
+
+msgctxt "#30804"
+msgid "Cancel"
+msgstr "Cancel"
+
+msgctxt "#30805"
+msgid "Can't play this item, you probably don't have a paid service for it."
+msgstr "Can't play this item, you probably don't have a paid service for it."
+
+msgctxt "#30806"
+msgid "Unknown error, sorry."
+msgstr "Unknown error, sorry."
 
 msgctxt "#30810"
 msgid "Action"

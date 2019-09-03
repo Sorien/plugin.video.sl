@@ -15,8 +15,8 @@ _handle = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
 
 TYPES = [
-    {'msg':_addon.getLocalizedString(30801), 'code':'movies', 'data':{'z':'movies4cat','cs':'37178378331'}},
-    {'msg':_addon.getLocalizedString(30802), 'code':'series', 'data':{'z':'series4cat','cs': 1 | 2 | 4 | 16 | 32 | 512 | 1024}} #1591
+    {'msg':_addon.getLocalizedString(30801), 'code':'movies', 'isMovie':True, 'data':{'z':'movies4cat','cs':'37178378331', 'v':'4'}},
+    {'msg':_addon.getLocalizedString(30802), 'code':'series', 'isMovie':False, 'data':{'z':'series4cat','cs': '1591', 'v':'4'}} #mask? 1 | 2 | 4 | 16 | 32 | 512 | 1024
 ]
 CATEGORIES = [
     {'msg':_addon.getLocalizedString(30810), 'code':'Action'},
@@ -36,11 +36,13 @@ CATEGORIES = [
     {'msg':_addon.getLocalizedString(30824), 'code':'History'},
     {'msg':_addon.getLocalizedString(30825), 'code':'Music'},
     {'msg':_addon.getLocalizedString(30826), 'code':'Sport'},
-    {'msg':_addon.getLocalizedString(30827), 'code':'Other'},
-    {'msg':_addon.getLocalizedString(30828), 'code':'Erotic'}
+    {'msg':_addon.getLocalizedString(30827), 'code':'Other'}
+    #{'msg':_addon.getLocalizedString(30828), 'code':'Erotic'} - NOT YET
 ]
 
-
+LIBRARY_SOURCES='skylink7,filmboxcz,m7fvfecz,banaxigo,m7svaxn,amc,viasat'
+LIBRARY_SOURCES_PIN = LIBRARY_SOURCES + ',m7svleo'
+LOCK = 'banaxigo'
 
 def get_url(**kwargs):
     return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
@@ -59,7 +61,7 @@ def categories(ctype):
     title = _addon.getLocalizedString(30800)
     for tp in TYPES:
         if tp['code'] == ctype:
-            title += ' \ ' + tp['msg']
+            title += ' / ' + tp['msg']
             break
     xbmcplugin.setPluginCategory(_handle, title)
 
@@ -78,51 +80,111 @@ def listOfItems(sl, ctype, category):
     for tp in TYPES:
         if tp['code'] == ctype:
             ctp = tp
-            title += ' \ ' + tp['msg']
+            title += ' / ' + tp['msg']
             break
     cat = None
     for ct in CATEGORIES:
-        if ct['code'] == ctype:
+        if ct['code'] == category:
             cat = ct
-            title += ' \ ' + ct['msg']
+            title += ' / ' + ct['msg']
             break
     xbmcplugin.setPluginCategory(_handle, title)
 
     if ctp is None or cat is None:
-        #TODO error!
-        pass
-    #https://livetv.skylink.cz/m7cziphone/capi.aspx?z=movies4cat&v=4&cs=37178378331&c=Action&os=skylink7,filmboxcz,m7fvfecz,banaxigo,m7svaxn,amc,viasat
+        xbmcgui.Dialog().ok(heading=_addon.getLocalizedString(30800), line1=_addon.getLocalizedString(30806))
+        xbmcplugin.endOfDirectory(_handle)
+        return
+        
     params = ctp['data'].copy()
-    params.update({'c':category})
+    params.update({'c':category, 'os':LIBRARY_SOURCES_PIN}) # if sl._show_pin_protected else LIBRARY_SOURCES - NOT YET
 
     items = utils.call(sl, lambda: sl.library(params))
 
     for item in items:
-        list_item = xbmcgui.ListItem(label=item['title'])
-        #list_item.setInfo('video', {'title': item['title']}) #, 'plot':item['description'] in series
-        list_item.setInfo('video', {'title': item['title'], 'plot':'plot '+item['title']}) #, 'plot':item['description'] in series
+        title = item['title'] + (' [COLOR yellow]LOCK[/COLOR]' if 'owner' in item and item['owner'] == LOCK else '') #TODO nejako inak treba zistit, ze je to platene!
+        list_item = xbmcgui.ListItem(label=title)
+        list_item.setInfo('video', {'title': title, 'plot':item['description'] if 'description' in item else ''})
         list_item.setArt({'thumb': item['poster']})
-        list_item.setProperty('IsPlayable', 'true')
-        link = get_url(library='play', lid=item['id'])
-        is_folder = False
+        link = get_url(library='play' if ctp['isMovie'] else 'episodes', lid=item['id'], ctype=ctype)
+        is_folder = not ctp['isMovie']
+        if ctp['isMovie']:
+            list_item.setProperty('IsPlayable', 'true')
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
+    xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
     xbmcplugin.endOfDirectory(_handle)
 
-def play(sl, lid):
-    info = utils.call(sl, lambda: sl.library_info(lid))
-
-    if info and not 'error' in info:
-        is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
-        if is_helper.check_inputstream():
-            playitem = xbmcgui.ListItem(path=info['path'])
-            playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
-            playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
-            playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
-            playitem.setProperty('inputstream.adaptive.license_key', info['key'])
-            xbmcplugin.setResolvedUrl(_handle, True, playitem)
+def episodes(sl, lid, ctype):
+    ctp = None
+    for tp in TYPES:
+        if tp['code'] == ctype:
+            ctp = tp
+            break
+    if ctp is None:
+        xbmcgui.Dialog().ok(heading=_addon.getLocalizedString(30800), line1=_addon.getLocalizedString(30806))
+        xbmcplugin.endOfDirectory(_handle)
         return
 
-    #TODO error!
+    params = {'z':'seriesdetails','cs':'1591','d':'3', 'v':'4', 'lng': sl._lang, 'a': sl._app, 'm':lid} #cs:2
+    data = utils.call(sl, lambda: sl.library(params))
+    xbmcplugin.setPluginCategory(_handle, data['title'])
+
+    params = {'z':'seasonsforseries','os':data['owner'], 's':lid}
+    series = utils.call(sl, lambda: sl.library(params))
+    
+    for serie in series:
+        sz = serie[0]
+        prefix = 'S' + sz + ' '
+        params = {'z':'episodesforseason','v':'4','cs':'37178378331','sz':sz,'os':data['owner'], 's':lid}
+        episodes = utils.call(sl, lambda: sl.library(params))
+        for episode in episodes:
+            list_item = xbmcgui.ListItem(label=prefix + episode['title'])
+            list_item.setInfo('video', {
+                'title': prefix + episode['title'],
+                'duration':int(episode['duration'])*60
+            })
+            list_item.setArt({'thumb': episode['poster']})
+            list_item.setProperty('IsPlayable', 'true')
+            link = get_url(library='play', lid=episode['id'], ctype=ctype)
+            is_folder = False
+            xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
+    
+    xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL)
+    xbmcplugin.endOfDirectory(_handle)
+
+def play(sl, lid, ctype):
+    ctp = None
+    for tp in TYPES:
+        if tp['code'] == ctype:
+            ctp = tp
+            break
+    if ctp is None:
+        xbmcgui.Dialog().ok(heading=_addon.getLocalizedString(30800), line1=_addon.getLocalizedString(30806))
+        xbmcplugin.endOfDirectory(_handle)
+        return
+
+    #show plot
+    params = {'z':'moviedetails','cs':'37186922715','d':'3', 'v':'4', 'm':lid}
+    data = utils.call(sl, lambda: sl.library(params))
+    if 'description' not in data or xbmcgui.Dialog().yesno(heading=data['title'], line1=data['description'], nolabel=_addon.getLocalizedString(30804), yeslabel=_addon.getLocalizedString(30803)):
+
+        info = utils.call(sl, lambda: sl.library_info(lid,ctp['isMovie']))
+        if info and not 'error' in info:
+            is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
+            if is_helper.check_inputstream():
+                playitem = xbmcgui.ListItem(path=info['path'])
+                playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+                playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
+                playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
+                playitem.setProperty('inputstream.adaptive.license_key', info['key'])
+                if 'subs' in data:
+                    params = {'z':'subtitle', 'lng': sl._lang, 'id':lid}
+                    subs = utils.call(sl, lambda: sl.library(params))
+                    if 'url' in subs:
+                        playitem.setSubtitles([subs['url']])
+                xbmcplugin.setResolvedUrl(_handle, True, playitem)
+            return
+        xbmcgui.Dialog().ok(heading=data['title'], line1=_addon.getLocalizedString(30805))
+
     xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
 
 def router(args, sl):
@@ -131,22 +193,11 @@ def router(args, sl):
             categories(args['ctype'][0])
         elif args['library'][0] == 'list':
             listOfItems(sl, args['ctype'][0], args['category'][0])
+        elif args['library'][0] == 'episodes':
+            episodes(sl, args['lid'][0], args['ctype'][0])
         elif args['library'][0] == 'play':
-            play(sl, args['lid'][0])
+            play(sl, args['lid'][0], args['ctype'][0])
         else:
             types()
     else:
         types()
-
-
-    #owners - https://livetv.skylink.cz/m7cziphone/capi.aspx?z=owners&d=3&v=5
-    #kategorie? - https://livetv.skylink.cz/m7cziphone/capi.aspx?z=catcounts&os=skylink7,filmboxcz,m7fvfecz,banaxigo,m7svaxn,amc,viasat&v=4
-    #zoznam - https://livetv.skylink.cz/m7cziphone/capi.aspx?z=movies4cat&v=4&cs=37178378331&c=Action&os=skylink7,filmboxcz,m7fvfecz,banaxigo,m7svaxn,amc,viasat
-    #detail - https://livetv.skylink.cz/m7cziphone/capi.aspx?z=moviedetails&d=3&v=4&m=79007&cs=37186922715
-    #more like - https://livetv.skylink.cz/m7cziphone/capi.aspx?a=slcz&lng=cs&i=79007&os=filmboxcz&z=morelike&v=5&im=v&om=v&cs=37178378331
-    #stream - https://livetv.skylink.cz/m7cziphone/capi.aspx?d=3&u=w78f2ba70-a7ea-11e9-be82-cf65ecb88c92&z=movieurl&v=5&id=79007
-
-    #titulky!!!! - https://livetv.skylink.cz/m7cziphone/capi.aspx?z=subtitle&id=44118&lng=cz
-    #'subs' v detaile
-
-    #platene - n: "SD" v deals v liste?
