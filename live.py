@@ -80,7 +80,7 @@ def play(sl, lid, stationid, askpin):
 
     today = datetime.datetime.now()
     epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=2)))
-    plot = generate_plot(epg[0][stationid]) if epg else u''
+    plot = generate_plot(epg[0][stationid],'') if epg else u''
 
     info = utils.call(sl, lambda: sl.channel_info(lid))
 
