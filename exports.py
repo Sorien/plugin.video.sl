@@ -66,6 +66,19 @@ def create_epg(channels, epg, path):
                         file.write(u'<icon src="%s"/>\n' % html_escape(p['cover']))
                     if 'genres' in p and len(p['genres']) > 0:
                         file.write('<category>%s</category>\n' % ', '.join(p['genres']))
+                    if 'credits' in p and len(p['credits']) > 0:
+                        file.write(u'<credits>\n')
+                        for cr in p['credits']:
+                            if 'p' in cr:
+                                if ('r' not in cr) or (cr['r'] == 4):
+                                    file.write(u'<actor>%s</actor>\n' % html_escape(cr['p'].strip()))
+                                elif cr['r'] == 1:
+                                    file.write(u'<director>%s</director>\n' % html_escape(cr['p'].strip()))
+                                elif cr['r'] == 2:
+                                    file.write(u'<writer>%s</writer>\n' % html_escape(cr['p'].strip()))
+                                elif cr['r'] == 3:
+                                    file.write(u'<producer>%s</producer>\n' % html_escape(cr['p'].strip()))
+                        file.write(u'</credits>\n')
                     file.write(u'</programme>\n')
 
         file.write(u'</tv>\n')
