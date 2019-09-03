@@ -61,5 +61,5 @@ if __name__ == '__main__':
         if _a_show_live:
             xbmcplugin.addDirectoryItem(_id, live.get_url(live='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30700)), True)
         xbmcplugin.addDirectoryItem(_id, replay.get_url(replay='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30600)), True)
-        xbmcplugin.addDirectoryItem(_id, replay.get_url(library='types'), xbmcgui.ListItem(label=_addon.getLocalizedString(30800)), True)
+        xbmcplugin.addDirectoryItem(_id, library.get_url(library='types'), xbmcgui.ListItem(label=_addon.getLocalizedString(30800)), True)
         xbmcplugin.endOfDirectory(_id)
