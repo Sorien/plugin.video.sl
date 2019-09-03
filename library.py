@@ -8,6 +8,7 @@ import xbmcgui
 import xbmcplugin
 import urllib
 import utils
+from collections import Mapping
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -15,7 +16,7 @@ _addon = xbmcaddon.Addon()
 
 TYPES = [
     {'msg':_addon.getLocalizedString(30801), 'code':'movies', 'data':{'z':'movies4cat','cs':'37178378331'}},
-    {'msg':_addon.getLocalizedString(30802), 'code':'series', 'data':{'z':'series4cat','cs':'1591'}}
+    {'msg':_addon.getLocalizedString(30802), 'code':'series', 'data':{'z':'series4cat','cs': 1 | 2 | 4 | 16 | 32 | 512 | 1024}} #1591
 ]
 CATEGORIES = [
     {'msg':_addon.getLocalizedString(30810), 'code':'Action'},
@@ -90,16 +91,16 @@ def listOfItems(sl, ctype, category):
     if ctp is None or cat is None:
         #TODO error!
         pass
-
     #https://livetv.skylink.cz/m7cziphone/capi.aspx?z=movies4cat&v=4&cs=37178378331&c=Action&os=skylink7,filmboxcz,m7fvfecz,banaxigo,m7svaxn,amc,viasat
-    types = ctp['data'].copy()
-    types.update({'c':category})
+    params = ctp['data'].copy()
+    params.update({'c':category})
 
-    items = utils.call(sl, lambda: sl.library(types))
+    items = utils.call(sl, lambda: sl.library(params))
 
     for item in items:
         list_item = xbmcgui.ListItem(label=item['title'])
-        list_item.setInfo('video', {'title': item['title']}) #, 'plot':item['description'] in series
+        #list_item.setInfo('video', {'title': item['title']}) #, 'plot':item['description'] in series
+        list_item.setInfo('video', {'title': item['title'], 'plot':'plot '+item['title']}) #, 'plot':item['description'] in series
         list_item.setArt({'thumb': item['poster']})
         list_item.setProperty('IsPlayable', 'true')
         link = get_url(library='play', lid=item['id'])

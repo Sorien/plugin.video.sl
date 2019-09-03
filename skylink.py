@@ -291,7 +291,7 @@ class Skylink:
                 if 'description' in data:
                     data['description'] = data['description'].strip()
                 if 'cover' in data:
-                    data['cover'] = self._url + '/' + data['cover'].replace('satplusimages', 'satplusimages/447x251') #M7_API_WEB
+                    data['cover'] = self._api_url + data['cover'].replace('ppsimages', 'ppsimages/447x251') #M7_API_WEB
                 data.update(times(data['locId']))
             return epg_info
 

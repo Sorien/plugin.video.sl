@@ -26,7 +26,7 @@ EPG_GAP = 5  # gap for previous program
 def get_url(**kwargs):
     return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
 
-def generate_plot(epg, items_left = _a_live_epg_next):
+def generate_plot(epg, chtitle, items_left = _a_live_epg_next):
 
     def get_plot_line(start, title):
         return '[B]' + start.strftime('%H:%M').decode('UTF-8') + '[/B] ' + title + '[CR]'
@@ -44,7 +44,7 @@ def generate_plot(epg, items_left = _a_live_epg_next):
                     plot += get_plot_line(last_start, last_program['title'])
                     items_left -= 1
                     last_program = None
-            plot += get_plot_line(start, program['title'])
+            plot += get_plot_line(start, program['title'] if 'title' in program else chtitle)
             items_left -= 1
             if items_left == 0:
                 break
@@ -61,7 +61,7 @@ def channels(sl):
     if channels:
         for channel in channels:
             stationid=str(channel['stationid']) #because it is long
-            plot = generate_plot([x for x in epg if stationid in x][0][stationid],4) if epg else u''
+            plot = generate_plot([x for x in epg if stationid in x][0][stationid],channel['title'],4) if epg else u''
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title'], 'plot': plot})
             list_item.setArt({'thumb': utils.get_logo(channel['title'], sl._api_url)})
