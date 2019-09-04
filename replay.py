@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Author: cache
+# Author: cache-sk
 # Created on: 11.4.2019
 import sys
 import inputstreamhelper
@@ -28,7 +28,7 @@ def channels(sl):
         for channel in channels:
             list_item = xbmcgui.ListItem(label=channel['title'])
             list_item.setInfo('video', {'title': channel['title']})  # TODO - genre?
-            list_item.setArt({'thumb': utils.get_logo(channel['title'])})
+            list_item.setArt({'thumb': utils.get_logo(channel['title'], sl._api_url)})
             link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'],
                            askpin=channel['pin'])
             is_folder = True

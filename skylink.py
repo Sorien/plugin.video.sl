@@ -13,10 +13,9 @@ except ImportError:
     from urllib.parse import urlparse, unquote, parse_qs  # 2.7
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-M7_DOMAIN = 'm7cz.solocoo.tv'
-M7_API_WEB = 'https://' + M7_DOMAIN + "/"
-M7_API_URL = M7_API_WEB + 'm7cziphone/'
-
+#M7_DOMAIN = 'm7cz.solocoo.tv'
+#M7_API_WEB = 'https://' + M7_DOMAIN + "/"
+#M7_API_URL = M7_API_WEB + 'm7cziphone/'
 
 class SkylinkException(Exception):
     def __init__(self, id):
@@ -61,6 +60,7 @@ class Skylink:
     _session.max_redirects = 3
     _data = SkylinkSessionData()
     _url = ''
+    _api_url = ''
     _show_pin_protected = True
 
     def __init__(self, username, password, storage_dir, provider='skylink.sk', show_pin_protected=True):
@@ -72,6 +72,7 @@ class Skylink:
         self._storage_path = storage_dir
         self._storage_file = os.path.join(self._storage_path, '%s.session' % username.lower())
         self._url = 'https://livetv.' + provider
+        self._api_url = self._url + '/m7cziphone/'
         self._show_pin_protected = show_pin_protected
         self._load_session()
 
@@ -120,7 +121,7 @@ class Skylink:
             else:
                 raise UserInvalidException()
 
-            resp = requests.post(M7_API_URL + 'challenge.aspx',
+            resp = requests.post(self._api_url + 'challenge.aspx', #M7_API_URL
                                  json={"autotype": "nl",
                                        "app": self._app,
                                        "prettyname": "Chrome",
@@ -134,7 +135,7 @@ class Skylink:
 
             if ('error' in data) and (data['error'] == 'toomany'):
                 if device != '':
-                    resp = requests.post(M7_API_URL + 'challenge.aspx?r=1',
+                    resp = requests.post(self._api_url + 'challenge.aspx?r=1', #M7_API_URL
                                          json={"autotype": "nl",
                                                "app": self._app,
                                                "prettyname": "Chrome",
@@ -161,7 +162,7 @@ class Skylink:
 
     def _login(self):
         if self._data.is_valid():
-            resp = self._session.post(M7_API_URL + 'login.aspx',
+            resp = self._session.post(self._api_url + 'login.aspx', #M7_API_URL
                                       data={'secret': self._data.id + "\t" + self._data.secret,
                                             'uid': self._data.uid, 'app': self._app},
                                       headers={'User-Agent': UA})
@@ -185,14 +186,16 @@ class Skylink:
         return self._session.request(method, url, **kwargs)
 
     def _get(self, params):
-        return self._request('GET', M7_API_URL + 'capi.aspx', params=params, allow_redirects=True,
-                             headers={'User-Agent': UA, 'Referer': self._url,
+        return self._request('GET', self._api_url + 'capi.aspx', params=params, allow_redirects=True, #M7_API_URL
+                             headers={'User-Agent': UA, 'Referer': self._url, 'Origin': self._url,
+                                      'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin',
                                       'Accept': 'application/json, text/javascript, */*; q=0.01'})
 
     def _post(self, params, data):
-        return self._request('POST', M7_API_URL + 'capi.aspx', params=params, data=data,
+        return self._request('POST', self._api_url + 'capi.aspx', params=params, data=data, #M7_API_URL
                              json=None,
-                             headers={'User-Agent': UA, 'Referer': self._url,
+                             headers={'User-Agent': UA, 'Referer': self._url, 'Origin': self._url,
+                                      'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin',
                                       'Accept': 'application/json, text/javascript, */*; q=0.01',
                                       'X-Requested-With': 'XMLHttpRequest'})
 
@@ -284,7 +287,7 @@ class Skylink:
                 if 'description' in data:
                     data['description'] = data['description'].strip()
                 if 'cover' in data:
-                    data['cover'] = M7_API_WEB + data['cover'].replace('satplusimages', 'satplusimages/447x251')
+                    data['cover'] = self._api_url + data['cover'].replace('ppsimages', 'ppsimages/447x251') #M7_API_WEB
                 data.update(times(data['locId']))
             return epg_info
 
@@ -323,9 +326,10 @@ class Skylink:
 
         stream = res.json()
 
-        mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA}
+        mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA, 
+                       'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
         drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
-                          'User-Agent': UA}
+                          'User-Agent': UA, 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
 
         return {
             'protocol': 'mpd',
@@ -363,3 +367,36 @@ class Skylink:
         else:
             res = self._get({'z': 'devices', 'lng': self._lang, 'a': self._app})
         return tidy_devices(res.json())
+
+    def library(self, parameters):
+        self._login()
+        res = self._get(parameters)
+        data = res.json()
+        return data
+
+    def library_info(self, id, isMovie = True):
+        self._login()
+        params = {'z': 'movieurl', 'v': 5, 'd': 3, 'u': self._data.uid, 'id':id}
+        if not isMovie:
+            params.update({'dn':'HD'})
+        res = self._post(params, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
+
+        try:
+            stream = res.json()
+        except:
+            return {'error':'not json'}
+
+        if not 'url' in stream or not 'drm' in stream: 
+            return {'error':'not valid'}
+
+        mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA, 
+                       'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
+        drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
+                          'User-Agent': UA, 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
+        return {
+            'protocol': 'mpd',
+            'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
+            'drm': 'com.widevine.alpha',
+            'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
+        }
+        

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Author: cache
+# Author: cache-sk
 # Created on: 15.4.2019
 import xbmcaddon
 import xbmcgui
@@ -21,9 +21,9 @@ if not _skylink_logos:
         _logos_folder = _addon.getSetting('a_logos_folder')
 
 
-def get_logo(title):
+def get_logo(title, api_url):
     if _skylink_logos:
-        return skylink.M7_API_WEB + exports.logo_sl_location(title)
+        return api_url + exports.logo_sl_location(title)
 
     if _remote_logos:
         return _logos_base_url + exports.logo_id(title)

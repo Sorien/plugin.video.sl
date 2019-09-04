@@ -262,3 +262,107 @@ msgstr "neděle"
 msgctxt "#30700"
 msgid "Live TV"
 msgstr "Živé vysílání TV"
+
+msgctxt "#30800"
+msgid "Library (prototype)"
+msgstr "Knihovna (prototyp)"
+
+msgctxt "#30801"
+msgid "Movies"
+msgstr "Filmy"
+
+msgctxt "#30802"
+msgid "Series"
+msgstr "Seriály"
+
+msgctxt "#30803"
+msgid "Play"
+msgstr "Přehrát"
+
+msgctxt "#30804"
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgctxt "#30805"
+msgid "Can't play this item, you probably don't have a paid service for it."
+msgstr "Tuto položku nelze přehrát, pravděpodobně pro ni nemáte placenou službu."
+
+msgctxt "#30806"
+msgid "Unknown error, sorry."
+msgstr "Neznáma chyba, sorry."
+
+msgctxt "#30810"
+msgid "Action"
+msgstr "Akční"
+
+msgctxt "#30811"
+msgid "Comedy"
+msgstr "Komedie"
+
+msgctxt "#30812"
+msgid "Family"
+msgstr "Rodinný"
+
+msgctxt "#30813"
+msgid "Kids"
+msgstr "Dětský"
+
+msgctxt "#30814"
+msgid "Science Fiction"
+msgstr "Science Fiction"
+
+msgctxt "#30815"
+msgid "Fantasy"
+msgstr "Fantasy"
+
+msgctxt "#30816"
+msgid "Adventure"
+msgstr "Dobrodružný"
+
+msgctxt "#30817"
+msgid "Crime"
+msgstr "Kriminální"
+
+msgctxt "#30818"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#30819"
+msgid "Romance"
+msgstr "Romantika"
+
+msgctxt "#30820"
+msgid "Thriller"
+msgstr "Thriller"
+
+msgctxt "#30821"
+msgid "Horror"
+msgstr "Horror"
+
+msgctxt "#30822"
+msgid "Documentary"
+msgstr "Dokumentární"
+
+msgctxt "#30823"
+msgid "Biography"
+msgstr "Životopisný"
+
+msgctxt "#30824"
+msgid "History"
+msgstr "Historický"
+
+msgctxt "#30825"
+msgid "Music"
+msgstr "Hudební"
+
+msgctxt "#30826"
+msgid "Sport"
+msgstr "Sportovní"
+
+msgctxt "#30827"
+msgid "Other"
+msgstr "Ostatní"
+
+msgctxt "#30828"
+msgid "Erotic"
+msgstr "Erotický"

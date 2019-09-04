@@ -9,6 +9,7 @@ import urlparse
 import xbmcplugin
 import replay
 import live
+import library
 import utils
 
 _id = int(sys.argv[1])
@@ -52,10 +53,13 @@ if __name__ == '__main__':
         replay.router(args, skylink.Skylink(_user_name, _password, _profile, _provider, _pin_protected_content))
     elif 'live' in args:
         live.router(args, skylink.Skylink(_user_name, _password, _profile, _provider, _pin_protected_content))
+    elif 'library' in args:
+        library.router(args, skylink.Skylink(_user_name, _password, _profile, _provider, _pin_protected_content))
     else:
         xbmcplugin.setPluginCategory(_id, '')
         xbmcplugin.setContent(_id, 'videos')
-        xbmcplugin.addDirectoryItem(_id, replay.get_url(replay='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30600)), True)
         if _a_show_live:
-            xbmcplugin.addDirectoryItem(_id, replay.get_url(live='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30700)), True)
+            xbmcplugin.addDirectoryItem(_id, live.get_url(live='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30700)), True)
+        xbmcplugin.addDirectoryItem(_id, replay.get_url(replay='channels'), xbmcgui.ListItem(label=_addon.getLocalizedString(30600)), True)
+        xbmcplugin.addDirectoryItem(_id, library.get_url(library='types'), xbmcgui.ListItem(label=_addon.getLocalizedString(30800)), True)
         xbmcplugin.endOfDirectory(_id)
