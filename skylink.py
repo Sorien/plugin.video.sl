@@ -374,11 +374,11 @@ class Skylink:
         data = res.json()
         return data
 
-    def library_info(self, id, isMovie = True):
+    def library_info(self, id, aditional_params = {}):
         self._login()
         params = {'z': 'movieurl', 'v': 5, 'd': 3, 'u': self._data.uid, 'id':id}
-        if not isMovie:
-            params.update({'dn':'HD'})
+        params.update(aditional_params)
+        print(params)
         res = self._post(params, json.dumps({'type': 'dash', 'flags': '1024'}).encode())
 
         try:

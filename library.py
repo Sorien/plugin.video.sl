@@ -36,8 +36,8 @@ CATEGORIES = [
     {'msg':_addon.getLocalizedString(30824), 'code':'History'},
     {'msg':_addon.getLocalizedString(30825), 'code':'Music'},
     {'msg':_addon.getLocalizedString(30826), 'code':'Sport'},
-    {'msg':_addon.getLocalizedString(30827), 'code':'Other'}
-    #{'msg':_addon.getLocalizedString(30828), 'code':'Erotic'} - NOT YET
+    {'msg':_addon.getLocalizedString(30827), 'code':'Other'},
+    {'msg':_addon.getLocalizedString(30828), 'code':'Erotic'}
 ]
 
 LIBRARY_SOURCES='skylink7,filmboxcz,m7fvfecz,banaxigo,m7svaxn,amc,viasat'
@@ -96,7 +96,7 @@ def listOfItems(sl, ctype, category):
         return
         
     params = ctp['data'].copy()
-    params.update({'c':category, 'os':LIBRARY_SOURCES_PIN}) # if sl._show_pin_protected else LIBRARY_SOURCES - NOT YET
+    params.update({'c':category, 'os':LIBRARY_SOURCES_PIN if sl._show_pin_protected else LIBRARY_SOURCES})
 
     items = utils.call(sl, lambda: sl.library(params))
 
@@ -166,8 +166,10 @@ def play(sl, lid, ctype):
     params = {'z':'moviedetails','cs':'37186922715','d':'3', 'v':'4', 'm':lid}
     data = utils.call(sl, lambda: sl.library(params))
     if 'description' not in data or xbmcgui.Dialog().yesno(heading=data['title'], line1=data['description'], nolabel=_addon.getLocalizedString(30804), yeslabel=_addon.getLocalizedString(30803)):
-
-        info = utils.call(sl, lambda: sl.library_info(lid,ctp['isMovie']))
+        params = {}
+        if 'deals' in data and data['deals'] and 'n' in data['deals'][0]:
+            params.update({'dn':data['deals'][0]['n']})
+        info = utils.call(sl, lambda: sl.library_info(lid,params))
         if info and not 'error' in info:
             is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
             if is_helper.check_inputstream():
