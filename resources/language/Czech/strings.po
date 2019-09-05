@@ -264,8 +264,8 @@ msgid "Live TV"
 msgstr "Živé vysílání TV"
 
 msgctxt "#30800"
-msgid "Library (prototype)"
-msgstr "Knihovna (prototyp)"
+msgid "Library (alpha)"
+msgstr "Knihovna (alfa)"
 
 msgctxt "#30801"
 msgid "Movies"

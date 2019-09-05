@@ -399,4 +399,15 @@ class Skylink:
             'drm': 'com.widevine.alpha',
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
-        
+
+    def library_owners(self):
+        self._login()
+        res = self._get({'z':'owners','d':'3','v':'5'})
+        data = res.json()
+        return data
+
+    def products(self):
+        self._login()
+        res = self._get({'z':'products'})
+        data = res.json()
+        return data
