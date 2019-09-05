@@ -124,7 +124,7 @@ def listOfItems(sl, ctype, category):
         list_item = xbmcgui.ListItem(label=item['title'])
         list_item.setInfo('video', {'title': item['title'], 'plot':item['description'] if 'description' in item else ''})
         list_item.setArt({'thumb': item['poster']})
-        link = get_url(library='play' if ctp['isMovie'] else 'episodes', lid=item['id'], ctype=ctype)
+        link = get_url(library='play' if ctp['isMovie'] else 'seasons', lid=item['id'], ctype=ctype)
         is_folder = not ctp['isMovie']
         if ctp['isMovie']:
             list_item.setProperty('IsPlayable', 'true')
@@ -132,55 +132,50 @@ def listOfItems(sl, ctype, category):
     xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
     xbmcplugin.endOfDirectory(_handle)
 
-def episodes(sl, lid, ctype):
-    ctp = None
-    for tp in TYPES:
-        if tp['code'] == ctype:
-            ctp = tp
-            break
-    if ctp is None:
-        xbmcgui.Dialog().ok(heading=_addon.getLocalizedString(30800), line1=_addon.getLocalizedString(30806))
-        xbmcplugin.endOfDirectory(_handle)
-        return
-
+def seasons(sl, lid):
     params = {'z':'seriesdetails','cs':'1591','d':'3', 'v':'4', 'lng': sl._lang, 'a': sl._app, 'm':lid} #cs:2
     data = utils.call(sl, lambda: sl.library(params))
     xbmcplugin.setPluginCategory(_handle, data['title'])
 
     params = {'z':'seasonsforseries','os':data['owner'], 's':lid}
-    series = utils.call(sl, lambda: sl.library(params))
+    seasons = utils.call(sl, lambda: sl.library(params))
     
-    for serie in series:
-        sz = serie[0]
-        prefix = 'S' + sz + ' '
-        params = {'z':'episodesforseason','v':'4','cs':'37178378331','sz':sz,'os':data['owner'], 's':lid}
-        episodes = utils.call(sl, lambda: sl.library(params))
-        for episode in episodes:
-            list_item = xbmcgui.ListItem(label=prefix + episode['title'])
-            list_item.setInfo('video', {
-                'title': prefix + episode['title'],
-                'duration':int(episode['duration'])*60
-            })
-            list_item.setArt({'thumb': episode['poster']})
-            list_item.setProperty('IsPlayable', 'true')
-            link = get_url(library='play', lid=episode['id'], ctype=ctype)
-            is_folder = False
-            xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
+    for season in seasons:
+        sz = season[0]
+        title = _addon.getLocalizedString(30807) + ' ' + sz
+        list_item = xbmcgui.ListItem(label=title)
+        list_item.setInfo('video', {'title': title})
+        list_item.setArt({'thumb': data['poster']})
+        link = get_url(library='episodes', lid=lid, sz=sz)
+        is_folder = True
+        xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
+   
+    xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL)
+    xbmcplugin.endOfDirectory(_handle)
+
+def episodes(sl, lid, sz):
+    params = {'z':'seriesdetails','cs':'1591','d':'3', 'v':'4', 'lng': sl._lang, 'a': sl._app, 'm':lid} #cs:2
+    data = utils.call(sl, lambda: sl.library(params))
+    xbmcplugin.setPluginCategory(_handle, data['title'] + ' / ' + _addon.getLocalizedString(30807) + ' ' + sz)
+
+    params = {'z':'episodesforseason','v':'4','cs':'37178378331','sz':sz,'os':data['owner'], 's':lid}
+    episodes = utils.call(sl, lambda: sl.library(params))
+    for episode in episodes:
+        list_item = xbmcgui.ListItem(label=episode['title'])
+        list_item.setInfo('video', {
+            'title': episode['title'],
+            'duration':int(episode['duration'])*60
+        })
+        list_item.setArt({'thumb': episode['poster']})
+        list_item.setProperty('IsPlayable', 'true')
+        link = get_url(library='play', lid=episode['id'])
+        is_folder = False
+        xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     
     xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL)
     xbmcplugin.endOfDirectory(_handle)
 
-def play(sl, lid, ctype):
-    ctp = None
-    for tp in TYPES:
-        if tp['code'] == ctype:
-            ctp = tp
-            break
-    if ctp is None:
-        xbmcgui.Dialog().ok(heading=_addon.getLocalizedString(30800), line1=_addon.getLocalizedString(30806))
-        xbmcplugin.endOfDirectory(_handle)
-        return
-
+def play(sl, lid):
     #show plot
     params = {'z':'moviedetails','cs':'37186922715','d':'3', 'v':'4', 'm':lid}
     data = utils.call(sl, lambda: sl.library(params))
@@ -235,10 +230,12 @@ def router(args, sl):
             categories(sl, args['ctype'][0])
         elif args['library'][0] == 'list':
             listOfItems(sl, args['ctype'][0], args['category'][0])
+        elif args['library'][0] == 'seasons':
+            seasons(sl, args['lid'][0])
         elif args['library'][0] == 'episodes':
-            episodes(sl, args['lid'][0], args['ctype'][0])
+            episodes(sl, args['lid'][0], args['sz'][0])
         elif args['library'][0] == 'play':
-            play(sl, args['lid'][0], args['ctype'][0])
+            play(sl, args['lid'][0])
         else:
             types()
     else:

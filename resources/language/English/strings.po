@@ -291,6 +291,10 @@ msgctxt "#30806"
 msgid "Unknown error, sorry."
 msgstr "Unknown error, sorry."
 
+msgctxt "#30807"
+msgid "Season"
+msgstr "Season"
+
 msgctxt "#30810"
 msgid "Action"
 msgstr "Action"
