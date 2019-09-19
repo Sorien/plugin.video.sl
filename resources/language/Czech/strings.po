@@ -264,8 +264,8 @@ msgid "Live TV"
 msgstr "Živé vysílání TV"
 
 msgctxt "#30800"
-msgid "Library (prototype)"
-msgstr "Knihovna (prototyp)"
+msgid "Library (alpha)"
+msgstr "Knihovna (alfa)"
 
 msgctxt "#30801"
 msgid "Movies"
@@ -290,6 +290,10 @@ msgstr "Tuto položku nelze přehrát, pravděpodobně pro ni nemáte placenou s
 msgctxt "#30806"
 msgid "Unknown error, sorry."
 msgstr "Neznáma chyba, sorry."
+
+msgctxt "#30807"
+msgid "Season"
+msgstr "Sezóna"
 
 msgctxt "#30810"
 msgid "Action"
