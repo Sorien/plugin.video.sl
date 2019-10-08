@@ -57,7 +57,7 @@ def generate_plot(epg, chtitle, items_left = _a_live_epg_next):
 def channels(sl):
     channels = utils.call(sl, lambda: sl.channels(False))
     today = datetime.datetime.now()
-    epg = utils.call(sl, lambda: sl.epg(channels, today, today + datetime.timedelta(days=1)))
+    epg = utils.call(sl, lambda: sl.epg(channels, today, today + datetime.timedelta(days=1), False))
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
     if channels:
         for channel in channels:
@@ -80,7 +80,7 @@ def play(sl, lid, stationid, askpin):
             return
 
     today = datetime.datetime.now()
-    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=2)))
+    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=1), False))
     plot = generate_plot(epg[0][stationid],'') if epg else u''
 
     try:

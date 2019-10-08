@@ -71,12 +71,23 @@ def days(sl, stationid, channel, askpin):
 
 def programs(sl, stationid, channel, day=0, first=False):
     today = day == 0
+    lastday = day == 7
     now = datetime.datetime.now()
-    #TODO this dates can be precalculated to exact time, so no further calculation is needed for show item!
-    then = now - datetime.timedelta(days=day)
-    actual_date = then.replace(hour=0, minute=0, second=0, microsecond=0)
+    if today:
+        from_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        to_date = now
+        start_date = from_date
+    elif lastday:
+        then = now - datetime.timedelta(days=day)
+        start_date = then.replace(hour=0, minute=0, second=0, microsecond=0)
+        from_date = then + datetime.timedelta(seconds=REPLAY_LAST_GAP)
+        to_date = start_date + datetime.timedelta(days=1)
+    else: #other days
+        from_date = now.replace(hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=day)
+        to_date = from_date + datetime.timedelta(days=1)
+        start_date = from_date
 
-    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], actual_date, actual_date))
+    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], from_date, to_date, False))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
     if day < 6 or (day == 6 and time_until_end_of_day(now).seconds > REPLAY_LAST_GAP):
@@ -88,8 +99,11 @@ def programs(sl, stationid, channel, day=0, first=False):
     if epg:
         for program in epg[0][stationid]:
             start = datetime.datetime.fromtimestamp(program['start'])
-            started_actual_date = (start.replace(hour=0, minute=0, second=0, microsecond=0) - actual_date).days == 0
-            show_item = started_actual_date and (not today or start + datetime.timedelta(minutes=program['duration'] + REPLAY_GAP) < now) and (day < 7 or (start > then and (start - then).seconds > REPLAY_LAST_GAP))
+            show_item = (start.replace(hour=0, minute=0, second=0, microsecond=0) - start_date).days == 0 #started today
+            if today:
+                show_item = show_item and (start + datetime.timedelta(minutes=program['duration'] + REPLAY_GAP) < now)
+            if lastday:
+                show_item = show_item and (start > then and (start - then).seconds > REPLAY_LAST_GAP)
             if show_item:
                 title = start.strftime('%H:%M').decode('UTF-8')
                 title = title[1:] if title.startswith('0') else title
