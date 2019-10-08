@@ -211,6 +211,10 @@ msgctxt "#30509"
 msgid "Nope!"
 msgstr "Nope!"
 
+msgctxt "#30510"
+msgid "Stream is not available!"
+msgstr "Stream is not available!"
+
 msgctxt "#30600"
 msgid "Archive"
 msgstr "Archive"

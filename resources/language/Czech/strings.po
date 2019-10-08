@@ -211,6 +211,10 @@ msgctxt "#30509"
 msgid "Nope!"
 msgstr "Špatný PIN!"
 
+msgctxt "#30510"
+msgid "Stream is not available!"
+msgstr "Stream není k dispozici!"
+
 msgctxt "#30600"
 msgid "Archive"
 msgstr "Archiv"

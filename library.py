@@ -9,6 +9,7 @@ import xbmcplugin
 import urllib
 import utils
 from collections import Mapping
+from skylink import StreamNotResolvedException
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -184,8 +185,14 @@ def play(sl, lid):
         params = {}
         if 'deals' in data and data['deals'] and 'n' in data['deals'][0]:
             params.update({'dn':data['deals'][0]['n']})
-        info = utils.call(sl, lambda: sl.library_info(lid,params))
-        if info and not 'error' in info:
+        try:
+            info = utils.call(sl, lambda: sl.library_info(lid,params))
+        except StreamNotResolvedException as e:
+            xbmcgui.Dialog().ok(heading=data['title'], line1=_addon.getLocalizedString(30805))
+            xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
+            return
+
+        if info:
             is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
             if is_helper.check_inputstream():
                 playitem = xbmcgui.ListItem(path=info['path'])

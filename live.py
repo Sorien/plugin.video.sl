@@ -10,6 +10,7 @@ import xbmcplugin
 import urllib
 import datetime
 import utils
+from skylink import StreamNotResolvedException
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -82,7 +83,12 @@ def play(sl, lid, stationid, askpin):
     epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=2)))
     plot = generate_plot(epg[0][stationid],'') if epg else u''
 
-    info = utils.call(sl, lambda: sl.channel_info(lid))
+    try:
+        info = utils.call(sl, lambda: sl.channel_info(lid))
+    except StreamNotResolvedException as e:
+        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
+        return
 
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])

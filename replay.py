@@ -9,6 +9,7 @@ import xbmcplugin
 import urllib
 import datetime
 import utils
+from skylink import StreamNotResolvedException
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -116,7 +117,12 @@ def programs(sl, stationid, channel, day=0, first=False):
 
 
 def replay(sl, locId):
-    info = utils.call(sl, lambda: sl.replay_info(locId))
+    try:
+        info = utils.call(sl, lambda: sl.replay_info(locId))
+    except StreamNotResolvedException as e:
+        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
+        return
 
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])

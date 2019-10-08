@@ -31,8 +31,12 @@ def play(channel_id, askpin):
         if not pin_ok:
             xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
             return
-
-    info = utils.call(sl, lambda: sl.channel_info(channel_id))
+    try:
+        info = utils.call(sl, lambda: sl.channel_info(channel_id))
+    except skylink.StreamNotResolvedException as e:
+        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
+        return
 
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
