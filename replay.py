@@ -15,7 +15,7 @@ _handle = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
 
 REPLAY_GAP = 5  # gap after program ends til it shows in replay
-
+REPLAY_LAST_GAP = 3*60*60 #gap before program vanish - now - 7 days + last+gap
 
 def get_url(**kwargs):
     return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
@@ -35,6 +35,17 @@ def channels(sl):
             xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     xbmcplugin.endOfDirectory(_handle)
 
+#source - http://wontonst.blogspot.com/2017/08/time-until-end-of-day-in-python.html
+def time_until_end_of_day(dt=None):
+    # type: (datetime.datetime) -> datetime.timedelta
+    """
+    Get timedelta until end of day on the datetime passed, or current time.
+    """
+    if dt is None:
+        dt = datetime.datetime.now()
+    tomorrow = dt + datetime.timedelta(days=1)
+    return datetime.datetime.combine(tomorrow, datetime.time.min) - dt
+
 
 def days(sl, stationid, channel, askpin):
     now = datetime.datetime.now()
@@ -44,27 +55,30 @@ def days(sl, stationid, channel, askpin):
         if not pin_ok:
             xbmcplugin.endOfDirectory(_handle)
             return
-    for day in range(0, 7):
-        d = now - datetime.timedelta(days=day) if day > 0 else now
-        title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
-        title = _addon.getLocalizedString(int('3061' + str(d.weekday()))) + ', ' + title
-        list_item = xbmcgui.ListItem(label=title)
-        list_item.setArt({'icon': 'DefaultAddonPVRClient.png'})
-        link = get_url(replay='programs', stationid=stationid, channel=channel, day=day, first=True)
-        is_folder = True
-        xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
+    for day in range(0, 8):
+        if day < 7 or time_until_end_of_day(now).seconds > REPLAY_LAST_GAP :
+            d = now - datetime.timedelta(days=day) if day > 0 else now
+            title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
+            title = _addon.getLocalizedString(int('3061' + str(d.weekday()))) + ', ' + title
+            list_item = xbmcgui.ListItem(label=title)
+            list_item.setArt({'icon': 'DefaultAddonPVRClient.png'})
+            link = get_url(replay='programs', stationid=stationid, channel=channel, day=day, first=True)
+            is_folder = True
+            xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     xbmcplugin.endOfDirectory(_handle)
 
 
 def programs(sl, stationid, channel, day=0, first=False):
     today = day == 0
     now = datetime.datetime.now()
-    actual_date = now.replace(hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=day)
+    #TODO this dates can be precalculated to exact time, so no further calculation is needed for show item!
+    then = now - datetime.timedelta(days=day)
+    actual_date = then.replace(hour=0, minute=0, second=0, microsecond=0)
 
     epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], actual_date, actual_date))
 
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600) + ' / ' + channel)
-    if day < 6:
+    if day < 6 or (day == 6 and time_until_end_of_day(now).seconds > REPLAY_LAST_GAP):
         list_item = xbmcgui.ListItem(label=_addon.getLocalizedString(30604))
         list_item.setArt({'icon': 'DefaultVideoPlaylists.png'})
         link = get_url(replay='programs', stationid=stationid, channel=channel, day=day + 1)
@@ -74,7 +88,7 @@ def programs(sl, stationid, channel, day=0, first=False):
         for program in epg[0][stationid]:
             start = datetime.datetime.fromtimestamp(program['start'])
             started_actual_date = (start.replace(hour=0, minute=0, second=0, microsecond=0) - actual_date).days == 0
-            show_item = started_actual_date and (not today or start + datetime.timedelta(minutes=program['duration'] + REPLAY_GAP) < now)
+            show_item = started_actual_date and (not today or start + datetime.timedelta(minutes=program['duration'] + REPLAY_GAP) < now) and (day < 7 or (start > then and (start - then).seconds > REPLAY_LAST_GAP))
             if show_item:
                 title = start.strftime('%H:%M').decode('UTF-8')
                 title = title[1:] if title.startswith('0') else title
