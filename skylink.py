@@ -37,6 +37,10 @@ class TooManyDevicesException(SkylinkException):
         self.id = 30505
         self.devices = data['devices']
 
+class StreamNotResolvedException(SkylinkException):
+    def __init__(self, detail={}):
+        self.id = 30510
+        self.detail = detail
 
 class SkylinkSessionData:
     uid = ''
@@ -242,22 +246,27 @@ class Skylink:
 
         stream = res.json()
 
+        if not 'url' in stream or not 'drm' in stream: 
+            raise StreamNotResolvedException()
+           
         mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA}
         drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
                           'User-Agent': UA}
-
         return {
             'protocol': 'mpd',
             'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
             'drm': 'com.widevine.alpha',
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
+        
+        
 
-    def epg(self, channels, from_date, to_date):
+    def epg(self, channels, from_date, to_date, recalculate=True):
         """Returns EPG data
         :param channels: Result from channels function
         :param from_date: datetime First day of requested Epg
         :param to_date: datetime Last day of requested Epg
+        :param recalculate: boolean if from_date and to_date should be recalculated
         :return: Epg data
 
         cs param values:
@@ -295,8 +304,9 @@ class Skylink:
             return int(time.mktime(dt.timetuple())) * 1000
 
         self._login()
-        from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
-        to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
+        if recalculate:
+            from_date = from_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            to_date = to_date.replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(days=1)
 
         i = 0
         channels_count = len(channels)
@@ -326,6 +336,9 @@ class Skylink:
 
         stream = res.json()
 
+        if not 'url' in stream or not 'drm' in stream: 
+            raise StreamNotResolvedException()
+           
         mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA, 
                        'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
         drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
@@ -384,11 +397,11 @@ class Skylink:
         try:
             stream = res.json()
         except:
-            return {'error':'not json'}
+            raise StreamNotResolvedException({'error':'not json'})
 
         if not 'url' in stream or not 'drm' in stream: 
-            return {'error':'not valid'}
-
+            raise StreamNotResolvedException({'error':'not valid'})
+           
         mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA, 
                        'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
         drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',

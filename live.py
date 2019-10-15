@@ -10,6 +10,7 @@ import xbmcplugin
 import urllib
 import datetime
 import utils
+from skylink import StreamNotResolvedException
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
@@ -56,7 +57,7 @@ def generate_plot(epg, chtitle, items_left = _a_live_epg_next):
 def channels(sl):
     channels = utils.call(sl, lambda: sl.channels(False))
     today = datetime.datetime.now()
-    epg = utils.call(sl, lambda: sl.epg(channels, today, today + datetime.timedelta(days=1)))
+    epg = utils.call(sl, lambda: sl.epg(channels, today, today + datetime.timedelta(days=1), False))
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
     if channels:
         for channel in channels:
@@ -79,10 +80,15 @@ def play(sl, lid, stationid, askpin):
             return
 
     today = datetime.datetime.now()
-    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=2)))
+    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], today, today + datetime.timedelta(days=1), False))
     plot = generate_plot(epg[0][stationid],'') if epg else u''
 
-    info = utils.call(sl, lambda: sl.channel_info(lid))
+    try:
+        info = utils.call(sl, lambda: sl.channel_info(lid))
+    except StreamNotResolvedException as e:
+        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
+        return
 
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
