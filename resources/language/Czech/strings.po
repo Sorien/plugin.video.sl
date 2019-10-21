@@ -167,6 +167,26 @@ msgctxt "#30380"
 msgid "Failed to activate the new skin, do it manually, and then set it."
 msgstr "Nepodařilo se aktivovat nový vzhled, udělejte to manuálně a pak si ho nastavte."
 
+msgctxt "#30390"
+msgid "PVR IPTV Simple Client"
+msgstr "PVR IPTV Simple Client"
+
+msgctxt "#30391"
+msgid "Setup PVR IPTV Simple Client"
+msgstr "Nastavení PVR IPTV Simple Client"
+
+msgctxt "#30392"
+msgid "You do not have installed PVR IPTV Simple Client"
+msgstr "Nemáte nainstalovanej PVR IPTV Simple Client"
+
+msgctxt "#30393"
+msgid "You have neither generation of playlist nor EPG enabled."
+msgstr "Nemáte zapnuté generování ani playlistu, ani EPG."
+
+msgctxt "#30394"
+msgid "It will now display a dialog with the necessary restart several times. Then restart Kodi.\nI also recommend deleting data in Settings / PVR and TV - General.\nOnly start after you have generated a playlist or epg!\nThis process is irreversible, continue?"
+msgstr "Nyní zobrazí několikrát po sobě dialog s nutným restartem. Poté restartujte Kodi.\nNásledně doporučuji i vymazat údaje v Nastavení / PVR a televize - Všeobecné.\nSpusťte až poté, co máte vygenerovaný playlist resp. epg!\nTento proces je nevratný, pokračovat?"
+
 msgctxt "#30401"
 msgid "Playlist created"
 msgstr "Playlist byl vytvořen"
