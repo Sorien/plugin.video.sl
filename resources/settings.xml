@@ -33,6 +33,10 @@
         <setting label="30360" type="bool" id="a_show_live" default="false"/>
         <setting label="30361" type="slider" id="a_live_epg_next" default="7" range="2,1,14" option="int" visible="eq(-1,true)"/>
     </category>
+    <category label="30390">
+        <setting label="30390" type="lsep"/>
+        <setting label="30391" type="action" action="RunScript(special://home/addons/plugin.video.sl/pisc.py)"/>
+    </category>
     <category label="30370">
         <setting label="30370" type="lsep"/>
         <setting label="30371" type="action" action="RunScript(special://home/addons/plugin.video.sl/skins.py)"/>
