@@ -34,7 +34,7 @@ def set_pisc():
         _pisc.setSetting('epgPath',path)
         _pisc.setSetting('epgPathType','0')
         _pisc.setSetting('epgTimeShift','0')
-        _pisc.setSetting('epgTSOverride','0')
+        _pisc.setSetting('epgTSOverride','false')
         _pisc.setSetting('logoPathType','1')
         _pisc.setSetting('logoBaseUrl','')
         _pisc.setSetting('logoFromEpg','2')
