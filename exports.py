@@ -54,6 +54,7 @@ def create_epg(channels, epg, path):
             #        file.write('<icon src="http://phazer.info/img/kanali/hrt1.png" />\n')
             file.write(u'</channel>\n')
 
+        year = datetime.datetime.now().year
         for e in epg:
             for c in e:
                 for p in e[str(c)]:
@@ -82,6 +83,10 @@ def create_epg(channels, epg, path):
                                 elif cr['r'] == 3:
                                     file.write(u'<producer>%s</producer>\n' % html_escape(cr['p'].strip()))
                         file.write(u'</credits>\n')
+                    if 'seasonNo' in p and p['seasonNo'] > 0 and 'episodeNo' in p and p['episodeNo'] > 0:
+                        if p['seasonNo'] != year and p['seasonNo'] != year + 1:
+                            file.write(u'<episode-num system="xmltv_ns">%d.%d.</episode-num>\n' %
+                                       (p['seasonNo'] - 1, p['episodeNo'] - 1))
                     file.write(u'</programme>\n')
 
         file.write(u'</tv>\n')
