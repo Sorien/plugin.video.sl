@@ -23,17 +23,18 @@ def get_url(**kwargs):
 
 
 def channels(sl):
-    channels = utils.call(sl, lambda: sl.channels(True))
+    channels = utils.call(sl, lambda: sl.channels())
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
     if channels:
         for channel in channels:
-            list_item = xbmcgui.ListItem(label=channel['title'])
-            list_item.setInfo('video', {'title': channel['title']})  # TODO - genre?
-            list_item.setArt({'thumb': utils.get_logo(channel['title'], sl._api_url)})
-            link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'],
-                           askpin=channel['pin'])
-            is_folder = True
-            xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
+            if channel['replayable']:
+                list_item = xbmcgui.ListItem(label=channel['title'])
+                list_item.setInfo('video', {'title': channel['title']})  # TODO - genre?
+                list_item.setArt({'thumb': utils.get_logo(channel['title'], sl._api_url)})
+                link = get_url(replay='days', stationid=channel['stationid'], channel=channel['title'],
+                               askpin=channel['pin'])
+                is_folder = True
+                xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     xbmcplugin.endOfDirectory(_handle)
 
 #source - http://wontonst.blogspot.com/2017/08/time-until-end-of-day-in-python.html
