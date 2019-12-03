@@ -203,7 +203,7 @@ class Skylink:
                                       'Accept': 'application/json, text/javascript, */*; q=0.01',
                                       'X-Requested-With': 'XMLHttpRequest'})
 
-    def channels(self, replay=False):
+    def channels(self):
         """Returns available live channels, when reply is set returns replayable channels as well
         :param replay: bool
         :return: Channels data
@@ -221,8 +221,8 @@ class Skylink:
             is_replayable = (c['flags'] & 2048) > 0
             is_pin_protected = (c['flags'] & 256) > 0
 
-            if (is_stream and is_live and (not replay or is_replayable) and
-                    (self._show_pin_protected or (not self._show_pin_protected and not is_pin_protected))):
+            if is_stream and is_live and (self._show_pin_protected or (not self._show_pin_protected and not is_pin_protected)):
+                c['replayable'] = is_replayable
                 c['pin'] = is_pin_protected
                 result.append(c)
 

@@ -27,16 +27,19 @@ def logo_sl_location(title):
     return 'mmchan/channelicons/' + title + '_w267.png'
 
 
-def create_m3u(channels, path, url):
+def create_m3u(channels, path, logo_url=None):
     with io.open(path, 'w', encoding='utf8') as file:
         file.write(u'#EXTM3U\n')
 
         for c in channels:
-            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s",%s\n' % (
+            catchup_url = u'plugin://plugin.video.sl/?stationid=%s&askpin=%s&utc=${start}' % (c['stationid'], c['pin'])
+            catchup = u'catchup-days="7" catchup-source="'+catchup_url+'"' if c['replayable'] else ''
+            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s" %s,%s\n' % (
                 c['stationid'],
-                url + logo_sl_location(c['title']) if url is not None else logo_id(c['title']),
+                logo_url + logo_sl_location(c['title']) if logo_url is not None else logo_id(c['title']),
+                catchup,
                 c['title']))
-            file.write(u'plugin://plugin.video.sl/?action=play&id=%s&askpin=%s\n' % (c['id'], c['pin']))
+            file.write(u'plugin://plugin.video.sl/?id=%s&askpin=%s\n' % (c['id'], c['pin']))
 
 
 def create_epg(channels, epg, path):
@@ -51,7 +54,6 @@ def create_epg(channels, epg, path):
             #        file.write('<icon src="http://phazer.info/img/kanali/hrt1.png" />\n')
             file.write(u'</channel>\n')
 
-        year = datetime.datetime.now().year
         for e in epg:
             for c in e:
                 for p in e[str(c)]:
@@ -80,10 +82,6 @@ def create_epg(channels, epg, path):
                                 elif cr['r'] == 3:
                                     file.write(u'<producer>%s</producer>\n' % html_escape(cr['p'].strip()))
                         file.write(u'</credits>\n')
-                    if 'seasonNo' in p and p['seasonNo'] > 0 and 'episodeNo' in p and p['episodeNo'] > 0:
-                        if p['seasonNo'] != year and p['seasonNo'] != year + 1:
-                            file.write(u'<episode-num system="xmltv_ns">%d.%d.</episode-num>\n' %
-                                       (p['seasonNo'] - 1, p['episodeNo'] - 1))
                     file.write(u'</programme>\n')
 
         file.write(u'</tv>\n')
