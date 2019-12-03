@@ -317,7 +317,7 @@ class Skylink:
             channels_str = channels_str + '!' + str(data['stationid'])
             if ((i % 100) == 0) or (i == channels_count):
                 res = self._get({'z': 'epg', 'lng': self._lang, 'a': self._app, 'v': 3, 'f': ts(from_date), 't': ts(to_date),
-                                 'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024 | 65536 | 131072,
+                                 'f_format': 'pg', 'cs': 1 | 2 | 8 | 512 | 1024 | 2048 | 4096 | 65536 | 131072,
                                  's': channels_str[1:]})  # 212763
                 res = res.json()[1]
                 for channel_id in res:
