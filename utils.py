@@ -9,6 +9,15 @@ import requests
 import logger
 import os
 
+try:
+    # Python 3.x
+    from urllib.parse import parse_qs as comp_parse_qs, urlencode as comp_urlencode
+except ImportError:
+    # Python 2.5+
+    from urlparse import parse_qs as comp_parse_qs
+    from urllib import urlencode as comp_urlencode
+
+
 _addon = xbmcaddon.Addon()
 _skylink_logos = 'false' != _addon.getSetting('a_sl_logos')
 if not _skylink_logos:
@@ -97,3 +106,18 @@ def ask_for_pin(sl):
             dialog.ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(30509))
             return False
     return True
+
+
+def dec_utf8(str):
+    try:
+        return str.decode("utf-8")  # Python 2.x
+    except AttributeError:
+        return str  # Python 3.x
+
+
+def parse_qs(qs):
+    return comp_parse_qs(qs)
+
+
+def urlencode(query):
+    return comp_urlencode(query)

@@ -1,3 +1,4 @@
+import sys
 import datetime
 import os
 import time
@@ -24,9 +25,12 @@ class SkylinkMonitor(xbmc.Monitor):
         logger.log.info('service destroyed')
 
     def notify(self, text, error=False):
-        text = text.encode("utf-8") if type(text) is unicode else text
         icon = 'DefaultIconError.png' if error else ''
-        xbmc.executebuiltin('Notification("%s","%s",5000,%s)' % (self._addon.getAddonInfo('name').encode("utf-8"), text, icon))
+        try:
+            text = text.encode("utf-8") if type(text) is unicode else text
+            xbmc.executebuiltin('Notification("%s","%s",5000,%s)' % (self._addon.getAddonInfo('name').encode("utf-8"), text, icon))
+        except NameError as e:
+            xbmc.executebuiltin('Notification("%s","%s",5000,%s)' % (self._addon.getAddonInfo('name'), text, icon))
 
     def onSettingsChanged(self):
         self._addon = xbmcaddon.Addon()  # refresh for updated settings!

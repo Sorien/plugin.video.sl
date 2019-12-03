@@ -42,7 +42,7 @@ CATEGORIES = [
 ]
 
 def get_url(**kwargs):
-    return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
+    return '{0}?{1}'.format(_url, utils.urlencode(kwargs))
 
 def types():
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30800))
