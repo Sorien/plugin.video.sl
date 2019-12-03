@@ -25,12 +25,12 @@ EPG_GAP = 5  # gap for previous program
 
 
 def get_url(**kwargs):
-    return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
+    return '{0}?{1}'.format(_url, utils.urlencode(kwargs))
 
 def generate_plot(epg, chtitle, items_left = _a_live_epg_next):
 
     def get_plot_line(start, title):
-        return '[B]' + start.strftime('%H:%M').decode('UTF-8') + '[/B] ' + title + '[CR]'
+        return '[B]' + utils.dec_utf8(start.strftime('%H:%M')) + '[/B] ' + title + '[CR]'
 
     plot = u''
     now = datetime.datetime.now()

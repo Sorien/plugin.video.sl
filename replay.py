@@ -19,7 +19,7 @@ REPLAY_GAP = 5  # gap after program ends til it shows in replay
 REPLAY_LAST_GAP = 3*60*60 #gap before program vanish - now - 7 days + last+gap
 
 def get_url(**kwargs):
-    return '{0}?{1}'.format(_url, urllib.urlencode(kwargs, 'utf-8'))
+    return '{0}?{1}'.format(_url, utils.urlencode(kwargs))
 
 
 def channels(sl):
@@ -59,7 +59,7 @@ def days(sl, stationid, channel, askpin):
     for day in range(0, 8):
         if day < 7 or time_until_end_of_day(now).seconds > REPLAY_LAST_GAP :
             d = now - datetime.timedelta(days=day) if day > 0 else now
-            title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else d.strftime('%d. %m.').decode('UTF-8')
+            title = _addon.getLocalizedString(30601) if day == 0 else _addon.getLocalizedString(30602) if day == 1 else utils.dec_utf8(d.strftime('%d. %m.'))
             title = _addon.getLocalizedString(int('3061' + str(d.weekday()))) + ', ' + title
             list_item = xbmcgui.ListItem(label=title)
             list_item.setArt({'icon': 'DefaultAddonPVRClient.png'})
@@ -105,7 +105,7 @@ def programs(sl, stationid, channel, day=0, first=False):
             if lastday:
                 show_item = show_item and (start > then and (start - then).seconds > REPLAY_LAST_GAP)
             if show_item:
-                title = start.strftime('%H:%M').decode('UTF-8')
+                title = utils.dec_utf8(start.strftime('%H:%M'))
                 title = title[1:] if title.startswith('0') else title
                 title = title + ' - ' + program['title']
                 list_item = xbmcgui.ListItem(label=title)

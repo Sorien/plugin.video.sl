@@ -5,7 +5,6 @@ import skylink
 import xbmc
 import xbmcaddon
 import xbmcgui
-import urlparse
 import xbmcplugin
 import replay
 import live
@@ -14,7 +13,7 @@ import utils
 
 _id = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
-_profile = xbmc.translatePath(_addon.getAddonInfo('profile')).decode("utf-8")
+_profile = utils.dec_utf8(xbmc.translatePath(_addon.getAddonInfo('profile')))
 _user_name = xbmcplugin.getSetting(_id, 'username')
 _password = xbmcplugin.getSetting(_id, 'password')
 _provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
@@ -50,7 +49,7 @@ def play(channel_id, askpin):
 
 
 if __name__ == '__main__':
-    args = urlparse.parse_qs(sys.argv[2][1:])
+    args = utils.parse_qs(sys.argv[2][1:])
     if 'id' in args:
         play(str(args['id'][0]), str(args['askpin'][0]) if 'askpin' in args else 'False')
     elif 'replay' in args:
