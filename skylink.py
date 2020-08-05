@@ -13,9 +13,9 @@ except ImportError:
     from urllib.parse import urlparse, unquote, parse_qs  # 2.7
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-#M7_DOMAIN = 'm7cz.solocoo.tv'
-#M7_API_WEB = 'https://' + M7_DOMAIN + "/"
-#M7_API_URL = M7_API_WEB + 'm7cziphone/'
+M7_DOMAIN = 'm7cz.solocoo.tv'
+M7_API_WEB = 'https://' + M7_DOMAIN + "/"
+M7_API_URL = M7_API_WEB + 'm7cziphone/'
 
 class SkylinkException(Exception):
     def __init__(self, id):
@@ -296,7 +296,9 @@ class Skylink:
                 if 'description' in data:
                     data['description'] = data['description'].strip()
                 if 'cover' in data:
-                    data['cover'] = self._api_url + data['cover'].replace('ppsimages', 'ppsimages/447x251') #M7_API_WEB
+                    # url in web page - https://m7cz.solocoo.tv/m7cziphone/mmchan/mpimages/447x251/_hash_.jpg
+                    # url in data - mmchan/mpimages/_hash_.jpg
+                    data['cover'] = M7_API_URL + data['cover'].replace('mpimages', 'mpimages/447x251')
                 data.update(times(data['locId']))
             return epg_info
 
