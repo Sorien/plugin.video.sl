@@ -20,6 +20,7 @@ _password = xbmcplugin.getSetting(_id, 'password')
 _provider = 'skylink.sk' if int(xbmcplugin.getSetting(_id, 'provider')) == 0 else 'skylink.cz'
 _pin_protected_content = 'false' != xbmcplugin.getSetting(_id, 'pin_protected_content')
 _a_show_live = 'false' != xbmcplugin.getSetting(_id, 'a_show_live')
+_python3 = sys.version_info[0] >= 3
 
 
 def play_archive(station_id, catchup_id, askpin):
@@ -42,7 +43,10 @@ def play_archive(station_id, catchup_id, askpin):
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
         if is_helper.check_inputstream():
             playitem = xbmcgui.ListItem(path=info['path'])
-            playitem.setProperty('inputstream', is_helper.inputstream_addon)
+            if (_python3): # Python 3.x
+                playitem.setProperty('inputstream', is_helper.inputstream_addon)
+            else: # Python 2.5+
+                playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
@@ -69,7 +73,10 @@ def play(channel_id, askpin):
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
         if is_helper.check_inputstream():
             playitem = xbmcgui.ListItem(path=info['path'])
-            playitem.setProperty('inputstream', is_helper.inputstream_addon)
+            if (_python3): # Python 3.x
+                playitem.setProperty('inputstream', is_helper.inputstream_addon)
+            else: # Python 2.5+
+                playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])

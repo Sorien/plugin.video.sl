@@ -14,6 +14,7 @@ from skylink import StreamNotResolvedException
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
+_python3 = sys.version_info[0] >= 3
 
 TYPES = [
     {'msg':_addon.getLocalizedString(30801), 'code':'movies', 'isMovie':True, 'data':{'z':'movies4cat','cs':'37178378331', 'v':'4'}},
@@ -181,14 +182,14 @@ def play(sl, lid):
     params = {'z':'moviedetails','cs':'37186922715','d':'3', 'v':'4', 'm':lid}
     data = utils.call(sl, lambda: sl.library(params))
 
-    if 'description' not in data or xbmcgui.Dialog().yesno(heading=data['title'], line1=data['description'], nolabel=_addon.getLocalizedString(30804), yeslabel=_addon.getLocalizedString(30803)):
+    if 'description' not in data or xbmcgui.Dialog().yesno(data['title'], data['description'], _addon.getLocalizedString(30804), _addon.getLocalizedString(30803)):
         params = {}
         if 'deals' in data and data['deals'] and 'n' in data['deals'][0]:
             params.update({'dn':data['deals'][0]['n']})
         try:
             info = utils.call(sl, lambda: sl.library_info(lid,params))
         except StreamNotResolvedException as e:
-            xbmcgui.Dialog().ok(heading=data['title'], line1=_addon.getLocalizedString(30805))
+            xbmcgui.Dialog().ok(data['title'], _addon.getLocalizedString(30805))
             xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
             return
 
@@ -196,7 +197,10 @@ def play(sl, lid):
             is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
             if is_helper.check_inputstream():
                 playitem = xbmcgui.ListItem(path=info['path'])
-                playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+                if (_python3): # Python 3.x
+                    playitem.setProperty('inputstream', is_helper.inputstream_addon)
+                else: # Python 2.5+
+                    playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
                 playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
                 playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
                 playitem.setProperty('inputstream.adaptive.license_key', info['key'])

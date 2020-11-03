@@ -143,7 +143,10 @@ def replay(sl, locId):
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
         if is_helper.check_inputstream():
             playitem = xbmcgui.ListItem(path=info['path'])
-            playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+            if (sys.version_info[0] >= 3): # Python 3.x
+                playitem.setProperty('inputstream', is_helper.inputstream_addon)
+            else: # Python 2.5+
+                playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
