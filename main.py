@@ -22,23 +22,8 @@ _pin_protected_content = 'false' != xbmcplugin.getSetting(_id, 'pin_protected_co
 _a_show_live = 'false' != xbmcplugin.getSetting(_id, 'a_show_live')
 
 
-def locId_from_time(sl, stationid, utc):
-    now = datetime.datetime.now()
-    from_date = now.replace(hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=7)
-
-    epg = utils.call(sl, lambda: sl.epg([{'stationid': stationid}], from_date, now, False))
-    utc = datetime.datetime.fromtimestamp(int(utc))
-    if epg:
-        for program in epg[0][stationid]:
-            start = datetime.datetime.utcfromtimestamp(program['start'])
-
-            if start <= utc <= start + datetime.timedelta(minutes=program['duration']):
-                logger.log.info('loc: ' + program['title'] + ',start: ' + str(start) + ',utc: ' + str(utc))
-                return program['locId']
-
-
-def play_archive(station_id, utc, askpin):
-    logger.log.info('play archive: ' + station_id + 'utc: ' + utc)
+def play_archive(station_id, catchup_id, askpin):
+    logger.log.info('play archive: ' + station_id + ' catchup_id: ' + str(catchup_id))
     sl = skylink.Skylink(_user_name, _password, _profile, _provider)
 
     if askpin != 'False':
@@ -47,7 +32,7 @@ def play_archive(station_id, utc, askpin):
             xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
             return
     try:
-        info = utils.call(sl, lambda: sl.replay_info(locId_from_time(sl, station_id, utc)))
+        info = utils.call(sl, lambda: sl.replay_info(catchup_id))
     except skylink.StreamNotResolvedException as e:
         xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
         xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
@@ -57,7 +42,7 @@ def play_archive(station_id, utc, askpin):
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
         if is_helper.check_inputstream():
             playitem = xbmcgui.ListItem(path=info['path'])
-            playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+            playitem.setProperty('inputstream', is_helper.inputstream_addon)
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
@@ -84,7 +69,7 @@ def play(channel_id, askpin):
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
         if is_helper.check_inputstream():
             playitem = xbmcgui.ListItem(path=info['path'])
-            playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+            playitem.setProperty('inputstream', is_helper.inputstream_addon)
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
@@ -95,8 +80,11 @@ if __name__ == '__main__':
     args = utils.parse_qs(sys.argv[2][1:])
     if 'id' in args:
         play(str(args['id'][0]), str(args['askpin'][0]) if 'askpin' in args else 'False')
-    elif ('stationid' in args) and ('utc' in args):
-        play_archive(str(args['stationid'][0]), str(args['utc'][0]) if 'utc' in args else None, str(args['askpin'][0]) if 'askpin' in args else 'False')
+    elif ('stationid' in args) and ('catchup_id' in args):
+        play_archive(
+            str(args['stationid'][0]),
+            str(args['catchup_id'][0]) if 'catchup_id' in args else None,
+            str(args['askpin'][0]) if 'askpin' in args else 'False')
     elif 'replay' in args:
         replay.router(args, skylink.Skylink(_user_name, _password, _profile, _provider, _pin_protected_content))
     elif 'live' in args:

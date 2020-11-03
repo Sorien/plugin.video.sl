@@ -32,7 +32,7 @@ def create_m3u(channels, path, logo_url=None):
         file.write(u'#EXTM3U\n')
 
         for c in channels:
-            catchup_url = u'plugin://plugin.video.sl/?stationid=%s&askpin=%s&utc=${start}' % (c['stationid'], c['pin'])
+            catchup_url = u'plugin://plugin.video.sl/?stationid=%s&askpin=%s&catchup_id={catchup-id}' % (c['stationid'], c['pin'])
             catchup = u'catchup-days="7" catchup-source="'+catchup_url+'"' if c['replayable'] else ''
             file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s" %s,%s\n' % (
                 c['stationid'],
@@ -60,8 +60,8 @@ def create_epg(channels, epg, path):
                 for p in e[str(c)]:
                     b = datetime.datetime.utcfromtimestamp(p['start'])
                     e = b + datetime.timedelta(minutes=p['duration'])
-                    file.write(u'<programme channel="%s" start="%s" stop="%s">\n' % (
-                        c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S')))
+                    file.write(u'<programme channel="%s" start="%s" stop="%s" catchup-id="%s">\n' % (
+                        c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S'), p['locId']))
                     if 'title' in p:
                         file.write(u'<title>%s</title>\n' % html_escape(p['title']))
                     if 'description' in p and p['description'] != '':
