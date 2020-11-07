@@ -55,12 +55,12 @@ def generate_plot(epg, chtitle, items_left = _a_live_epg_next):
     return plot
 
 def channels(sl):
-    channels = utils.call(sl, lambda: sl.channels(False))
+    channelsData = utils.call(sl, lambda: sl.channels())
     today = datetime.datetime.now()
-    epg = utils.call(sl, lambda: sl.epg(channels, today, today + datetime.timedelta(days=1), False))
+    epg = utils.call(sl, lambda: sl.epg(channelsData, today, today + datetime.timedelta(days=1), False))
     xbmcplugin.setPluginCategory(_handle, _addon.getLocalizedString(30600))
-    if channels:
-        for channel in channels:
+    if channelsData:
+        for channel in channelsData:
             stationid=str(channel['stationid']) #because it is long
             plot = generate_plot([x for x in epg if stationid in x][0][stationid],channel['title'],4) if epg else u''
             list_item = xbmcgui.ListItem(label=channel['title'])
@@ -96,7 +96,10 @@ def play(sl, lid, stationid, askpin):
             playitem = xbmcgui.ListItem(path=info['path'])
             if plot:
                 playitem.setInfo('video', {'plot': plot})
-            playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
+            if (sys.version_info[0] >= 3): # Python 3.x
+                playitem.setProperty('inputstream', is_helper.inputstream_addon)
+            else: # Python 2.5+
+                playitem.setProperty('inputstreamaddon', is_helper.inputstream_addon)
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])

@@ -27,16 +27,19 @@ def logo_sl_location(title):
     return 'mmchan/channelicons/' + title + '_w267.png'
 
 
-def create_m3u(channels, path, url):
+def create_m3u(channels, path, logo_url=None):
     with io.open(path, 'w', encoding='utf8') as file:
         file.write(u'#EXTM3U\n')
 
         for c in channels:
-            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s",%s\n' % (
+            catchup_url = u'plugin://plugin.video.sl/?stationid=%s&askpin=%s&catchup_id={catchup-id}' % (c['stationid'], c['pin'])
+            catchup = u'catchup-days="7" catchup-source="'+catchup_url+'"' if c['replayable'] else ''
+            file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s" %s,%s\n' % (
                 c['stationid'],
-                url + logo_sl_location(c['title']) if url is not None else logo_id(c['title']),
+                logo_url + logo_sl_location(c['title']) if logo_url is not None else logo_id(c['title']),
+                catchup,
                 c['title']))
-            file.write(u'plugin://plugin.video.sl/?action=play&id=%s&askpin=%s\n' % (c['id'], c['pin']))
+            file.write(u'plugin://plugin.video.sl/?id=%s&askpin=%s\n' % (c['id'], c['pin']))
 
 
 def create_epg(channels, epg, path):
@@ -57,8 +60,8 @@ def create_epg(channels, epg, path):
                 for p in e[str(c)]:
                     b = datetime.datetime.utcfromtimestamp(p['start'])
                     e = b + datetime.timedelta(minutes=p['duration'])
-                    file.write(u'<programme channel="%s" start="%s" stop="%s">\n' % (
-                        c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S')))
+                    file.write(u'<programme channel="%s" start="%s" stop="%s" catchup-id="%s">\n' % (
+                        c, b.strftime('%Y%m%d%H%M%S'), e.strftime('%Y%m%d%H%M%S'), p['locId']))
                     if 'title' in p:
                         file.write(u'<title>%s</title>\n' % html_escape(p['title']))
                     if 'description' in p and p['description'] != '':
