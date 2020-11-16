@@ -98,6 +98,7 @@ def programs(sl, stationid, channel, day=0, first=False):
         is_folder = True
         xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
     if epg:
+        lastLocId = None
         for program in epg[0][stationid]:
             start = datetime.datetime.fromtimestamp(program['start'])
             show_item = (start.replace(hour=0, minute=0, second=0, microsecond=0) - start_date).days == 0 #started today
@@ -117,7 +118,8 @@ def programs(sl, stationid, channel, day=0, first=False):
                 if 'cover' in program:
                     list_item.setArt({'thumb': program['cover'], 'icon': program['cover']})
 
-                link = get_url(replay='replay', locId=program['locId'])
+                link = get_url(replay='replay', locId=program['locId'], lastLocId=lastLocId)
+                lastLocId=program['locId']
                 is_folder = False
                 list_item.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(_handle, link, list_item, is_folder)
@@ -131,14 +133,14 @@ def programs(sl, stationid, channel, day=0, first=False):
     xbmcplugin.endOfDirectory(_handle, updateListing=not first)
 
 
-def replay(sl, locId):
+def replay(sl, locId, lastLocId):
     try:
         info = utils.call(sl, lambda: sl.replay_info(locId))
     except StreamNotResolvedException as e:
         xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
         xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
         return
-
+    
     if info:
         is_helper = inputstreamhelper.Helper(info['protocol'], drm=info['drm'])
         if is_helper.check_inputstream():
@@ -150,6 +152,16 @@ def replay(sl, locId):
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
+            #playitem.setProperty('StartOffset', '180.0')
+            #playitem.setProperty('resumetime', '180.0')
+            lastPlayed = _addon.getSetting('archive_last_played')
+            print lastPlayed
+            print lastLocId
+            if 'resume:true' not in sys.argv[3] and lastLocId == lastPlayed:
+                #playitem.setProperty('StartPercent', '0.1')
+                playitem.setProperty('ResumeTime', '179')
+                playitem.setProperty('TotalTime', '360')
+            _addon.setSetting('archive_last_played',locId)
             xbmcplugin.setResolvedUrl(_handle, True, playitem)
 
 
@@ -158,7 +170,7 @@ def router(args, sl):
         if args['replay'][0] == 'programs':
             programs(sl, args['stationid'][0], args['channel'][0], int(args['day'][0]) if 'day' in args else 0, 'first' in args)
         elif args['replay'][0] == 'replay':
-            replay(sl, args['locId'][0])
+            replay(sl, args['locId'][0], args['lastLocId'][0])
         elif args['replay'][0] == 'days':
             days(sl, args['stationid'][0], args['channel'][0], args['askpin'][0])
         else:
