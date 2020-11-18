@@ -13,6 +13,7 @@ _url = sys.argv[0]
 _handle = int(sys.argv[1])
 _addon = xbmcaddon.Addon()
 _profile = xbmc.translatePath(_addon.getAddonInfo('profile'))
+_python3 = sys.version_info[0] >= 3
 
 REPLAY_GAP = 5  # gap after program ends til it shows in replay
 REPLAY_LAST_GAP = 3*60*60 #gap before program vanish - now - 7 days + last+gap
@@ -156,15 +157,20 @@ def replay(sl, locId, duration, lastLocId):
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
-            lastPlayed = None
-            if os.path.isfile(REPLAY_LAST_PLAYED):
-                with io.open(REPLAY_LAST_PLAYED, 'r', encoding='utf8') as f:
-                    lastPlayed = f.read()
-            if 'resume:true' not in sys.argv[3] and lastLocId == lastPlayed:
-                playitem.setProperty('ResumeTime', str(REPLAY_OFFSET))
-                playitem.setProperty('TotalTime', duration)
-            with io.open(REPLAY_LAST_PLAYED, 'w', encoding='utf8') as f:
-                lastPlayed = f.write(unicode(locId))
+            skipOffset = "true" == _addon.getSetting('a_skip_offset')
+            if skipOffset:
+                lastPlayed = None
+                if os.path.isfile(REPLAY_LAST_PLAYED):
+                    with io.open(REPLAY_LAST_PLAYED, 'r', encoding='utf8') as f:
+                        lastPlayed = f.read()
+                if 'resume:true' not in sys.argv[3] and lastLocId == lastPlayed:
+                    playitem.setProperty('ResumeTime', str(REPLAY_OFFSET))
+                    playitem.setProperty('TotalTime', duration)
+                with io.open(REPLAY_LAST_PLAYED, 'w', encoding='utf8') as f:
+                    if _python3:
+                        f.write(locId)
+                    else:
+                        f.write(unicode(locId))
             xbmcplugin.setResolvedUrl(_handle, True, playitem)
 
 

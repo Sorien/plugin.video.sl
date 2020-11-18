@@ -68,7 +68,7 @@ def locId_from_time(sl, stationid, utc):
                 return program['locId']
 
 
-def play_archive(station_id, utc, askpin):
+def play_archive_utc(station_id, utc, askpin):
     logger.log.info('play archive: ' + station_id + 'utc: ' + utc)
     sl = skylink.Skylink(_user_name, _password, _profile, _provider)
 

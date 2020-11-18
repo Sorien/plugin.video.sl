@@ -87,6 +87,10 @@ msgctxt "#30305"
 msgid "Preload Days"
 msgstr "Počet dní"
 
+msgctxt "#30306"
+msgid "Preload Catchup Days"
+msgstr "Počet archivních dní"
+
 msgctxt "#30350"
 msgid "Archive"
 msgstr "Archiv"
@@ -114,6 +118,10 @@ msgstr "Adresář s logy"
 msgctxt "#30356"
 msgid "Base url for logos"
 msgstr "Url stránky s logy"
+
+msgctxt "#30357"
+msgid "Skip offset while Play from here"
+msgstr "Přeskočit začátek při Přehrát odsud"
 
 msgctxt "#30360"
 msgid "Live TV streams"
@@ -167,6 +175,10 @@ msgctxt "#30380"
 msgid "Failed to activate the new skin, do it manually, and then set it."
 msgstr "Nepodařilo se aktivovat nový vzhled, udělejte to manuálně a pak si ho nastavte."
 
+msgctxt "#30381"
+msgid "For Kodi 19 Matrix use catchup in PVR IPTV Simple Client"
+msgstr "Pro Kodi 19 Matrix použijte catchup v PVR IPTV Simple Client"
+
 msgctxt "#30390"
 msgid "PVR IPTV Simple Client"
 msgstr "PVR IPTV Simple Client"
@@ -186,6 +198,10 @@ msgstr "Nemáte zapnuté generování ani playlistu, ani EPG."
 msgctxt "#30394"
 msgid "It will now display a dialog with the necessary restart several times. Then restart Kodi.\nI also recommend deleting data in Settings / PVR and TV - General.\nOnly start after you have generated a playlist or epg!\nThis process is irreversible, continue?"
 msgstr "Nyní zobrazí několikrát po sobě dialog s nutným restartem. Poté restartujte Kodi.\nNásledně doporučuji i vymazat údaje v Nastavení / PVR a televize - Všeobecné.\nSpusťte až poté, co máte vygenerovaný playlist resp. epg!\nTento proces je nevratný, pokračovat?"
+
+msgctxt "#30395"
+msgid "PVR IPTV Simple Client was configured."
+msgstr "PVR IPTV Simple Client byl nastaven."
 
 msgctxt "#30401"
 msgid "Playlist created"
