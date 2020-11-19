@@ -410,3 +410,27 @@ msgstr "Other"
 msgctxt "#30828"
 msgid "Erotic"
 msgstr "Erotic"
+
+msgctxt "#30829"
+msgid "Culture"
+msgstr "Culture"
+
+msgctxt "#30830"
+msgid "People"
+msgstr "People"
+
+msgctxt "#30831"
+msgid "Natural History"
+msgstr "Natural History"
+
+msgctxt "#30832"
+msgid "Science"
+msgstr "Science"
+
+msgctxt "#30833"
+msgid "Cars & Motors"
+msgstr "Cars & Motors"
+
+msgctxt "#30834"
+msgid "Technology"
+msgstr "Technology"

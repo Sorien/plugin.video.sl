@@ -410,3 +410,27 @@ msgstr "Ostatní"
 msgctxt "#30828"
 msgid "Erotic"
 msgstr "Erotický"
+
+msgctxt "#30829"
+msgid "Culture"
+msgstr "Kultúra"
+
+msgctxt "#30830"
+msgid "People"
+msgstr "Lidé"
+
+msgctxt "#30831"
+msgid "Natural History"
+msgstr "Přírodní vědy"
+
+msgctxt "#30832"
+msgid "Science"
+msgstr "Věda"
+
+msgctxt "#30833"
+msgid "Cars & Motors"
+msgstr "Auto Moto"
+
+msgctxt "#30834"
+msgid "Technology"
+msgstr "Technologie"

@@ -22,6 +22,7 @@
 - generovanie epg aj do minulosti pre catchup, default 0
 - blokovanie upravy skinu pre Matrix
 - umoznenie preskakovania prvych troch minut pri pouziti "prehraj odtialto" v klasickom archive, default true
+- kategorie v kniznici
 [B]1.7.0[/B]
 - podpora Kodi 19, vratane catchup, vdaka panda7789
 [B]1.6.7[/B]
