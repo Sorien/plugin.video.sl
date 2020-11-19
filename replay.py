@@ -157,7 +157,7 @@ def replay(sl, locId, duration, lastLocId):
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
-            skipOffset = "true" == _addon.getSetting('a_skip_offset')
+            skipOffset = "true" == xbmcaddon.Addon().getSetting('a_skip_offset')
             if skipOffset:
                 lastPlayed = None
                 if os.path.isfile(REPLAY_LAST_PLAYED):
