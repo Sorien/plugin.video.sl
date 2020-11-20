@@ -87,6 +87,10 @@ msgctxt "#30305"
 msgid "Preload Days"
 msgstr "Preload Days"
 
+msgctxt "#30306"
+msgid "Preload Catchup Days"
+msgstr "Preload Catchup Days"
+
 msgctxt "#30350"
 msgid "Archive"
 msgstr "Archive"
@@ -114,6 +118,10 @@ msgstr "Directory with logos"
 msgctxt "#30356"
 msgid "Base url for logos"
 msgstr "Base url for logos"
+
+msgctxt "#30357"
+msgid "Skip offset while Play from here"
+msgstr "Skip offset while Play from here"
 
 msgctxt "#30360"
 msgid "Live TV streams"
@@ -167,6 +175,10 @@ msgctxt "#30380"
 msgid "Failed to activate the new skin, do it manually, and then set it."
 msgstr "Failed to activate the new skin, do it manually, and then set it."
 
+msgctxt "#30381"
+msgid "For Kodi 19 Matrix use catchup in PVR IPTV Simple Client"
+msgstr "For Kodi 19 Matrix use catchup in PVR IPTV Simple Client"
+
 msgctxt "#30390"
 msgid "PVR IPTV Simple Client"
 msgstr "PVR IPTV Simple Client"
@@ -186,6 +198,10 @@ msgstr "You have neither generation of playlist nor EPG enabled."
 msgctxt "#30394"
 msgid "It will now display a dialog with the necessary restart several times. Then restart Kodi.\nI also recommend deleting data in Settings / PVR and TV - General.\nOnly start after you have generated a playlist or epg!\nThis process is irreversible, continue?"
 msgstr "It will now display a dialog with the necessary restart several times. Then restart Kodi.\nI also recommend deleting data in Settings / PVR and TV - General.\nOnly start after you have generated a playlist or epg!\nThis process is irreversible, continue?"
+
+msgctxt "#30395"
+msgid "PVR IPTV Simple Client was configured."
+msgstr "PVR IPTV Simple Client was configured."
 
 msgctxt "#30401"
 msgid "M3U Playlist created"
@@ -394,3 +410,27 @@ msgstr "Other"
 msgctxt "#30828"
 msgid "Erotic"
 msgstr "Erotic"
+
+msgctxt "#30829"
+msgid "Culture"
+msgstr "Culture"
+
+msgctxt "#30830"
+msgid "People"
+msgstr "People"
+
+msgctxt "#30831"
+msgid "Natural History"
+msgstr "Natural History"
+
+msgctxt "#30832"
+msgid "Science"
+msgstr "Science"
+
+msgctxt "#30833"
+msgid "Cars & Motors"
+msgstr "Cars & Motors"
+
+msgctxt "#30834"
+msgid "Technology"
+msgstr "Technology"

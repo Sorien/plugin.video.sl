@@ -92,10 +92,13 @@ class SkylinkMonitor(xbmc.Monitor):
         if _epg_generate:
             try:
                 days = int(self._addon.getSetting('epg_days'))
-                path = os.path.join(self._addon.getSetting('epp_folder'), self._addon.getSetting('epg_file'))
-                logger.log.info('Updating EPG [%d days from %s]' % (days, datetime.datetime.now()))
+                catchup_days = int(self._addon.getSetting('epg_days_catchup'))
                 today = datetime.datetime.now()
-                exports.create_epg(channels, sl.epg(channels, today, today + datetime.timedelta(days=days)), path)
+                epgFrom = today - datetime.timedelta(days=catchup_days) if catchup_days > 0 else today
+                epgTo = today + datetime.timedelta(days=days)
+                path = os.path.join(self._addon.getSetting('epp_folder'), self._addon.getSetting('epg_file'))
+                logger.log.info('Updating EPG [from %s to %s]' % (epgFrom, epgTo))
+                exports.create_epg(channels, sl.epg(channels, epgFrom, epgTo), path)
                 result = 2
             except IOError as e:
                 logger.log.error(str(e))

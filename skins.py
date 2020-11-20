@@ -194,4 +194,8 @@ def modify():
         xbmcgui.Dialog().ok(newName, __language__(30380))
         xbmc.executebuiltin("ActivateWindow(10040,addons://user/xbmc.gui.skin,return)")
 
-modify()
+python3 = sys.version_info[0] >= 3
+if python3:
+    xbmcgui.Dialog().ok("Kodi 19 Matrix", xbmcaddon.Addon(id='plugin.video.sl').getLocalizedString(30381))
+else:
+    modify()

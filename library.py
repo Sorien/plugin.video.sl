@@ -38,6 +38,12 @@ CATEGORIES = [
     {'msg':_addon.getLocalizedString(30824), 'code':'History', 'pin':False},
     {'msg':_addon.getLocalizedString(30825), 'code':'Music', 'pin':False},
     {'msg':_addon.getLocalizedString(30826), 'code':'Sport', 'pin':False},
+    {'msg':_addon.getLocalizedString(30829), 'code':'Culture', 'pin':False},
+    {'msg':_addon.getLocalizedString(30830), 'code':'People', 'pin':False},
+    {'msg':_addon.getLocalizedString(30831), 'code':'Natural History', 'pin':False},
+    {'msg':_addon.getLocalizedString(30832), 'code':'Science', 'pin':False},
+    {'msg':_addon.getLocalizedString(30833), 'code':'Cars & Motors', 'pin':False},
+    {'msg':_addon.getLocalizedString(30834), 'code':'Technology', 'pin':False},
     {'msg':_addon.getLocalizedString(30827), 'code':'Other', 'pin':False},
     {'msg':_addon.getLocalizedString(30828), 'code':'Erotic', 'pin':True}
 ]

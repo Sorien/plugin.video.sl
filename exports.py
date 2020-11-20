@@ -33,7 +33,7 @@ def create_m3u(channels, path, logo_url=None):
 
         for c in channels:
             catchup_url = u'plugin://plugin.video.sl/?stationid=%s&askpin=%s&catchup_id={catchup-id}' % (c['stationid'], c['pin'])
-            catchup = u'catchup-days="7" catchup-source="'+catchup_url+'"' if c['replayable'] else ''
+            catchup = u'catchup-days="7" catchup-type="default" catchup-source="'+catchup_url+'"' if c['replayable'] else ''
             file.write(u'#EXTINF:-1 tvg-id="%s" tvg-logo="%s" %s,%s\n' % (
                 c['stationid'],
                 logo_url + logo_sl_location(c['title']) if logo_url is not None else logo_id(c['title']),
