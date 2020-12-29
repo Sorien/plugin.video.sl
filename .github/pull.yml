@@ -1,8 +1,8 @@
 version: "1"
 rules:
   - base: master
-    upstream: waladir:master
+    upstream: Sorien:master
     mergeMethod: hardreset
   - base: leia
-    upstream: waladir:leia
+    upstream: Sorien:leia
     mergeMethod: hardreset
