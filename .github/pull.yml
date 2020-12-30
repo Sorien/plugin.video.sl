@@ -3,6 +3,6 @@ rules:
   - base: master
     upstream: Sorien:master
     mergeMethod: hardreset
-  - base: leia
-    upstream: Sorien:leia
+  - base: Leia
+    upstream: Sorien:Leia
     mergeMethod: hardreset
