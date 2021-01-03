@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: Leia
+          ref: leia
           fetch-depth: 0
       - run: git config user.name github-actions
       - run: git config user.email github-actions@github.com
