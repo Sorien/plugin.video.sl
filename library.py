@@ -96,7 +96,7 @@ def listOfItems(sl, ctype, category):
     xbmcplugin.setPluginCategory(_handle, title)
 
     if ctp is None or cat is None:
-        xbmcgui.Dialog().ok(heading=_addon.getLocalizedString(30800), line1=_addon.getLocalizedString(30806))
+        xbmcgui.Dialog().ok(_addon.getLocalizedString(30800), _addon.getLocalizedString(30806))
         xbmcplugin.endOfDirectory(_handle)
         return
 
@@ -237,7 +237,7 @@ def play(sl, lid):
 
                 xbmcplugin.setResolvedUrl(_handle, True, playitem)
             return
-        xbmcgui.Dialog().ok(heading=data['title'], line1=_addon.getLocalizedString(30805))
+        xbmcgui.Dialog().ok(data['title'], _addon.getLocalizedString(30805))
 
     xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
 
