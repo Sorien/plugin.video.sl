@@ -35,7 +35,7 @@ def play_archive(station_id, catchup_id, askpin):
     try:
         info = utils.call(sl, lambda: sl.replay_info(catchup_id))
     except skylink.StreamNotResolvedException as e:
-        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcgui.Dialog().ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(e.id))
         xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
         return
 
@@ -80,7 +80,7 @@ def play_archive_utc(station_id, utc, askpin):
     try:
         info = utils.call(sl, lambda: sl.replay_info(locId_from_time(sl, station_id, utc)))
     except skylink.StreamNotResolvedException as e:
-        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcgui.Dialog().ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(e.id))
         xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
         return
 
@@ -107,7 +107,7 @@ def play(channel_id, askpin):
     try:
         info = utils.call(sl, lambda: sl.channel_info(channel_id))
     except skylink.StreamNotResolvedException as e:
-        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcgui.Dialog().ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(e.id))
         xbmcplugin.setResolvedUrl(_id, False, xbmcgui.ListItem())
         return
 

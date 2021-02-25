@@ -86,7 +86,7 @@ def play(sl, lid, stationid, askpin):
     try:
         info = utils.call(sl, lambda: sl.channel_info(lid))
     except StreamNotResolvedException as e:
-        xbmcgui.Dialog().ok(heading=_addon.getAddonInfo('name'), line1=_addon.getLocalizedString(e.id))
+        xbmcgui.Dialog().ok(_addon.getAddonInfo('name'), _addon.getLocalizedString(e.id))
         xbmcplugin.setResolvedUrl(_handle, False, xbmcgui.ListItem())
         return
 
