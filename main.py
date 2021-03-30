@@ -50,6 +50,7 @@ def play_archive(station_id, catchup_id, askpin):
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
+            playitem.setProperty('inputstream.adaptive.stream_headers', info['headers'])
             xbmcplugin.setResolvedUrl(_id, True, playitem)
 
 
@@ -92,6 +93,7 @@ def play_archive_utc(station_id, utc, askpin):
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
+            playitem.setProperty('inputstream.adaptive.stream_headers', info['headers'])
             xbmcplugin.setResolvedUrl(_id, True, playitem)
 
 
@@ -122,6 +124,7 @@ def play(channel_id, askpin):
             playitem.setProperty('inputstream.adaptive.manifest_type', info['protocol'])
             playitem.setProperty('inputstream.adaptive.license_type', info['drm'])
             playitem.setProperty('inputstream.adaptive.license_key', info['key'])
+            playitem.setProperty('inputstream.adaptive.stream_headers', info['headers'])
             xbmcplugin.setResolvedUrl(_id, True, playitem)
 
 
