@@ -250,11 +250,13 @@ class Skylink:
             raise StreamNotResolvedException()
            
         mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA}
+        str_mpd_headers = self._headers_str(mpd_headers)
         drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
                           'User-Agent': UA}
         return {
             'protocol': 'mpd',
-            'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
+            'path': requests.utils.requote_uri(stream['url']) + '|' + str_mpd_headers,
+            'headers': str_mpd_headers,
             'drm': 'com.widevine.alpha',
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
@@ -343,12 +345,14 @@ class Skylink:
            
         mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA, 
                        'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
+        str_mpd_headers = self._headers_str(mpd_headers)
         drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
                           'User-Agent': UA, 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
 
         return {
             'protocol': 'mpd',
-            'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
+            'path': requests.utils.requote_uri(stream['url']) + '|' + str_mpd_headers,
+            'headers': str_mpd_headers,
             'drm': 'com.widevine.alpha',
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
@@ -406,11 +410,13 @@ class Skylink:
            
         mpd_headers = {'Origin': self._url, 'Referer': self._url, 'User-Agent': UA, 
                        'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
+        str_mpd_headers = self._headers_str(mpd_headers)
         drm_la_headers = {'Origin': self._url, 'Referer': self._url, 'Content-Type': 'application/octet-stream',
                           'User-Agent': UA, 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'same-origin'}
         return {
             'protocol': 'mpd',
-            'path': requests.utils.requote_uri(stream['url']) + '|' + self._headers_str(mpd_headers),
+            'path': requests.utils.requote_uri(stream['url']) + '|' + str_mpd_headers,
+            'headers': str_mpd_headers,
             'drm': 'com.widevine.alpha',
             'key': stream['drm']['laurl'] + '|' + self._headers_str(drm_la_headers) + '|R{SSM}|'
         }
