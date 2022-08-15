@@ -8,7 +8,7 @@ import xbmcgui
 import xbmcplugin
 import urllib
 import utils
-from collections import Mapping
+from collections.abc import Mapping
 from skylink import StreamNotResolvedException
 
 _url = sys.argv[0]
